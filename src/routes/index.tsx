@@ -36,7 +36,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "StudyForge — Local-First Study Dashboard" },
       {
         property: "og:description",
-        content: "Your offline study command center: decks, quizzes, XP, streaks and analytics.",
+        content: "Track XP, streaks, weak topics and decks in StudyForge — an offline study platform for AI-generated JSON question banks.",
       },
     ],
   }),
