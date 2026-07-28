@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StatsRouteImport } from './routes/stats'
 import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as ImportRouteImport } from './routes/import'
@@ -19,6 +20,11 @@ import { Route as DecksIndexRouteImport } from './routes/decks.index'
 import { Route as StudyDeckIdRouteImport } from './routes/study.$deckId'
 import { Route as DecksDeckIdRouteImport } from './routes/decks.$deckId'
 
+const StatsRoute = StatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QuizRoute = QuizRouteImport.update({
   id: '/quiz',
   path: '/quiz',
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/import': typeof ImportRoute
   '/onboarding': typeof OnboardingRoute
   '/quiz': typeof QuizRoute
+  '/stats': typeof StatsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/study/$deckId': typeof StudyDeckIdRoute
   '/decks/': typeof DecksIndexRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/import': typeof ImportRoute
   '/onboarding': typeof OnboardingRoute
   '/quiz': typeof QuizRoute
+  '/stats': typeof StatsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/study/$deckId': typeof StudyDeckIdRoute
   '/decks': typeof DecksIndexRoute
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/import': typeof ImportRoute
   '/onboarding': typeof OnboardingRoute
   '/quiz': typeof QuizRoute
+  '/stats': typeof StatsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/study/$deckId': typeof StudyDeckIdRoute
   '/decks/': typeof DecksIndexRoute
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/import'
     | '/onboarding'
     | '/quiz'
+    | '/stats'
     | '/decks/$deckId'
     | '/study/$deckId'
     | '/decks/'
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/import'
     | '/onboarding'
     | '/quiz'
+    | '/stats'
     | '/decks/$deckId'
     | '/study/$deckId'
     | '/decks'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/import'
     | '/onboarding'
     | '/quiz'
+    | '/stats'
     | '/decks/$deckId'
     | '/study/$deckId'
     | '/decks/'
@@ -142,6 +154,7 @@ export interface RootRouteChildren {
   ImportRoute: typeof ImportRoute
   OnboardingRoute: typeof OnboardingRoute
   QuizRoute: typeof QuizRoute
+  StatsRoute: typeof StatsRoute
   DecksDeckIdRoute: typeof DecksDeckIdRoute
   StudyDeckIdRoute: typeof StudyDeckIdRoute
   DecksIndexRoute: typeof DecksIndexRoute
@@ -149,6 +162,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/stats': {
+      id: '/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof StatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/quiz': {
       id: '/quiz'
       path: '/quiz'
@@ -222,6 +242,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImportRoute: ImportRoute,
   OnboardingRoute: OnboardingRoute,
   QuizRoute: QuizRoute,
+  StatsRoute: StatsRoute,
   DecksDeckIdRoute: DecksDeckIdRoute,
   StudyDeckIdRoute: StudyDeckIdRoute,
   DecksIndexRoute: DecksIndexRoute,
