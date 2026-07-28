@@ -1,24 +1,357 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  Flame,
+  Zap,
+  Target,
+  Library,
+  Trophy,
+  Clock,
+  TrendingDown,
+  Play,
+  Wand2,
+  Download,
+  RotateCcw,
+  EyeOff,
+  BarChart3,
+} from "lucide-react";
+import { AppPage, } from "@/components/app-page";
+import { PageHeader } from "@/components/app-shell";
+import { Button } from "@/components/ui/button";
+import { useStudyForge } from "@/store/studyforge";
+import { levelFromXp, ACHIEVEMENTS } from "@/lib/gamification";
+import { dayKey, formatDuration } from "@/lib/answers";
+import { DEFAULT_SETTINGS } from "@/lib/defaults";
+import { cn } from "@/lib/utils";
+import type { ReactNode } from "react";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "StudyForge — Local-First Study Dashboard" },
+      {
+        name: "description",
+        content:
+          "Track XP, streaks, weak topics and decks in StudyForge — an offline study platform for AI-generated JSON question banks.",
+      },
+      { property: "og:title", content: "StudyForge — Local-First Study Dashboard" },
+      {
+        property: "og:description",
+        content: "Your offline study command center: decks, quizzes, XP, streaks and analytics.",
+      },
+    ],
+  }),
+  component: () => (
+    <AppPage>
+      <Dashboard />
+    </AppPage>
+  ),
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Widget({
+  id,
+  title,
+  icon: Icon,
+  children,
+  className,
+  onHide,
+}: {
+  id: string;
+  title: string;
+  icon: React.ElementType;
+  children: ReactNode;
+  className?: string;
+  onHide: (id: string) => void;
+}) {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
+    <section className={cn("panel group relative p-5", className)}>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+          <Icon className="size-4 text-primary" />
+          {title}
+        </h2>
+        <button
+          aria-label={`Hide ${title} widget`}
+          onClick={() => onHide(id)}
+          className="opacity-0 transition-opacity group-hover:opacity-100"
+        >
+          <EyeOff className="size-3.5 text-muted-foreground hover:text-foreground" />
+        </button>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function Dashboard() {
+  const { state, updateSettings } = useStudyForge();
+  const { decks, progress, history, settings } = state;
+  const { level, pct, intoLevel, needed } = levelFromXp(progress.lifetimeXp);
+  const hidden = settings.hiddenWidgets;
+  const hide = (id: string) => updateSettings({ hiddenWidgets: [...hidden, id] });
+  const show = (id: string) => !hidden.includes(id);
+
+  const todayCount = progress.studyDays[dayKey()] ?? 0;
+  const goalPct = Math.min(100, (todayCount / Math.max(1, settings.dailyGoal)) * 100);
+  const recentDeck = [...decks].sort((a, b) => (b.lastStudiedAt ?? 0) - (a.lastStudiedAt ?? 0))[0];
+  const due = decks.reduce((n, d) => n + (d.questions.length - d.masteredIds.length), 0);
+  const accuracy = progress.totalAnswered
+    ? Math.round((progress.totalCorrect / progress.totalAnswered) * 100)
+    : 0;
+
+  const weak = Object.entries(progress.conceptStats)
+    .filter(([, v]) => v.total >= 2)
+    .map(([k, v]) => ({ concept: k, acc: v.correct / v.total, total: v.total }))
+    .sort((a, b) => a.acc - b.acc)
+    .slice(0, 5);
+
+  const unlocked = ACHIEVEMENTS.filter((a) => progress.unlockedAchievements.includes(a.id));
+
+  if (!decks.length) {
+    return (
+      <div className="mx-auto max-w-3xl">
+        <PageHeader
+          title={`Welcome, ${settings.displayName}`}
+          description="Your forge is empty. Generate a prompt, run it in any AI, then import the JSON to create your first deck."
+        />
+        <div className="panel grid gap-4 p-8 sm:grid-cols-3">
+          {[
+            { to: "/generate", icon: Wand2, title: "Prompt Forge", body: "Build a strict prompt from your material." },
+            { to: "/import", icon: Download, title: "Import JSON", body: "Validate and load an AI-generated deck." },
+            { to: "/format", icon: Library, title: "JSON Format", body: "See the schema and a sample deck." },
+          ].map((c) => (
+            <Link
+              key={c.to}
+              to={c.to}
+              className="rounded-xl border border-border bg-surface-2/50 p-5 transition-colors hover:border-primary/60"
+            >
+              <c.icon className="size-5 text-primary" />
+              <p className="mt-3 font-semibold">{c.title}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{c.body}</p>
+            </Link>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <PageHeader
+        title={`Welcome back, ${settings.displayName}`}
+        description="Everything below is stored locally on this device."
+        action={
+          hidden.length ? (
+            <Button variant="outline" size="sm" onClick={() => updateSettings({ hiddenWidgets: [] })}>
+              <RotateCcw /> Reset layout
+            </Button>
+          ) : (
+            <Button asChild>
+              <Link to="/quiz">
+                <Play /> Start a quiz
+              </Link>
+            </Button>
+          )
+        }
       />
+
+      <div className="grid gap-4 lg:grid-cols-3">
+        {show("continue") && recentDeck && (
+          <Widget id="continue" title="Continue studying" icon={Play} onHide={hide} className="lg:col-span-2">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="font-display text-xl font-bold">{recentDeck.title}</p>
+                <p className="text-xs text-muted-foreground">
+                  {recentDeck.masteredIds.length}/{recentDeck.questions.length} mastered ·{" "}
+                  {recentDeck.subject}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button asChild>
+                  <Link to="/study/$deckId" params={{ deckId: recentDeck.id }}>
+                    Study
+                  </Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link to="/quiz">Quiz</Link>
+                </Button>
+              </div>
+            </div>
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-secondary">
+              <div
+                className="h-full rounded-full bg-primary"
+                style={{
+                  width: `${(recentDeck.masteredIds.length / Math.max(1, recentDeck.questions.length)) * 100}%`,
+                }}
+              />
+            </div>
+          </Widget>
+        )}
+
+        {show("goal") && (
+          <Widget id="goal" title="Today's goal" icon={Target} onHide={hide}>
+            <p className="font-display text-3xl font-bold">
+              {todayCount}
+              <span className="text-base text-muted-foreground"> / {settings.dailyGoal}</span>
+            </p>
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-secondary">
+              <div className="h-full rounded-full bg-success" style={{ width: `${goalPct}%` }} />
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">questions answered today</p>
+          </Widget>
+        )}
+
+        {show("level") && (
+          <Widget id="level" title="Level & XP" icon={Zap} onHide={hide}>
+            <div className="flex items-baseline gap-2">
+              <span className="font-display text-3xl font-bold ember-text">Lv {level}</span>
+              <span className="text-xs text-muted-foreground">
+                {intoLevel}/{needed} XP
+              </span>
+            </div>
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-secondary">
+              <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {progress.lifetimeXp.toLocaleString()} lifetime XP
+            </p>
+          </Widget>
+        )}
+
+        {show("streak") && (
+          <Widget id="streak" title="Study streak" icon={Flame} onHide={hide}>
+            <p className="font-display text-3xl font-bold">{progress.streak} days</p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Longest {progress.longestStreak} · {formatDuration(progress.studyTimeMs)} studied
+            </p>
+          </Widget>
+        )}
+
+        {show("due") && (
+          <Widget id="due" title="Cards due" icon={Clock} onHide={hide}>
+            <p className="font-display text-3xl font-bold">{due}</p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              across {decks.length} deck{decks.length === 1 ? "" : "s"} · {accuracy}% lifetime accuracy
+            </p>
+          </Widget>
+        )}
+
+        {show("activity") && (
+          <Widget id="activity" title="Recent activity" icon={BarChart3} onHide={hide} className="lg:col-span-2">
+            {history.length ? (
+              <ul className="space-y-2">
+                {history.slice(0, 5).map((h) => (
+                  <li
+                    key={h.id}
+                    className="flex items-center justify-between rounded-lg bg-surface-2/60 px-3 py-2 text-sm"
+                  >
+                    <span className="truncate">
+                      <span className="font-medium capitalize">{h.mode}</span> ·{" "}
+                      {h.deckTitles.join(", ") || "Mixed"}
+                    </span>
+                    <span className="shrink-0 text-xs text-muted-foreground">
+                      {h.correct}/{h.answered} · +{h.xpEarned} XP
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted-foreground">No sessions yet.</p>
+            )}
+          </Widget>
+        )}
+
+        {show("weak") && (
+          <Widget id="weak" title="Weak topics" icon={TrendingDown} onHide={hide}>
+            {weak.length ? (
+              <ul className="space-y-2 text-sm">
+                {weak.map((w) => (
+                  <li key={w.concept} className="flex items-center justify-between gap-2">
+                    <span className="truncate">{w.concept}</span>
+                    <span className="shrink-0 text-xs text-destructive">
+                      {Math.round(w.acc * 100)}%
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted-foreground">Answer more questions to surface trends.</p>
+            )}
+          </Widget>
+        )}
+
+        {show("decks") && (
+          <Widget id="decks" title="Recent decks" icon={Library} onHide={hide} className="lg:col-span-2">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[...decks]
+                .sort((a, b) => (b.lastStudiedAt ?? b.createdAt) - (a.lastStudiedAt ?? a.createdAt))
+                .slice(0, 4)
+                .map((d) => (
+                  <Link
+                    key={d.id}
+                    to="/decks/$deckId"
+                    params={{ deckId: d.id }}
+                    className="flex items-center gap-3 rounded-lg border border-border p-3 transition-colors hover:border-primary/60"
+                  >
+                    <span className="size-9 shrink-0 rounded-lg" style={{ background: d.color }} />
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-medium">{d.title}</span>
+                      <span className="block text-xs text-muted-foreground">
+                        {d.questions.length} questions
+                      </span>
+                    </span>
+                  </Link>
+                ))}
+            </div>
+          </Widget>
+        )}
+
+        {show("achievements") && (
+          <Widget id="achievements" title="Achievements" icon={Trophy} onHide={hide}>
+            <p className="font-display text-3xl font-bold">
+              {unlocked.length}
+              <span className="text-base text-muted-foreground"> / {ACHIEVEMENTS.length}</span>
+            </p>
+            <Link to="/achievements" className="mt-2 inline-block text-xs text-primary hover:underline">
+              View all →
+            </Link>
+          </Widget>
+        )}
+
+        {show("stats") && (
+          <Widget id="stats" title="Lifetime stats" icon={BarChart3} onHide={hide}>
+            <dl className="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <dt className="text-xs text-muted-foreground">Answered</dt>
+                <dd className="font-semibold">{progress.totalAnswered}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground">Correct</dt>
+                <dd className="font-semibold text-success">{progress.totalCorrect}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground">Quizzes</dt>
+                <dd className="font-semibold">{progress.quizzesCompleted}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground">Best combo</dt>
+                <dd className="font-semibold">{progress.bestCombo}</dd>
+              </div>
+            </dl>
+          </Widget>
+        )}
+      </div>
+
+      {hidden.length > 0 && (
+        <p className="mt-6 text-xs text-muted-foreground">
+          {hidden.length} widget{hidden.length === 1 ? "" : "s"} hidden ·{" "}
+          <button
+            className="text-primary hover:underline"
+            onClick={() => updateSettings({ hiddenWidgets: [], dashboardWidgets: DEFAULT_SETTINGS.dashboardWidgets })}
+          >
+            reset layout
+          </button>
+        </p>
+      )}
     </div>
   );
 }
