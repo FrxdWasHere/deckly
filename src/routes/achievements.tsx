@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Lock, Trophy } from "lucide-react";
+import * as LucideIcons from "lucide-react";
+import { Lock, Trophy, Award, type LucideIcon } from "lucide-react";
 import { AppPage } from "@/components/app-page";
 import { PageHeader } from "@/components/app-shell";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +34,8 @@ export const Route = createFileRoute("/achievements")({
 function AchievementsPage() {
   const { state } = useStudyForge();
   const unlocked = state.progress.unlockedAchievements;
+  const iconFor = (name: string): LucideIcon =>
+    ((LucideIcons as unknown as Record<string, LucideIcon>)[name] ?? Award);
 
   return (
     <div>
@@ -64,7 +67,14 @@ function AchievementsPage() {
                   has ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground",
                 )}
               >
-                {has ? (a.icon ?? "🏆") : <Lock className="size-4" />}
+                {has ? (
+                  (() => {
+                    const Icon = iconFor(a.icon);
+                    return <Icon className="size-5" />;
+                  })()
+                ) : (
+                  <Lock className="size-4" />
+                )}
               </div>
               <div className="min-w-0">
                 <p className="font-semibold">{a.name}</p>
