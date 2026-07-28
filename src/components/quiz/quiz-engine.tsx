@@ -30,6 +30,7 @@ import type {
   QuestionType,
   QuizConfig,
   QuizResult,
+  QuizWidgets,
 } from "@/lib/types";
 
 type Phase = "setup" | "running" | "report";
@@ -392,7 +393,7 @@ function QuizRun({
 }: {
   pool: Question[];
   config: QuizConfig;
-  widgets: Record<string, boolean>;
+  widgets: QuizWidgets;
   onFinish: (
     answers: AnswerRecord[],
     durationMs: number,
