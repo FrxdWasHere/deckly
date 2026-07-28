@@ -15,6 +15,7 @@ import { Route as GenerateRouteImport } from './routes/generate'
 import { Route as FormatRouteImport } from './routes/format'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DecksIndexRouteImport } from './routes/decks.index'
+import { Route as DecksDeckIdRouteImport } from './routes/decks.$deckId'
 
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
@@ -46,6 +47,11 @@ const DecksIndexRoute = DecksIndexRouteImport.update({
   path: '/decks/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DecksDeckIdRoute = DecksDeckIdRouteImport.update({
+  id: '/decks/$deckId',
+  path: '/decks/$deckId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/generate': typeof GenerateRoute
   '/import': typeof ImportRoute
   '/onboarding': typeof OnboardingRoute
+  '/decks/$deckId': typeof DecksDeckIdRoute
   '/decks/': typeof DecksIndexRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/generate': typeof GenerateRoute
   '/import': typeof ImportRoute
   '/onboarding': typeof OnboardingRoute
+  '/decks/$deckId': typeof DecksDeckIdRoute
   '/decks': typeof DecksIndexRoute
 }
 export interface FileRoutesById {
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/generate': typeof GenerateRoute
   '/import': typeof ImportRoute
   '/onboarding': typeof OnboardingRoute
+  '/decks/$deckId': typeof DecksDeckIdRoute
   '/decks/': typeof DecksIndexRoute
 }
 export interface FileRouteTypes {
@@ -80,9 +89,17 @@ export interface FileRouteTypes {
     | '/generate'
     | '/import'
     | '/onboarding'
+    | '/decks/$deckId'
     | '/decks/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/format' | '/generate' | '/import' | '/onboarding' | '/decks'
+  to:
+    | '/'
+    | '/format'
+    | '/generate'
+    | '/import'
+    | '/onboarding'
+    | '/decks/$deckId'
+    | '/decks'
   id:
     | '__root__'
     | '/'
@@ -90,6 +107,7 @@ export interface FileRouteTypes {
     | '/generate'
     | '/import'
     | '/onboarding'
+    | '/decks/$deckId'
     | '/decks/'
   fileRoutesById: FileRoutesById
 }
@@ -99,6 +117,7 @@ export interface RootRouteChildren {
   GenerateRoute: typeof GenerateRoute
   ImportRoute: typeof ImportRoute
   OnboardingRoute: typeof OnboardingRoute
+  DecksDeckIdRoute: typeof DecksDeckIdRoute
   DecksIndexRoute: typeof DecksIndexRoute
 }
 
@@ -146,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DecksIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/decks/$deckId': {
+      id: '/decks/$deckId'
+      path: '/decks/$deckId'
+      fullPath: '/decks/$deckId'
+      preLoaderRoute: typeof DecksDeckIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -155,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   GenerateRoute: GenerateRoute,
   ImportRoute: ImportRoute,
   OnboardingRoute: OnboardingRoute,
+  DecksDeckIdRoute: DecksDeckIdRoute,
   DecksIndexRoute: DecksIndexRoute,
 }
 export const routeTree = rootRouteImport
