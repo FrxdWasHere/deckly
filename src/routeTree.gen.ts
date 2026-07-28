@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as ImportRouteImport } from './routes/import'
 import { Route as GenerateRouteImport } from './routes/generate'
 import { Route as FormatRouteImport } from './routes/format'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImportRoute = ImportRouteImport.update({
+  id: '/import',
+  path: '/import',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GenerateRoute = GenerateRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/format': typeof FormatRoute
   '/generate': typeof GenerateRoute
+  '/import': typeof ImportRoute
   '/onboarding': typeof OnboardingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/format': typeof FormatRoute
   '/generate': typeof GenerateRoute
+  '/import': typeof ImportRoute
   '/onboarding': typeof OnboardingRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/format': typeof FormatRoute
   '/generate': typeof GenerateRoute
+  '/import': typeof ImportRoute
   '/onboarding': typeof OnboardingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/format' | '/generate' | '/onboarding'
+  fullPaths: '/' | '/format' | '/generate' | '/import' | '/onboarding'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/format' | '/generate' | '/onboarding'
-  id: '__root__' | '/' | '/format' | '/generate' | '/onboarding'
+  to: '/' | '/format' | '/generate' | '/import' | '/onboarding'
+  id: '__root__' | '/' | '/format' | '/generate' | '/import' | '/onboarding'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FormatRoute: typeof FormatRoute
   GenerateRoute: typeof GenerateRoute
+  ImportRoute: typeof ImportRoute
   OnboardingRoute: typeof OnboardingRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/import': {
+      id: '/import'
+      path: '/import'
+      fullPath: '/import'
+      preLoaderRoute: typeof ImportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/generate': {
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FormatRoute: FormatRoute,
   GenerateRoute: GenerateRoute,
+  ImportRoute: ImportRoute,
   OnboardingRoute: OnboardingRoute,
 }
 export const routeTree = rootRouteImport
