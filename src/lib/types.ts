@@ -128,11 +128,20 @@ export interface QuizWidgets {
 export interface Settings {
   // general
   displayName: string;
+  gradeLevel: string;
+  school: string;
+  avatarEmoji: string;
+  focusSubjects: string[];
+  studyReason: string;
   dailyGoal: number;
   confirmBeforeExit: boolean;
   // appearance
   theme: "dark" | "light";
   accent: string;
+  /** data URL of a user-uploaded wallpaper image */
+  wallpaper: string | null;
+  wallpaperOpacity: number;
+  wallpaperBlur: number;
   fontScale: number;
   density: "compact" | "cozy" | "spacious";
   radius: number;

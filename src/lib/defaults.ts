@@ -34,10 +34,18 @@ export const DEFAULT_QUIZ_CONFIG: QuizConfig = {
 
 export const DEFAULT_SETTINGS: Settings = {
   displayName: "Scholar",
+  gradeLevel: "",
+  school: "",
+  avatarEmoji: "🔥",
+  focusSubjects: [],
+  studyReason: "",
   dailyGoal: 20,
   confirmBeforeExit: true,
   theme: "dark",
   accent: "ember",
+  wallpaper: null,
+  wallpaperOpacity: 0.35,
+  wallpaperBlur: 4,
   fontScale: 1,
   density: "cozy",
   radius: 0.75,
@@ -116,3 +124,39 @@ export const DEFAULT_STATE: AppState = {
   results: [],
   templates: [],
 };
+
+export const GRADE_LEVELS = [
+  "Middle school",
+  "Grade 9",
+  "Grade 10",
+  "Grade 11",
+  "Grade 12",
+  "Undergraduate",
+  "Postgraduate",
+  "Professional / certification",
+  "Self-directed learner",
+];
+
+export const SUBJECT_SUGGESTIONS = [
+  "Mathematics",
+  "Biology",
+  "Chemistry",
+  "Physics",
+  "History",
+  "Geography",
+  "Literature",
+  "Languages",
+  "Computer Science",
+  "Economics",
+  "Law",
+  "Medicine",
+];
+
+export const AVATAR_EMOJIS = ["🔥", "🧠", "📚", "⚡", "🦉", "🚀", "🧪", "🎯", "🐝", "🌙"];
+
+export const STUDY_REASONS = [
+  "Exam prep",
+  "Daily revision",
+  "Certification",
+  "Curiosity",
+];
