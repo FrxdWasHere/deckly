@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Flame,
   WifiOff,
@@ -11,8 +11,19 @@ import {
   ArrowRight,
   ArrowLeft,
   ShieldCheck,
+  UserRound,
+  Upload,
+  CheckCircle2,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { AVATAR_EMOJIS, GRADE_LEVELS, STUDY_REASONS, SUBJECT_SUGGESTIONS } from "@/lib/defaults";
+import { validateDeckJson, type ValidationResult } from "@/lib/schema";
+import { cn } from "@/lib/utils";
 import { useStudyForge } from "@/store/studyforge";
 
 export const Route = createFileRoute("/onboarding")({
@@ -76,26 +87,62 @@ const STEPS = [
       "Ready for desktop packaging later",
     ],
   },
+  {
+    icon: UserRound,
+    title: "Create your profile",
+    body: "Just for you — it personalises your dashboard, goals and reports. Nothing ever leaves this device.",
+    points: [] as string[],
+  },
+  {
+    icon: FileJson,
+    title: "Import your first deck",
+    body: "Already have StudyForge JSON from your AI? Drop it in now and you'll land straight in your library. Otherwise skip — you can import at any time.",
+    points: [] as string[],
+  },
 ];
 
 function Onboarding() {
   const [step, setStep] = useState(0);
-  const { completeOnboarding } = useStudyForge();
+  const { state, completeOnboarding, updateSettings, addDeck } = useStudyForge();
   const navigate = useNavigate();
   const current = STEPS[step];
   const Icon = current.icon;
+  const settings = state.settings;
+  const isProfile = step === 4;
+  const isImport = step === 5;
 
-  const finish = (to: "/" | "/generate" | "/format") => {
+  const [raw, setRaw] = useState("");
+  const [result, setResult] = useState<ValidationResult | null>(null);
+  const [imported, setImported] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const evaluate = (text: string) => {
+    setRaw(text);
+    setImported(false);
+    setResult(text.trim() ? validateDeckJson(text) : null);
+  };
+
+  const toggle = (list: string[], v: string) =>
+    list.includes(v) ? list.filter((x) => x !== v) : [...list, v];
+
+  const finish = (to: "/" | "/generate" | "/format" | "/decks") => {
     completeOnboarding();
     navigate({ to });
   };
 
+  const doImport = () => {
+    if (!result?.ok || !result.deck) return;
+    addDeck(result.deck);
+    setImported(true);
+    toast.success(`Imported "${result.deck.title}"`);
+  };
+
   return (
     <div className="grid-forge relative min-h-screen bg-background">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,color-mix(in_oklab,var(--primary)_18%,transparent),transparent_60%)]" />
+      <div className="anim-fade-in absolute inset-0 bg-[radial-gradient(ellipse_at_top,color-mix(in_oklab,var(--primary)_18%,transparent),transparent_60%)]" />
       <div className="relative mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-16">
-        <div className="mb-10 flex items-center gap-3">
-          <div className="grid size-11 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-[var(--shadow-forge)]">
+        <div className="anim-fade-up mb-10 flex items-center gap-3">
+          <div className="anim-float grid size-11 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-[var(--shadow-forge)]">
             <Flame className="size-6" />
           </div>
           <div>
