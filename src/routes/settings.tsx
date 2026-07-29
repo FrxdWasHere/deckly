@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Download, RotateCcw, Trash2, Upload } from "lucide-react";
+import { Download, ImagePlus, RotateCcw, Trash2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { AppPage } from "@/components/app-page";
 import { PageHeader } from "@/components/app-shell";
@@ -10,7 +10,14 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { ACCENTS } from "@/lib/defaults";
+import {
+  ACCENTS,
+  AVATAR_EMOJIS,
+  GRADE_LEVELS,
+  STUDY_REASONS,
+  SUBJECT_SUGGESTIONS,
+} from "@/lib/defaults";
+import { fileToWallpaperDataUrl } from "@/lib/wallpaper";
 import { useStudyForge } from "@/store/studyforge";
 import { cn } from "@/lib/utils";
 import type { Settings } from "@/lib/types";
@@ -48,7 +55,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="panel p-6">
+    <section className="panel hover-lift anim-fade-up p-6">
       <h2 className="text-sm font-semibold">{title}</h2>
       {description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}
       <div className="mt-5 space-y-5">{children}</div>
@@ -83,6 +90,7 @@ function SettingsPage() {
     useStudyForge();
   const s = state.settings;
   const fileRef = useRef<HTMLInputElement>(null);
+  const wallpaperRef = useRef<HTMLInputElement>(null);
   const [confirmWipe, setConfirmWipe] = useState(false);
 
   const set = <K extends keyof Settings>(key: K, value: Settings[K]) =>
@@ -112,12 +120,95 @@ function SettingsPage() {
       />
 
       <div className="grid gap-6">
-        <Section title="Profile & goals">
+        <Section title="Your profile" description="Used across the dashboard, arena and reports.">
+          <div className="flex flex-wrap items-center gap-2">
+            {AVATAR_EMOJIS.map((e) => (
+              <button
+                key={e}
+                onClick={() => set("avatarEmoji", e)}
+                className={cn(
+                  "press grid size-10 place-items-center rounded-xl border border-border text-lg transition-all hover:scale-110",
+                  s.avatarEmoji === e && "border-primary bg-primary/15 scale-110",
+                )}
+              >
+                {e}
+              </button>
+            ))}
+          </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label className="text-xs">Display name</Label>
               <Input value={s.displayName} onChange={(e) => set("displayName", e.target.value)} />
             </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">School / institution</Label>
+              <Input
+                value={s.school}
+                placeholder="Optional"
+                onChange={(e) => set("school", e.target.value)}
+              />
+            </div>
+          </div>
+          <div>
+            <Label className="text-xs">Grade level</Label>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {GRADE_LEVELS.map((g) => (
+                <button
+                  key={g}
+                  onClick={() => set("gradeLevel", s.gradeLevel === g ? "" : g)}
+                  className={cn(
+                    "press rounded-full border border-border px-3 py-1.5 text-xs transition-colors",
+                    s.gradeLevel === g && "border-primary bg-primary/15 text-primary",
+                  )}
+                >
+                  {g}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <Label className="text-xs">Focus subjects</Label>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {SUBJECT_SUGGESTIONS.map((sub) => {
+                const on = s.focusSubjects.includes(sub);
+                return (
+                  <button
+                    key={sub}
+                    onClick={() =>
+                      set(
+                        "focusSubjects",
+                        on ? s.focusSubjects.filter((x) => x !== sub) : [...s.focusSubjects, sub],
+                      )
+                    }
+                    className={cn(
+                      "press rounded-full border border-border px-3 py-1.5 text-xs transition-colors",
+                      on && "border-primary bg-primary/15 text-primary",
+                    )}
+                  >
+                    {sub}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div>
+            <Label className="text-xs">Why are you studying?</Label>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {STUDY_REASONS.map((r) => (
+                <button
+                  key={r}
+                  onClick={() => set("studyReason", s.studyReason === r ? "" : r)}
+                  className={cn(
+                    "press rounded-full border border-border px-3 py-1.5 text-xs transition-colors",
+                    s.studyReason === r && "border-primary bg-primary/15 text-primary",
+                  )}
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label className="text-xs">Daily goal</Label>
@@ -137,6 +228,83 @@ function SettingsPage() {
             checked={s.confirmBeforeExit}
             onChange={(v) => set("confirmBeforeExit", v)}
           />
+        </Section>
+
+        <Section
+          title="Wallpaper"
+          description="Upload any image from this device. It's stored locally, never uploaded anywhere."
+        >
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="outline" onClick={() => wallpaperRef.current?.click()}>
+              <ImagePlus /> {s.wallpaper ? "Replace image" : "Upload image"}
+            </Button>
+            {s.wallpaper && (
+              <Button variant="ghost" onClick={() => set("wallpaper", null)}>
+                <X /> Remove
+              </Button>
+            )}
+            <input
+              ref={wallpaperRef}
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                e.target.value = "";
+                if (!file) return;
+                try {
+                  set("wallpaper", await fileToWallpaperDataUrl(file));
+                  toast.success("Wallpaper applied");
+                } catch (err) {
+                  toast.error((err as Error).message);
+                }
+              }}
+            />
+          </div>
+
+          {s.wallpaper && (
+            <>
+              <div className="anim-pop relative h-40 overflow-hidden rounded-xl border border-border">
+                <img
+                  src={s.wallpaper}
+                  alt="Your current StudyForge wallpaper"
+                  className="size-full object-cover"
+                  style={{
+                    opacity: s.wallpaperOpacity,
+                    filter: `blur(${s.wallpaperBlur}px)`,
+                  }}
+                />
+              </div>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs">Opacity</Label>
+                    <Badge variant="secondary">{Math.round(s.wallpaperOpacity * 100)}%</Badge>
+                  </div>
+                  <Slider
+                    value={[s.wallpaperOpacity]}
+                    min={0.05}
+                    max={1}
+                    step={0.05}
+                    onValueChange={([v]) => set("wallpaperOpacity", v)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs">Blur</Label>
+                    <Badge variant="secondary">{s.wallpaperBlur}px</Badge>
+                  </div>
+                  <Slider
+                    value={[s.wallpaperBlur]}
+                    min={0}
+                    max={24}
+                    step={1}
+                    onValueChange={([v]) => set("wallpaperBlur", v)}
+                  />
+                </div>
+              </div>
+            </>
+          )}
         </Section>
 
         <Section title="Appearance">
