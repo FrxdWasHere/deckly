@@ -186,10 +186,15 @@ function DeckLibrary() {
                       <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
                     </div>
                   </div>
-                  <div className="mt-4 flex gap-2">
+                  <div className="mt-4 flex flex-wrap gap-2">
                     <Button size="sm" asChild>
                       <Link to="/study/$deckId" params={{ deckId: d.id }}>
                         Study
+                      </Link>
+                    </Button>
+                    <Button size="sm" variant="secondary" asChild>
+                      <Link to="/arena/$deckId" params={{ deckId: d.id }}>
+                        Arena
                       </Link>
                     </Button>
                     <Button size="sm" variant="outline" asChild>

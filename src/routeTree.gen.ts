@@ -21,6 +21,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DecksIndexRouteImport } from './routes/decks.index'
 import { Route as StudyDeckIdRouteImport } from './routes/study.$deckId'
 import { Route as DecksDeckIdRouteImport } from './routes/decks.$deckId'
+import { Route as ArenaDeckIdRouteImport } from './routes/arena.$deckId'
 
 const StatsRoute = StatsRouteImport.update({
   id: '/stats',
@@ -82,6 +83,11 @@ const DecksDeckIdRoute = DecksDeckIdRouteImport.update({
   path: '/decks/$deckId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArenaDeckIdRoute = ArenaDeckIdRouteImport.update({
+  id: '/arena/$deckId',
+  path: '/arena/$deckId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
   '/stats': typeof StatsRoute
+  '/arena/$deckId': typeof ArenaDeckIdRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/study/$deckId': typeof StudyDeckIdRoute
   '/decks/': typeof DecksIndexRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByTo {
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
   '/stats': typeof StatsRoute
+  '/arena/$deckId': typeof ArenaDeckIdRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/study/$deckId': typeof StudyDeckIdRoute
   '/decks': typeof DecksIndexRoute
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
   '/stats': typeof StatsRoute
+  '/arena/$deckId': typeof ArenaDeckIdRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/study/$deckId': typeof StudyDeckIdRoute
   '/decks/': typeof DecksIndexRoute
@@ -138,6 +147,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/settings'
     | '/stats'
+    | '/arena/$deckId'
     | '/decks/$deckId'
     | '/study/$deckId'
     | '/decks/'
@@ -152,6 +162,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/settings'
     | '/stats'
+    | '/arena/$deckId'
     | '/decks/$deckId'
     | '/study/$deckId'
     | '/decks'
@@ -166,6 +177,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/settings'
     | '/stats'
+    | '/arena/$deckId'
     | '/decks/$deckId'
     | '/study/$deckId'
     | '/decks/'
@@ -181,6 +193,7 @@ export interface RootRouteChildren {
   QuizRoute: typeof QuizRoute
   SettingsRoute: typeof SettingsRoute
   StatsRoute: typeof StatsRoute
+  ArenaDeckIdRoute: typeof ArenaDeckIdRoute
   DecksDeckIdRoute: typeof DecksDeckIdRoute
   StudyDeckIdRoute: typeof StudyDeckIdRoute
   DecksIndexRoute: typeof DecksIndexRoute
@@ -272,6 +285,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DecksDeckIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/arena/$deckId': {
+      id: '/arena/$deckId'
+      path: '/arena/$deckId'
+      fullPath: '/arena/$deckId'
+      preLoaderRoute: typeof ArenaDeckIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -285,6 +305,7 @@ const rootRouteChildren: RootRouteChildren = {
   QuizRoute: QuizRoute,
   SettingsRoute: SettingsRoute,
   StatsRoute: StatsRoute,
+  ArenaDeckIdRoute: ArenaDeckIdRoute,
   DecksDeckIdRoute: DecksDeckIdRoute,
   StudyDeckIdRoute: StudyDeckIdRoute,
   DecksIndexRoute: DecksIndexRoute,
