@@ -216,3 +216,106 @@ export const FIELD_DOCS: { field: string; type: string; required: boolean; note:
   },
   { field: "questions[].hint", type: "string", required: false, note: "Optional nudge." },
 ];
+/* ------------------------------------------------------------------ *
+ * Additional questions (question-pack) schema
+ * Used when expanding an existing deck instead of creating a new one.
+ * ------------------------------------------------------------------ */
+
+export const questionPackSchema = z.object({
+  deckTitle: z.string().optional(),
+  questions: z.array(questionSchema).min(1, "A question pack needs at least one question"),
+});
+
+export interface QuestionsValidationResult {
+  ok: boolean;
+  errors: string[];
+  warnings: string[];
+  questions?: Question[];
+  deckTitle?: string;
+}
+
+/** Validates a questions-only JSON payload (object with `questions`, or a bare array). */
+export function validateQuestionsJson(
+  raw: string,
+  existing: Question[] = [],
+): QuestionsValidationResult {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+
+  let data: unknown;
+  try {
+    data = JSON.parse(raw);
+  } catch (e) {
+    return { ok: false, errors: [`Invalid JSON syntax: ${(e as Error).message}`], warnings };
+  }
+
+  if (Array.isArray(data)) data = { questions: data };
+  if (data && typeof data === "object" && !("questions" in data)) {
+    warnings.push("No “questions” array found at the top level.");
+  }
+
+  const parsed = questionPackSchema.safeParse(data);
+  if (!parsed.success) {
+    for (const issue of parsed.error.issues) {
+      errors.push(`${issue.path.join(".") || "root"}: ${issue.message}`);
+    }
+    return { ok: false, errors, warnings };
+  }
+
+  const existingText = new Set(existing.map((q) => q.question.trim().toLowerCase()));
+
+  const questions: Question[] = parsed.data.questions.map((q, i) => {
+    if (q.type === "multiple-choice") {
+      if (!q.options || q.options.length < 2) {
+        errors.push(`questions[${i}]: multiple-choice questions need at least 2 options.`);
+      } else if (!q.options.includes(q.answer)) {
+        errors.push(`questions[${i}]: answer "${q.answer}" is not one of the provided options.`);
+      }
+    }
+    if (q.type === "true-false" && !["true", "false"].includes(q.answer.toLowerCase())) {
+      errors.push(`questions[${i}]: true-false answers must be "true" or "false".`);
+    }
+    if (existingText.has(q.question.trim().toLowerCase())) {
+      warnings.push(`questions[${i}]: looks like a duplicate of a question already in this deck.`);
+    }
+    if (!q.explanation) warnings.push(`questions[${i}]: no explanation provided.`);
+    return {
+      id: uid(),
+      type: q.type,
+      question: q.question,
+      answer: q.answer,
+      options: q.options,
+      explanation: q.explanation,
+      difficulty: q.difficulty,
+      concept: q.concept,
+      hint: q.hint,
+      tags: q.tags,
+    };
+  });
+
+  if (errors.length) return { ok: false, errors, warnings };
+  return { ok: true, errors, warnings: warnings.slice(0, 12), questions, deckTitle: parsed.data.deckTitle };
+}
+
+export const SAMPLE_QUESTIONS_JSON = `{
+  "deckTitle": "Cell Biology — Membranes & Transport",
+  "questions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which transport protein moves ions against their gradient?",
+      "options": ["Pump", "Channel", "Carrier (facilitated)", "Aquaporin"],
+      "answer": "Pump",
+      "explanation": "Pumps hydrolyse ATP to move ions up a gradient.",
+      "difficulty": "medium",
+      "concept": "Active transport"
+    },
+    {
+      "type": "short-answer",
+      "question": "What drives secondary active transport?",
+      "answer": "The electrochemical gradient created by primary active transport.",
+      "explanation": "It borrows energy stored in an existing ion gradient.",
+      "difficulty": "hard",
+      "concept": "Active transport"
+    }
+  ]
+}`;

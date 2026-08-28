@@ -16,6 +16,7 @@ import type {
   AppState,
   Deck,
   Progress,
+  Question,
   QuizResult,
   SessionSummary,
   Settings,
@@ -59,6 +60,7 @@ interface Ctx {
   updateSettings: (patch: Partial<Settings>) => void;
   resetSettings: () => void;
   addDeck: (deck: Deck) => void;
+  addQuestions: (deckId: string, questions: Question[]) => void;
   updateDeck: (id: string, patch: Partial<Deck>) => void;
   deleteDeck: (id: string) => void;
   recordSession: (input: RecordSessionInput) => void;
@@ -177,6 +179,21 @@ export function StudyForgeProvider({ children }: { children: ReactNode }) {
     [setState],
   );
 
+  const addQuestions = useCallback(
+    (deckId: string, questions: Question[]) => {
+      setState((s) => {
+        const decks = s.decks.map((d) => {
+          if (d.id !== deckId) return d;
+          const existing = new Set(d.questions.map((q) => q.id));
+          const fresh = questions.filter((q) => !existing.has(q.id));
+          return { ...d, questions: [...d.questions, ...fresh] };
+        });
+        return { ...s, decks, progress: flushAchievements(s.progress, decks) };
+      });
+    },
+    [flushAchievements, setState],
+  );
+
   const deleteDeck = useCallback(
     (id: string) => setState((s) => ({ ...s, decks: s.decks.filter((d) => d.id !== id) })),
     [setState],
@@ -277,6 +294,7 @@ export function StudyForgeProvider({ children }: { children: ReactNode }) {
         setState((s) => ({ ...s, settings: { ...s.settings, ...patch } })),
       resetSettings: () => setState((s) => ({ ...s, settings: DEFAULT_SETTINGS })),
       addDeck,
+      addQuestions,
       updateDeck,
       deleteDeck,
       recordSession,
@@ -301,7 +319,7 @@ export function StudyForgeProvider({ children }: { children: ReactNode }) {
         }
       },
     }),
-    [state, hydrated, setState, addDeck, updateDeck, deleteDeck, recordSession],
+    [state, hydrated, setState, addDeck, addQuestions, updateDeck, deleteDeck, recordSession],
   );
 
   return <StudyForgeContext.Provider value={value}>{children}</StudyForgeContext.Provider>;
