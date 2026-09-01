@@ -18,7 +18,7 @@ import { useStudyForge } from "@/store/studyforge";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/import")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { deck?: string } => ({
     deck: typeof search.deck === "string" ? search.deck : undefined,
   }),
   head: () => ({
