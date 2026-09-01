@@ -42,6 +42,8 @@ export const Route = createFileRoute("/generate")({
 
 function GeneratePage() {
   const { state, saveTemplate, deleteTemplate } = useStudyForge();
+  const [mode, setMode] = useState<"new" | "append">("new");
+  const [targetId, setTargetId] = useState(state.decks[0]?.id ?? "");
   const [material, setMaterial] = useState("");
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
@@ -54,10 +56,27 @@ function GeneratePage() {
     "short-answer",
   ]);
 
-  const prompt = useMemo(
-    () => buildPrompt({ material, title, subject, count, distribution: dist, types, extra }),
-    [material, title, subject, count, dist, types, extra],
-  );
+  const target = state.decks.find((d) => d.id === targetId);
+
+  const prompt = useMemo(() => {
+    if (mode === "append" && target) {
+      return buildAppendPrompt({
+        material,
+        deckTitle: target.title,
+        subject: target.subject,
+        count,
+        distribution: dist,
+        types,
+        extra,
+        existingQuestions: target.questions.map((q) => q.question),
+        existingConcepts: Array.from(new Set(target.questions.map((q) => q.concept))).filter(
+          Boolean,
+        ),
+      });
+    }
+    return buildPrompt({ material, title, subject, count, distribution: dist, types, extra });
+  }, [mode, target, material, title, subject, count, dist, types, extra]);
+
 
   const toggleType = (t: QuestionType) =>
     setTypes((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
