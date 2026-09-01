@@ -45,6 +45,7 @@ export interface AnswerRecord {
   concept?: string;
   correct: boolean;
   skipped: boolean;
+  overridden?: boolean;
   timeMs: number;
   given?: string;
 }
