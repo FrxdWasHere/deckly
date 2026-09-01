@@ -6,7 +6,12 @@ import { AppPage } from "@/components/app-page";
 import { PageHeader } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { FIELD_DOCS, SAMPLE_DECK_JSON, validateDeckJson } from "@/lib/schema";
+import {
+  FIELD_DOCS,
+  SAMPLE_DECK_JSON,
+  SAMPLE_QUESTIONS_JSON,
+  validateDeckJson,
+} from "@/lib/schema";
 import type { ValidationResult } from "@/lib/schema";
 
 export const Route = createFileRoute("/format")({
@@ -102,6 +107,32 @@ function FormatPage() {
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section className="panel mt-6 p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="flex items-center gap-2 text-sm font-semibold">
+            <FileJson className="size-4 text-primary" /> Question pack (add to an existing deck)
+          </h2>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              navigator.clipboard.writeText(SAMPLE_QUESTIONS_JSON);
+              toast.success("Question pack sample copied");
+            }}
+          >
+            <Copy /> Copy sample
+          </Button>
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Use this slimmer shape when expanding a deck you already have. No deck metadata — just a
+          questions array (the same question fields as above). Generate it in Prompt Forge under
+          “Additional questions”, then import it via Import JSON → “Add questions to a deck”.
+        </p>
+        <pre className="mt-4 max-h-80 overflow-auto rounded-xl bg-surface-2/70 p-4 font-mono text-[11px] leading-relaxed text-muted-foreground">
+          {SAMPLE_QUESTIONS_JSON}
+        </pre>
       </section>
 
       <section className="panel mt-6 p-6">
