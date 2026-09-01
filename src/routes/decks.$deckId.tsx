@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Star, Trash2, Download, Play, BrainCircuit, Bookmark, Swords } from "lucide-react";
+import { Star, Trash2, Download, Play, BrainCircuit, Bookmark, Swords , Plus }from "lucide-react";
 import { toast } from "sonner";
 import { AppPage } from "@/components/app-page";
 import { PageHeader } from "@/components/app-shell";
@@ -100,6 +100,11 @@ function DeckDetail() {
             <Button className="press anim-glow" asChild>
               <Link to="/arena/$deckId" params={{ deckId: deck.id }}>
                 <Swords /> Arena mode
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/import" search={{ deck: deck.id }}>
+                <Plus /> Add questions
               </Link>
             </Button>
             <Button variant="secondary" asChild>
