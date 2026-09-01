@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { buildPrompt, estimateQuestions } from "@/lib/prompt";
+import { buildAppendPrompt, buildPrompt, estimateQuestions } from "@/lib/prompt";
 import { TYPE_LABELS } from "@/lib/answers";
 import { questionTypes } from "@/lib/schema";
 import { useStudyForge } from "@/store/studyforge";
@@ -42,6 +42,8 @@ export const Route = createFileRoute("/generate")({
 
 function GeneratePage() {
   const { state, saveTemplate, deleteTemplate } = useStudyForge();
+  const [mode, setMode] = useState<"new" | "append">("new");
+  const [targetId, setTargetId] = useState(state.decks[0]?.id ?? "");
   const [material, setMaterial] = useState("");
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
@@ -54,10 +56,27 @@ function GeneratePage() {
     "short-answer",
   ]);
 
-  const prompt = useMemo(
-    () => buildPrompt({ material, title, subject, count, distribution: dist, types, extra }),
-    [material, title, subject, count, dist, types, extra],
-  );
+  const target = state.decks.find((d) => d.id === targetId);
+
+  const prompt = useMemo(() => {
+    if (mode === "append" && target) {
+      return buildAppendPrompt({
+        material,
+        deckTitle: target.title,
+        subject: target.subject,
+        count,
+        distribution: dist,
+        types,
+        extra,
+        existingQuestions: target.questions.map((q) => q.question),
+        existingConcepts: Array.from(
+          new Set(target.questions.map((q) => q.concept).filter((c): c is string => Boolean(c))),
+        ),
+      });
+    }
+    return buildPrompt({ material, title, subject, count, distribution: dist, types, extra });
+  }, [mode, target, material, title, subject, count, dist, types, extra]);
+
 
   const toggleType = (t: QuestionType) =>
     setTypes((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
@@ -94,6 +113,49 @@ function GeneratePage() {
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <div className="space-y-6">
+          <section className="panel flex flex-wrap items-center gap-3 p-4">
+            <div className="flex gap-2">
+              {(
+                [
+                  ["new", "New deck"],
+                  ["append", "Additional questions"],
+                ] as const
+              ).map(([m, label]) => (
+                <button
+                  key={m}
+                  onClick={() => setMode(m)}
+                  className={cn(
+                    "rounded-full border border-border px-3 py-1.5 text-xs font-medium transition-colors",
+                    mode === m
+                      ? "border-primary bg-primary/15 text-primary"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            {mode === "append" && (
+              <select
+                value={targetId}
+                onChange={(e) => setTargetId(e.target.value)}
+                className="h-9 rounded-md border border-border bg-surface-2/60 px-3 text-xs"
+              >
+                {!state.decks.length && <option value="">No decks yet</option>}
+                {state.decks.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.title} ({d.questions.length})
+                  </option>
+                ))}
+              </select>
+            )}
+            <span className="text-xs text-muted-foreground">
+              {mode === "append"
+                ? "Produces a question pack — import it via Import JSON → “Add questions to a deck”."
+                : "Produces a full deck object."}
+            </span>
+          </section>
+
           <section className="panel space-y-4 p-6">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">

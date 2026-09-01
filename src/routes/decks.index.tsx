@@ -198,6 +198,11 @@ function DeckLibrary() {
                       </Link>
                     </Button>
                     <Button size="sm" variant="outline" asChild>
+                      <Link to="/import" search={{ deck: d.id }}>
+                        <Plus /> Add
+                      </Link>
+                    </Button>
+                    <Button size="sm" variant="ghost" asChild>
                       <Link to="/decks/$deckId" params={{ deckId: d.id }}>
                         Details
                       </Link>

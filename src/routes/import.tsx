@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { UploadCloud, CheckCircle2, XCircle, AlertTriangle, FileJson, X } from "lucide-react";
 import { toast } from "sonner";
 import { AppPage } from "@/components/app-page";
@@ -7,19 +7,27 @@ import { PageHeader } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { validateDeckJson, type ValidationResult } from "@/lib/schema";
+import {
+  validateDeckJson,
+  validateQuestionsJson,
+  type ValidationResult,
+  type QuestionsValidationResult,
+} from "@/lib/schema";
 import { TYPE_LABELS } from "@/lib/answers";
 import { useStudyForge } from "@/store/studyforge";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/import")({
+  validateSearch: (search: Record<string, unknown>): { deck?: string } => ({
+    deck: typeof search.deck === "string" ? search.deck : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Import a Deck — Validate AI JSON | StudyForge" },
       {
         name: "description",
         content:
-          "Paste, upload or drag-and-drop AI-generated JSON. StudyForge validates the schema, previews the deck and imports it locally.",
+          "Paste, upload or drag-and-drop AI-generated JSON. StudyForge validates the schema, previews the deck and imports it — as a new deck or as extra questions for an existing one.",
       },
       { property: "og:title", content: "Import a Deck — StudyForge" },
       {
@@ -36,40 +44,58 @@ export const Route = createFileRoute("/import")({
 });
 
 function ImportPage() {
-  const { addDeck } = useStudyForge();
+  const { state, addDeck, addQuestions } = useStudyForge();
   const navigate = useNavigate();
+  const { deck: deckParam } = Route.useSearch();
+  const [mode, setMode] = useState<"deck" | "append">(deckParam ? "append" : "deck");
+  const [targetId, setTargetId] = useState(deckParam ?? state.decks[0]?.id ?? "");
   const [raw, setRaw] = useState("");
-  const [result, setResult] = useState<ValidationResult | null>(null);
   const [dragging, setDragging] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const validate = (text: string) => {
-    setRaw(text);
-    setResult(text.trim() ? validateDeckJson(text) : null);
-  };
+  const target = state.decks.find((d) => d.id === targetId);
+
+  const result = useMemo<ValidationResult | QuestionsValidationResult | null>(() => {
+    if (!raw.trim()) return null;
+    return mode === "deck"
+      ? validateDeckJson(raw)
+      : validateQuestionsJson(raw, target?.questions ?? []);
+  }, [raw, mode, target]);
 
   const readFile = (file: File) => {
     const reader = new FileReader();
-    reader.onload = () => validate(String(reader.result));
+    reader.onload = () => setRaw(String(reader.result));
     reader.readAsText(file);
   };
 
-  const doImport = () => {
-    if (!result?.deck) return;
-    addDeck(result.deck);
-    toast.success(`Imported “${result.deck.title}”`, {
-      description: `${result.deck.questions.length} questions added to your library.`,
-    });
-    navigate({ to: "/decks/$deckId", params: { deckId: result.deck.id } });
-  };
+  const deck = result && "deck" in result ? result.deck : undefined;
+  const newQuestions = result && "questions" in result ? result.questions : undefined;
+  const previewQuestions = deck?.questions ?? newQuestions ?? [];
 
-  const deck = result?.deck;
-  const typeCounts = deck
-    ? deck.questions.reduce<Record<string, number>>((acc, q) => {
-        acc[q.type] = (acc[q.type] ?? 0) + 1;
-        return acc;
-      }, {})
-    : {};
+  const typeCounts = previewQuestions.reduce<Record<string, number>>((acc, q) => {
+    acc[q.type] = (acc[q.type] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  const canImport = Boolean(result?.ok && (mode === "deck" ? deck : newQuestions && target));
+
+  const doImport = () => {
+    if (mode === "deck") {
+      if (!deck) return;
+      addDeck(deck);
+      toast.success(`Imported “${deck.title}”`, {
+        description: `${deck.questions.length} questions added to your library.`,
+      });
+      navigate({ to: "/decks/$deckId", params: { deckId: deck.id } });
+      return;
+    }
+    if (!newQuestions || !target) return;
+    addQuestions(target.id, newQuestions);
+    toast.success(`Added ${newQuestions.length} questions`, {
+      description: `“${target.title}” now has ${target.questions.length + newQuestions.length} questions.`,
+    });
+    navigate({ to: "/decks/$deckId", params: { deckId: target.id } });
+  };
 
   return (
     <div className="max-w-5xl">
@@ -77,6 +103,49 @@ function ImportPage() {
         title="Import JSON"
         description="Bring back what your AI produced. Nothing is saved until validation passes and you confirm."
       />
+
+      <div className="panel mb-6 flex flex-wrap items-center gap-3 p-4">
+        <div className="flex gap-2">
+          {(
+            [
+              ["deck", "New deck"],
+              ["append", "Add questions to a deck"],
+            ] as const
+          ).map(([m, label]) => (
+            <button
+              key={m}
+              onClick={() => setMode(m)}
+              className={cn(
+                "rounded-full border border-border px-3 py-1.5 text-xs font-medium transition-colors",
+                mode === m
+                  ? "border-primary bg-primary/15 text-primary"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        {mode === "append" && (
+          <select
+            value={targetId}
+            onChange={(e) => setTargetId(e.target.value)}
+            className="h-9 rounded-md border border-border bg-surface-2/60 px-3 text-xs"
+          >
+            {!state.decks.length && <option value="">No decks yet</option>}
+            {state.decks.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.title} ({d.questions.length})
+              </option>
+            ))}
+          </select>
+        )}
+        <span className="text-xs text-muted-foreground">
+          {mode === "deck"
+            ? "Expects a full deck object with title, subject and questions."
+            : "Expects a question pack: { \"questions\": [ … ] }"}
+        </span>
+      </div>
 
       <div
         onDragOver={(e) => {
@@ -120,8 +189,10 @@ function ImportPage() {
         </div>
         <Textarea
           value={raw}
-          onChange={(e) => validate(e.target.value)}
-          placeholder='{ "title": "…", "questions": [ … ] }'
+          onChange={(e) => setRaw(e.target.value)}
+          placeholder={
+            mode === "deck" ? '{ "title": "…", "questions": [ … ] }' : '{ "questions": [ … ] }'
+          }
           className="mt-3 min-h-52 font-mono text-xs"
         />
       </section>
@@ -136,20 +207,16 @@ function ImportPage() {
               )}
             >
               {result.ok ? <CheckCircle2 className="size-4" /> : <XCircle className="size-4" />}
-              {result.ok ? "Validation passed" : `Validation failed — ${result.errors.length} error(s)`}
+              {result.ok
+                ? "Validation passed"
+                : `Validation failed — ${result.errors.length} error(s)`}
             </h2>
             <div className="flex gap-2">
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  setRaw("");
-                  setResult(null);
-                }}
-              >
+              <Button variant="ghost" onClick={() => setRaw("")}>
                 <X /> Cancel
               </Button>
-              <Button disabled={!result.ok} onClick={doImport}>
-                Import deck
+              <Button disabled={!canImport} onClick={doImport}>
+                {mode === "deck" ? "Import deck" : `Add to “${target?.title ?? "deck"}”`}
               </Button>
             </div>
           </div>
@@ -181,29 +248,35 @@ function ImportPage() {
             </ul>
           )}
 
-          {deck && (
+          {previewQuestions.length > 0 && (
             <div className="mt-6 rounded-xl border border-border bg-surface-2/50 p-5">
-              <p className="font-display text-lg font-bold">{deck.title}</p>
-              <p className="text-xs text-muted-foreground">
-                {deck.subject} · {deck.questions.length} questions
+              <p className="font-display text-lg font-bold">
+                {deck ? deck.title : `${previewQuestions.length} new questions`}
               </p>
-              {deck.description && <p className="mt-2 text-sm">{deck.description}</p>}
+              <p className="text-xs text-muted-foreground">
+                {deck
+                  ? `${deck.subject} · ${deck.questions.length} questions`
+                  : `Destination: ${target?.title ?? "select a deck"}`}
+              </p>
+              {deck?.description && <p className="mt-2 text-sm">{deck.description}</p>}
               <div className="mt-3 flex flex-wrap gap-2">
                 {Object.entries(typeCounts).map(([t, n]) => (
                   <Badge key={t} variant="secondary">
                     {TYPE_LABELS[t] ?? t}: {n}
                   </Badge>
                 ))}
-                {deck.tags.map((t) => (
+                {deck?.tags.map((t) => (
                   <Badge key={t} variant="outline">
                     #{t}
                   </Badge>
                 ))}
               </div>
               <ul className="mt-4 space-y-2">
-                {deck.questions.slice(0, 3).map((q) => (
+                {previewQuestions.slice(0, 3).map((q) => (
                   <li key={q.id} className="rounded-lg bg-background/40 px-3 py-2 text-xs">
-                    <span className="text-muted-foreground">{TYPE_LABELS[q.type]} · {q.difficulty}</span>
+                    <span className="text-muted-foreground">
+                      {TYPE_LABELS[q.type]} · {q.difficulty}
+                    </span>
                     <p className="mt-1">{q.question}</p>
                   </li>
                 ))}
