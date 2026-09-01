@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { RotateCcw, Repeat, Home, SlidersHorizontal } from "lucide-react";
+import { RotateCcw, Repeat, Home, SlidersHorizontal, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatDuration, TYPE_LABELS } from "@/lib/answers";
@@ -143,8 +143,19 @@ export function QuizReport({
               </div>
               <p className="mt-2">
                 {a.skipped ? "Skipped" : a.correct ? "Correct" : "Incorrect"}
+                {a.overridden ? " (marked as right)" : ""}
                 {a.given ? ` — you answered “${a.given}”` : ""}
               </p>
+              {!a.correct && !a.skipped && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="mt-3"
+                  onClick={() => onOverride(i)}
+                >
+                  <Check /> I was actually right
+                </Button>
+              )}
             </li>
           ))}
         </ul>
