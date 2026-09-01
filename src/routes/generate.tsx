@@ -69,8 +69,8 @@ function GeneratePage() {
         types,
         extra,
         existingQuestions: target.questions.map((q) => q.question),
-        existingConcepts: Array.from(new Set(target.questions.map((q) => q.concept))).filter(
-          Boolean,
+        existingConcepts: Array.from(
+          new Set(target.questions.map((q) => q.concept).filter((c): c is string => Boolean(c))),
         ),
       });
     }
