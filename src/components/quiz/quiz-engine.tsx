@@ -81,6 +81,18 @@ export function QuizEngine() {
     return (
       <QuizReport
         result={result}
+        onOverride={(index) => {
+          setResult((r) => {
+            if (!r) return r;
+            const answers = r.answers.map((a, i) =>
+              i === index && !a.correct ? { ...a, correct: true, overridden: true } : a,
+            );
+            const answered = answers.filter((a) => !a.skipped).length;
+            const score = answers.filter((a) => a.correct).length;
+            const percentage = answered ? Math.round((score / answered) * 100) : 0;
+            return { ...r, answers, score, percentage, passed: percentage >= r.config.passingScore };
+          });
+        }}
         onRetry={() => {
           setResult(null);
           start();
