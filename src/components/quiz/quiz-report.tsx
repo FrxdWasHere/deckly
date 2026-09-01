@@ -9,12 +9,14 @@ import type { QuizResult } from "@/lib/types";
 
 export function QuizReport({
   result,
+  onOverride,
   onRetry,
   onRetryIncorrect,
   onHome,
   onBackToSetup,
 }: {
   result: QuizResult;
+  onOverride: (index: number) => void;
   onRetry: () => void;
   onRetryIncorrect: () => void;
   onHome: () => void;
