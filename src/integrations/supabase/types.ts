@@ -14,7 +14,274 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      decks: {
+        Row: {
+          color: string
+          created_at_ms: number
+          description: string | null
+          favorite: boolean
+          id: string
+          last_studied_at_ms: number | null
+          position: number
+          subject: string
+          tags: string[]
+          title: string
+          user_id: string
+        }
+        Insert: {
+          color?: string
+          created_at_ms: number
+          description?: string | null
+          favorite?: boolean
+          id: string
+          last_studied_at_ms?: number | null
+          position?: number
+          subject?: string
+          tags?: string[]
+          title: string
+          user_id: string
+        }
+        Update: {
+          color?: string
+          created_at_ms?: number
+          description?: string | null
+          favorite?: boolean
+          id?: string
+          last_studied_at_ms?: number | null
+          position?: number
+          subject?: string
+          tags?: string[]
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_emoji: string
+          created_at: string
+          daily_goal: number
+          display_name: string
+          focus_subjects: string[]
+          grade_level: string
+          id: string
+          onboarding_complete: boolean
+          school: string
+          study_reason: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_emoji?: string
+          created_at?: string
+          daily_goal?: number
+          display_name?: string
+          focus_subjects?: string[]
+          grade_level?: string
+          id: string
+          onboarding_complete?: boolean
+          school?: string
+          study_reason?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_emoji?: string
+          created_at?: string
+          daily_goal?: number
+          display_name?: string
+          focus_subjects?: string[]
+          grade_level?: string
+          id?: string
+          onboarding_complete?: boolean
+          school?: string
+          study_reason?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      question_state: {
+        Row: {
+          bookmarked: boolean
+          mastered: boolean
+          note: string | null
+          question_id: string
+          user_id: string
+        }
+        Insert: {
+          bookmarked?: boolean
+          mastered?: boolean
+          note?: string | null
+          question_id: string
+          user_id: string
+        }
+        Update: {
+          bookmarked?: boolean
+          mastered?: boolean
+          note?: string | null
+          question_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_state_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questions: {
+        Row: {
+          answer: string
+          concept: string | null
+          deck_id: string
+          difficulty: string
+          explanation: string | null
+          hint: string | null
+          id: string
+          options: Json | null
+          position: number
+          question: string
+          tags: string[]
+          type: string
+          user_id: string
+        }
+        Insert: {
+          answer: string
+          concept?: string | null
+          deck_id: string
+          difficulty?: string
+          explanation?: string | null
+          hint?: string | null
+          id: string
+          options?: Json | null
+          position?: number
+          question: string
+          tags?: string[]
+          type: string
+          user_id: string
+        }
+        Update: {
+          answer?: string
+          concept?: string | null
+          deck_id?: string
+          difficulty?: string
+          explanation?: string | null
+          hint?: string | null
+          id?: string
+          options?: Json | null
+          position?: number
+          question?: string
+          tags?: string[]
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_deck_id_fkey"
+            columns: ["deck_id"]
+            isOneToOne: false
+            referencedRelation: "decks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_results: {
+        Row: {
+          created_at_ms: number
+          id: string
+          payload: Json
+          user_id: string
+        }
+        Insert: {
+          created_at_ms: number
+          id: string
+          payload: Json
+          user_id: string
+        }
+        Update: {
+          created_at_ms?: number
+          id?: string
+          payload?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      sessions: {
+        Row: {
+          answered: number
+          correct: number
+          date_ms: number
+          deck_titles: string[]
+          duration_ms: number
+          id: string
+          mode: string
+          percentage: number
+          skipped: number
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          answered?: number
+          correct?: number
+          date_ms: number
+          deck_titles?: string[]
+          duration_ms?: number
+          id: string
+          mode: string
+          percentage?: number
+          skipped?: number
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          answered?: number
+          correct?: number
+          date_ms?: number
+          deck_titles?: string[]
+          duration_ms?: number
+          id?: string
+          mode?: string
+          percentage?: number
+          skipped?: number
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: []
+      }
+      user_progress: {
+        Row: {
+          payload: Json
+          user_id: string
+        }
+        Insert: {
+          payload?: Json
+          user_id: string
+        }
+        Update: {
+          payload?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          payload: Json
+          templates: Json
+          user_id: string
+        }
+        Insert: {
+          payload?: Json
+          templates?: Json
+          user_id: string
+        }
+        Update: {
+          payload?: Json
+          templates?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
