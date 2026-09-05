@@ -16,7 +16,7 @@ import {
 import { useStudyForge } from "@/store/studyforge";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/decks/")({
+export const Route = createFileRoute("/_authenticated/decks/")({
   head: () => ({
     meta: [
       { title: "Deck Library — Search, Tag & Track Decks | StudyForge" },

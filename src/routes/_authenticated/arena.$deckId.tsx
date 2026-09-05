@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppPage } from "@/components/app-page";
 import { DeckArena } from "@/components/arena/deck-arena";
 
-export const Route = createFileRoute("/arena/$deckId")({
+export const Route = createFileRoute("/_authenticated/arena/$deckId")({
   head: () => ({
     meta: [
       { title: "Deck Arena — Interactive XP Duel | StudyForge" },

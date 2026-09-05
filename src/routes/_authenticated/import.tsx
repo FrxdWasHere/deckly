@@ -17,7 +17,7 @@ import { TYPE_LABELS } from "@/lib/answers";
 import { useStudyForge } from "@/store/studyforge";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/import")({
+export const Route = createFileRoute("/_authenticated/import")({
   validateSearch: (search: Record<string, unknown>): { deck?: string } => ({
     deck: typeof search.deck === "string" ? search.deck : undefined,
   }),

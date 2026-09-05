@@ -22,7 +22,7 @@ import { useStudyForge } from "@/store/studyforge";
 import { cn } from "@/lib/utils";
 import type { Settings } from "@/lib/types";
 
-export const Route = createFileRoute("/settings")({
+export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
     meta: [
       { title: "Settings — Appearance, Study & Data Controls | StudyForge" },

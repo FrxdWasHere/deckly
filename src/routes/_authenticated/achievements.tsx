@@ -8,7 +8,7 @@ import { ACHIEVEMENTS } from "@/lib/gamification";
 import { useStudyForge } from "@/store/studyforge";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/achievements")({
+export const Route = createFileRoute("/_authenticated/achievements")({
   head: () => ({
     meta: [
       { title: "Achievements — Unlock Study Milestones | StudyForge" },

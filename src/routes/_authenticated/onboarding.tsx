@@ -26,7 +26,7 @@ import { validateDeckJson, type ValidationResult } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 import { useStudyForge } from "@/store/studyforge";
 
-export const Route = createFileRoute("/onboarding")({
+export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
     meta: [
       { title: "Welcome to StudyForge — Set Up Your Local Study Vault" },

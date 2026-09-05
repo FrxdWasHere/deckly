@@ -22,7 +22,7 @@ import { useStudyForge } from "@/store/studyforge";
 import { cn } from "@/lib/utils";
 import type { AnswerRecord } from "@/lib/types";
 
-export const Route = createFileRoute("/study/$deckId")({
+export const Route = createFileRoute("/_authenticated/study/$deckId")({
   head: () => ({
     meta: [
       { title: "Study Mode — Active Recall Session | StudyForge" },
