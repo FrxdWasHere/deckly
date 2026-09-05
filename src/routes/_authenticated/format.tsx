@@ -14,7 +14,7 @@ import {
 } from "@/lib/schema";
 import type { ValidationResult } from "@/lib/schema";
 
-export const Route = createFileRoute("/format")({
+export const Route = createFileRoute("/_authenticated/format")({
   head: () => ({
     meta: [
       { title: "Deck JSON Format & Sample — StudyForge" },

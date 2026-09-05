@@ -17,7 +17,7 @@ import { useStudyForge } from "@/store/studyforge";
 import type { Difficulty, QuestionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/generate")({
+export const Route = createFileRoute("/_authenticated/generate")({
   head: () => ({
     meta: [
       { title: "Prompt Forge — Build AI Question-Bank Prompts | StudyForge" },

@@ -9,7 +9,7 @@ import { dayKey, formatDuration } from "@/lib/answers";
 import { levelFromXp } from "@/lib/gamification";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/stats")({
+export const Route = createFileRoute("/_authenticated/stats")({
   head: () => ({
     meta: [
       { title: "Statistics — Study Analytics & Heatmap | StudyForge" },

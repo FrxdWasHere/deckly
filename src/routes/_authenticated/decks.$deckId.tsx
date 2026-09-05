@@ -9,7 +9,7 @@ import { TYPE_LABELS } from "@/lib/answers";
 import { useStudyForge } from "@/store/studyforge";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/decks/$deckId")({
+export const Route = createFileRoute("/_authenticated/decks/$deckId")({
   head: () => ({
     meta: [
       { title: "Deck Details — StudyForge" },

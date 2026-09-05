@@ -9,136 +9,139 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as StatsRouteImport } from './routes/stats'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as QuizRouteImport } from './routes/quiz'
-import { Route as OnboardingRouteImport } from './routes/onboarding'
-import { Route as ImportRouteImport } from './routes/import'
-import { Route as GenerateRouteImport } from './routes/generate'
-import { Route as FormatRouteImport } from './routes/format'
-import { Route as AchievementsRouteImport } from './routes/achievements'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as DecksIndexRouteImport } from './routes/decks.index'
-import { Route as StudyDeckIdRouteImport } from './routes/study.$deckId'
-import { Route as DecksDeckIdRouteImport } from './routes/decks.$deckId'
-import { Route as ArenaDeckIdRouteImport } from './routes/arena.$deckId'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedStatsRouteImport } from './routes/_authenticated/stats'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedQuizRouteImport } from './routes/_authenticated/quiz'
+import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedImportRouteImport } from './routes/_authenticated/import'
+import { Route as AuthenticatedGenerateRouteImport } from './routes/_authenticated/generate'
+import { Route as AuthenticatedFormatRouteImport } from './routes/_authenticated/format'
+import { Route as AuthenticatedAchievementsRouteImport } from './routes/_authenticated/achievements'
+import { Route as AuthenticatedDecksIndexRouteImport } from './routes/_authenticated/decks.index'
+import { Route as AuthenticatedStudyDeckIdRouteImport } from './routes/_authenticated/study.$deckId'
+import { Route as AuthenticatedDecksDeckIdRouteImport } from './routes/_authenticated/decks.$deckId'
+import { Route as AuthenticatedArenaDeckIdRouteImport } from './routes/_authenticated/arena.$deckId'
 
-const StatsRoute = StatsRouteImport.update({
-  id: '/stats',
-  path: '/stats',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const QuizRoute = QuizRouteImport.update({
-  id: '/quiz',
-  path: '/quiz',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingRoute = OnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ImportRoute = ImportRouteImport.update({
-  id: '/import',
-  path: '/import',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GenerateRoute = GenerateRouteImport.update({
-  id: '/generate',
-  path: '/generate',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FormatRoute = FormatRouteImport.update({
-  id: '/format',
-  path: '/format',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AchievementsRoute = AchievementsRouteImport.update({
-  id: '/achievements',
-  path: '/achievements',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/_authenticated/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DecksIndexRoute = DecksIndexRouteImport.update({
-  id: '/decks/',
+const AuthenticatedStatsRoute = AuthenticatedStatsRouteImport.update({
+  id: '/_authenticated/stats',
+  path: '/stats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/_authenticated/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedQuizRoute = AuthenticatedQuizRouteImport.update({
+  id: '/_authenticated/quiz',
+  path: '/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
+  id: '/_authenticated/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedImportRoute = AuthenticatedImportRouteImport.update({
+  id: '/_authenticated/import',
+  path: '/import',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedGenerateRoute = AuthenticatedGenerateRouteImport.update({
+  id: '/_authenticated/generate',
+  path: '/generate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedFormatRoute = AuthenticatedFormatRouteImport.update({
+  id: '/_authenticated/format',
+  path: '/format',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAchievementsRoute =
+  AuthenticatedAchievementsRouteImport.update({
+    id: '/_authenticated/achievements',
+    path: '/achievements',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedDecksIndexRoute = AuthenticatedDecksIndexRouteImport.update({
+  id: '/_authenticated/decks/',
   path: '/decks/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StudyDeckIdRoute = StudyDeckIdRouteImport.update({
-  id: '/study/$deckId',
-  path: '/study/$deckId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DecksDeckIdRoute = DecksDeckIdRouteImport.update({
-  id: '/decks/$deckId',
-  path: '/decks/$deckId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ArenaDeckIdRoute = ArenaDeckIdRouteImport.update({
-  id: '/arena/$deckId',
-  path: '/arena/$deckId',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AuthenticatedStudyDeckIdRoute =
+  AuthenticatedStudyDeckIdRouteImport.update({
+    id: '/_authenticated/study/$deckId',
+    path: '/study/$deckId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedDecksDeckIdRoute =
+  AuthenticatedDecksDeckIdRouteImport.update({
+    id: '/_authenticated/decks/$deckId',
+    path: '/decks/$deckId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedArenaDeckIdRoute =
+  AuthenticatedArenaDeckIdRouteImport.update({
+    id: '/_authenticated/arena/$deckId',
+    path: '/arena/$deckId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/achievements': typeof AchievementsRoute
-  '/format': typeof FormatRoute
-  '/generate': typeof GenerateRoute
-  '/import': typeof ImportRoute
-  '/onboarding': typeof OnboardingRoute
-  '/quiz': typeof QuizRoute
-  '/settings': typeof SettingsRoute
-  '/stats': typeof StatsRoute
-  '/arena/$deckId': typeof ArenaDeckIdRoute
-  '/decks/$deckId': typeof DecksDeckIdRoute
-  '/study/$deckId': typeof StudyDeckIdRoute
-  '/decks/': typeof DecksIndexRoute
+  '/achievements': typeof AuthenticatedAchievementsRoute
+  '/format': typeof AuthenticatedFormatRoute
+  '/generate': typeof AuthenticatedGenerateRoute
+  '/import': typeof AuthenticatedImportRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/quiz': typeof AuthenticatedQuizRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/stats': typeof AuthenticatedStatsRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/arena/$deckId': typeof AuthenticatedArenaDeckIdRoute
+  '/decks/$deckId': typeof AuthenticatedDecksDeckIdRoute
+  '/study/$deckId': typeof AuthenticatedStudyDeckIdRoute
+  '/decks/': typeof AuthenticatedDecksIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/achievements': typeof AchievementsRoute
-  '/format': typeof FormatRoute
-  '/generate': typeof GenerateRoute
-  '/import': typeof ImportRoute
-  '/onboarding': typeof OnboardingRoute
-  '/quiz': typeof QuizRoute
-  '/settings': typeof SettingsRoute
-  '/stats': typeof StatsRoute
-  '/arena/$deckId': typeof ArenaDeckIdRoute
-  '/decks/$deckId': typeof DecksDeckIdRoute
-  '/study/$deckId': typeof StudyDeckIdRoute
-  '/decks': typeof DecksIndexRoute
+  '/achievements': typeof AuthenticatedAchievementsRoute
+  '/format': typeof AuthenticatedFormatRoute
+  '/generate': typeof AuthenticatedGenerateRoute
+  '/import': typeof AuthenticatedImportRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/quiz': typeof AuthenticatedQuizRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/stats': typeof AuthenticatedStatsRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/arena/$deckId': typeof AuthenticatedArenaDeckIdRoute
+  '/decks/$deckId': typeof AuthenticatedDecksDeckIdRoute
+  '/study/$deckId': typeof AuthenticatedStudyDeckIdRoute
+  '/decks': typeof AuthenticatedDecksIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/achievements': typeof AchievementsRoute
-  '/format': typeof FormatRoute
-  '/generate': typeof GenerateRoute
-  '/import': typeof ImportRoute
-  '/onboarding': typeof OnboardingRoute
-  '/quiz': typeof QuizRoute
-  '/settings': typeof SettingsRoute
-  '/stats': typeof StatsRoute
-  '/arena/$deckId': typeof ArenaDeckIdRoute
-  '/decks/$deckId': typeof DecksDeckIdRoute
-  '/study/$deckId': typeof StudyDeckIdRoute
-  '/decks/': typeof DecksIndexRoute
+  '/_authenticated/achievements': typeof AuthenticatedAchievementsRoute
+  '/_authenticated/format': typeof AuthenticatedFormatRoute
+  '/_authenticated/generate': typeof AuthenticatedGenerateRoute
+  '/_authenticated/import': typeof AuthenticatedImportRoute
+  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/quiz': typeof AuthenticatedQuizRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/stats': typeof AuthenticatedStatsRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/arena/$deckId': typeof AuthenticatedArenaDeckIdRoute
+  '/_authenticated/decks/$deckId': typeof AuthenticatedDecksDeckIdRoute
+  '/_authenticated/study/$deckId': typeof AuthenticatedStudyDeckIdRoute
+  '/_authenticated/decks/': typeof AuthenticatedDecksIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/achievements'
     | '/format'
     | '/generate'
@@ -147,13 +150,13 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/settings'
     | '/stats'
+    | '/'
     | '/arena/$deckId'
     | '/decks/$deckId'
     | '/study/$deckId'
     | '/decks/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/achievements'
     | '/format'
     | '/generate'
@@ -162,153 +165,154 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/settings'
     | '/stats'
+    | '/'
     | '/arena/$deckId'
     | '/decks/$deckId'
     | '/study/$deckId'
     | '/decks'
   id:
     | '__root__'
-    | '/'
-    | '/achievements'
-    | '/format'
-    | '/generate'
-    | '/import'
-    | '/onboarding'
-    | '/quiz'
-    | '/settings'
-    | '/stats'
-    | '/arena/$deckId'
-    | '/decks/$deckId'
-    | '/study/$deckId'
-    | '/decks/'
+    | '/_authenticated/achievements'
+    | '/_authenticated/format'
+    | '/_authenticated/generate'
+    | '/_authenticated/import'
+    | '/_authenticated/onboarding'
+    | '/_authenticated/quiz'
+    | '/_authenticated/settings'
+    | '/_authenticated/stats'
+    | '/_authenticated/'
+    | '/_authenticated/arena/$deckId'
+    | '/_authenticated/decks/$deckId'
+    | '/_authenticated/study/$deckId'
+    | '/_authenticated/decks/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AchievementsRoute: typeof AchievementsRoute
-  FormatRoute: typeof FormatRoute
-  GenerateRoute: typeof GenerateRoute
-  ImportRoute: typeof ImportRoute
-  OnboardingRoute: typeof OnboardingRoute
-  QuizRoute: typeof QuizRoute
-  SettingsRoute: typeof SettingsRoute
-  StatsRoute: typeof StatsRoute
-  ArenaDeckIdRoute: typeof ArenaDeckIdRoute
-  DecksDeckIdRoute: typeof DecksDeckIdRoute
-  StudyDeckIdRoute: typeof StudyDeckIdRoute
-  DecksIndexRoute: typeof DecksIndexRoute
+  AuthenticatedAchievementsRoute: typeof AuthenticatedAchievementsRoute
+  AuthenticatedFormatRoute: typeof AuthenticatedFormatRoute
+  AuthenticatedGenerateRoute: typeof AuthenticatedGenerateRoute
+  AuthenticatedImportRoute: typeof AuthenticatedImportRoute
+  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedQuizRoute: typeof AuthenticatedQuizRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedStatsRoute: typeof AuthenticatedStatsRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedArenaDeckIdRoute: typeof AuthenticatedArenaDeckIdRoute
+  AuthenticatedDecksDeckIdRoute: typeof AuthenticatedDecksDeckIdRoute
+  AuthenticatedStudyDeckIdRoute: typeof AuthenticatedStudyDeckIdRoute
+  AuthenticatedDecksIndexRoute: typeof AuthenticatedDecksIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/stats': {
-      id: '/stats'
-      path: '/stats'
-      fullPath: '/stats'
-      preLoaderRoute: typeof StatsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/quiz': {
-      id: '/quiz'
-      path: '/quiz'
-      fullPath: '/quiz'
-      preLoaderRoute: typeof QuizRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding': {
-      id: '/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof OnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/import': {
-      id: '/import'
-      path: '/import'
-      fullPath: '/import'
-      preLoaderRoute: typeof ImportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/generate': {
-      id: '/generate'
-      path: '/generate'
-      fullPath: '/generate'
-      preLoaderRoute: typeof GenerateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/format': {
-      id: '/format'
-      path: '/format'
-      fullPath: '/format'
-      preLoaderRoute: typeof FormatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/achievements': {
-      id: '/achievements'
-      path: '/achievements'
-      fullPath: '/achievements'
-      preLoaderRoute: typeof AchievementsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/decks/': {
-      id: '/decks/'
+    '/_authenticated/stats': {
+      id: '/_authenticated/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof AuthenticatedStatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/quiz': {
+      id: '/_authenticated/quiz'
+      path: '/quiz'
+      fullPath: '/quiz'
+      preLoaderRoute: typeof AuthenticatedQuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/onboarding': {
+      id: '/_authenticated/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/import': {
+      id: '/_authenticated/import'
+      path: '/import'
+      fullPath: '/import'
+      preLoaderRoute: typeof AuthenticatedImportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/generate': {
+      id: '/_authenticated/generate'
+      path: '/generate'
+      fullPath: '/generate'
+      preLoaderRoute: typeof AuthenticatedGenerateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/format': {
+      id: '/_authenticated/format'
+      path: '/format'
+      fullPath: '/format'
+      preLoaderRoute: typeof AuthenticatedFormatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/achievements': {
+      id: '/_authenticated/achievements'
+      path: '/achievements'
+      fullPath: '/achievements'
+      preLoaderRoute: typeof AuthenticatedAchievementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/decks/': {
+      id: '/_authenticated/decks/'
       path: '/decks'
       fullPath: '/decks/'
-      preLoaderRoute: typeof DecksIndexRouteImport
+      preLoaderRoute: typeof AuthenticatedDecksIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/study/$deckId': {
-      id: '/study/$deckId'
+    '/_authenticated/study/$deckId': {
+      id: '/_authenticated/study/$deckId'
       path: '/study/$deckId'
       fullPath: '/study/$deckId'
-      preLoaderRoute: typeof StudyDeckIdRouteImport
+      preLoaderRoute: typeof AuthenticatedStudyDeckIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/decks/$deckId': {
-      id: '/decks/$deckId'
+    '/_authenticated/decks/$deckId': {
+      id: '/_authenticated/decks/$deckId'
       path: '/decks/$deckId'
       fullPath: '/decks/$deckId'
-      preLoaderRoute: typeof DecksDeckIdRouteImport
+      preLoaderRoute: typeof AuthenticatedDecksDeckIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/arena/$deckId': {
-      id: '/arena/$deckId'
+    '/_authenticated/arena/$deckId': {
+      id: '/_authenticated/arena/$deckId'
       path: '/arena/$deckId'
       fullPath: '/arena/$deckId'
-      preLoaderRoute: typeof ArenaDeckIdRouteImport
+      preLoaderRoute: typeof AuthenticatedArenaDeckIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AchievementsRoute: AchievementsRoute,
-  FormatRoute: FormatRoute,
-  GenerateRoute: GenerateRoute,
-  ImportRoute: ImportRoute,
-  OnboardingRoute: OnboardingRoute,
-  QuizRoute: QuizRoute,
-  SettingsRoute: SettingsRoute,
-  StatsRoute: StatsRoute,
-  ArenaDeckIdRoute: ArenaDeckIdRoute,
-  DecksDeckIdRoute: DecksDeckIdRoute,
-  StudyDeckIdRoute: StudyDeckIdRoute,
-  DecksIndexRoute: DecksIndexRoute,
+  AuthenticatedAchievementsRoute: AuthenticatedAchievementsRoute,
+  AuthenticatedFormatRoute: AuthenticatedFormatRoute,
+  AuthenticatedGenerateRoute: AuthenticatedGenerateRoute,
+  AuthenticatedImportRoute: AuthenticatedImportRoute,
+  AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedQuizRoute: AuthenticatedQuizRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedStatsRoute: AuthenticatedStatsRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedArenaDeckIdRoute: AuthenticatedArenaDeckIdRoute,
+  AuthenticatedDecksDeckIdRoute: AuthenticatedDecksDeckIdRoute,
+  AuthenticatedStudyDeckIdRoute: AuthenticatedStudyDeckIdRoute,
+  AuthenticatedDecksIndexRoute: AuthenticatedDecksIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
