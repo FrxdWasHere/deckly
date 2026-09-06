@@ -10,6 +10,7 @@ import {
 } from "react";
 import { toast } from "sonner";
 import type { User } from "@supabase/supabase-js";
+import type { Json } from "@/integrations/supabase/types";
 import { supabase } from "@/integrations/supabase/client";
 import { ACCENTS, DEFAULT_PROGRESS, DEFAULT_SETTINGS, DEFAULT_STATE } from "@/lib/defaults";
 import { evaluateAchievements, ACHIEVEMENTS } from "@/lib/gamification";
@@ -183,7 +184,7 @@ async function loadCloudState(userId: string): Promise<AppState> {
       percentage: s.percentage,
     })),
     results: (resultsRes.data ?? []).map((r) => r.payload as unknown as QuizResult),
-    templates: ((settingsRes.data?.templates ?? []) as unknown as PromptTemplate[]) ?? [],
+    templates: ((settingsRes.data?.templates ?? []) as unknown as PromptTemplate[]),
   };
 }
 
@@ -332,12 +333,12 @@ export function StudyForgeProvider({ children }: { children: ReactNode }) {
       const s = stateRef.current;
       void supabase.from("user_settings").upsert({
         user_id: u.id,
-        payload: s.settings as unknown as Record<string, unknown>,
-        templates: s.templates as unknown as Record<string, unknown>[],
+        payload: s.settings as unknown as Json,
+        templates: s.templates as unknown as Json,
       });
       void supabase.from("user_progress").upsert({
         user_id: u.id,
-        payload: s.progress as unknown as Record<string, unknown>,
+        payload: s.progress as unknown as Json,
       });
       void supabase.from("profiles").upsert({
         id: u.id,
@@ -498,7 +499,7 @@ export function StudyForgeProvider({ children }: { children: ReactNode }) {
       if (patch.favorite !== undefined) colPatch.favorite = patch.favorite;
       if (patch.lastStudiedAt !== undefined) colPatch.last_studied_at_ms = patch.lastStudiedAt;
       if (Object.keys(colPatch).length) {
-        void supabase.from("decks").update(colPatch).eq("id", id).eq("user_id", u.id);
+        void supabase.from("decks").update(colPatch as never).eq("id", id).eq("user_id", u.id);
       }
       if (
         patch.masteredIds !== undefined ||
@@ -523,7 +524,7 @@ export function StudyForgeProvider({ children }: { children: ReactNode }) {
 
   const recordSession = useCallback(
     (input: RecordSessionInput) => {
-      let summary: SessionSummary | null = null;
+      let summary = null as SessionSummary | null;
       let touchedDecks: Deck[] = [];
       setState((s) => {
         const today = dayKey();
@@ -629,8 +630,8 @@ export function StudyForgeProvider({ children }: { children: ReactNode }) {
           await supabase.from("quiz_results").insert({
             id: input.result.id,
             user_id: u.id,
-            created_at_ms: input.result.date,
-            payload: input.result as unknown as Record<string, unknown>,
+            created_at_ms: input.result.createdAt,
+            payload: input.result as unknown as Json,
           });
         }
         for (const deck of touchedDecks) {
@@ -678,11 +679,11 @@ export function StudyForgeProvider({ children }: { children: ReactNode }) {
             await supabase.from("quiz_results").delete().eq("user_id", u.id);
             await supabase.from("user_progress").upsert({
               user_id: u.id,
-              payload: DEFAULT_PROGRESS as unknown as Record<string, unknown>,
+              payload: DEFAULT_PROGRESS as unknown as Json,
             });
             await supabase.from("user_settings").upsert({
               user_id: u.id,
-              payload: DEFAULT_SETTINGS as unknown as Record<string, unknown>,
+              payload: DEFAULT_SETTINGS as unknown as Json,
               templates: [],
             });
           })();
@@ -763,19 +764,19 @@ async function pushFullState(userId: string, s: AppState) {
       s.results.map((r) => ({
         id: r.id,
         user_id: userId,
-        created_at_ms: r.date,
-        payload: r as unknown as Record<string, unknown>,
+        created_at_ms: r.createdAt,
+        payload: r as unknown as Json,
       })),
     );
   }
   await supabase.from("user_progress").upsert({
     user_id: userId,
-    payload: s.progress as unknown as Record<string, unknown>,
+    payload: s.progress as unknown as Json,
   });
   await supabase.from("user_settings").upsert({
     user_id: userId,
-    payload: s.settings as unknown as Record<string, unknown>,
-    templates: s.templates as unknown as Record<string, unknown>[],
+    payload: s.settings as unknown as Json,
+    templates: s.templates as unknown as Json,
   });
   await supabase.from("profiles").upsert({
     id: userId,

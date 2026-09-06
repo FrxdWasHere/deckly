@@ -140,7 +140,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           <div className="hidden items-center gap-2 text-xs text-muted-foreground md:flex">
             <span className="inline-flex size-1.5 animate-pulse rounded-full bg-success" />
-            Offline-ready · all data stored on this device
+            Synced to your account · available on every device
           </div>
           <div className="flex items-center gap-2">
             <span className="press inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-semibold transition-colors hover:border-primary/50">

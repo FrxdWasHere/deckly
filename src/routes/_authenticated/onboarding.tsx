@@ -33,7 +33,7 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
       {
         name: "description",
         content:
-          "Learn how StudyForge turns any AI-generated JSON question bank into an offline, local-first study platform with quizzes, XP and analytics.",
+          "Learn how StudyForge turns any AI-generated JSON question bank into a cloud-synced study platform with quizzes, XP and analytics.",
       },
       { property: "og:title", content: "Welcome to StudyForge" },
       {
@@ -49,10 +49,10 @@ const STEPS = [
   {
     icon: Flame,
     title: "StudyForge is your study workshop",
-    body: "A fast, local-first platform for turning raw material into flashcards, quizzes and long-term recall. Everything you create lives on this device.",
+    body: "A fast platform for turning raw material into flashcards, quizzes and long-term recall. Everything you create syncs to your account.",
     points: [
-      "No accounts, no sign-in, no backend",
-      "Decks, stats, XP and settings persist locally",
+      "One account — your decks follow you across devices",
+      "Decks, stats, XP and settings sync to the cloud",
       "Built to feel like a desktop app",
     ],
   },
@@ -147,7 +147,7 @@ function Onboarding() {
           </div>
           <div>
             <p className="font-display text-xl font-bold">StudyForge</p>
-            <p className="text-xs text-muted-foreground">Local-first study platform · no AI inside</p>
+            <p className="text-xs text-muted-foreground">Cloud-synced study platform · no AI inside</p>
           </div>
         </div>
 
