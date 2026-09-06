@@ -1,6 +1,9 @@
 import { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Download, ImagePlus, RotateCcw, Trash2, Upload, X } from "lucide-react";
+import { Download, ImagePlus, LogOut, RotateCcw, Trash2, Upload, X } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AppPage } from "@/components/app-page";
 import { PageHeader } from "@/components/app-shell";
@@ -89,6 +92,8 @@ function SettingsPage() {
   const { state, updateSettings, resetSettings, resetAll, exportState, importState } =
     useStudyForge();
   const s = state.settings;
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const wallpaperRef = useRef<HTMLInputElement>(null);
   const [confirmWipe, setConfirmWipe] = useState(false);
@@ -478,8 +483,25 @@ function SettingsPage() {
         </Section>
 
         <Section
+          title="Account"
+          description="You're signed in — decks, XP, streaks and settings sync across your devices."
+        >
+          <Button
+            variant="outline"
+            onClick={async () => {
+              await queryClient.cancelQueries();
+              queryClient.clear();
+              await supabase.auth.signOut();
+              navigate({ to: "/auth", replace: true });
+            }}
+          >
+            <LogOut /> Sign out
+          </Button>
+        </Section>
+
+        <Section
           title="Data"
-          description={`${state.decks.length} decks · ${state.history.length} sessions stored on this device.`}
+          description={`${state.decks.length} decks · ${state.history.length} sessions synced to your account.`}
         >
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" onClick={download}>
@@ -512,7 +534,7 @@ function SettingsPage() {
                 }
                 resetAll();
                 setConfirmWipe(false);
-                toast.success("All local data erased");
+                toast.success("All data erased");
               }}
             >
               <Trash2 /> {confirmWipe ? "Click again to confirm" : "Erase all data"}
