@@ -357,7 +357,21 @@ export function StudyForgeProvider({ children }: { children: ReactNode }) {
     return () => window.clearTimeout(timer);
   }, [state, hydrated]);
 
+  // ---- Guest mode: persist everything locally instead ----
+  useEffect(() => {
+    if (user || !hydrated || typeof window === "undefined") return;
+    const timer = window.setTimeout(() => {
+      try {
+        window.localStorage.setItem(LEGACY_KEY, JSON.stringify(stateRef.current));
+      } catch {
+        /* quota — ignore */
+      }
+    }, 400);
+    return () => window.clearTimeout(timer);
+  }, [state, hydrated, user]);
+
   const stateRef = useRef(state);
+
   stateRef.current = state;
 
   // ---- Apply appearance settings to the document ----
