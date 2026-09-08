@@ -193,7 +193,7 @@ function StudySession() {
           <Button onClick={() => window.location.reload()}>
             <RotateCcw /> Study again
           </Button>
-          <Button variant="outline" onClick={() => navigate({ to: "/" })}>
+          <Button variant="outline" onClick={() => navigate({ to: "/dashboard" })}>
             Return home
           </Button>
         </div>

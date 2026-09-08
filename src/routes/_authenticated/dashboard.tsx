@@ -24,7 +24,7 @@ import { DEFAULT_SETTINGS } from "@/lib/defaults";
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
-export const Route = createFileRoute("/_authenticated/")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "StudyForge — Local-First Study Dashboard" },
