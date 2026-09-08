@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedStatsRouteImport } from './routes/_authenticated/stats'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedQuizRouteImport } from './routes/_authenticated/quiz'
@@ -19,6 +18,7 @@ import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authentic
 import { Route as AuthenticatedImportRouteImport } from './routes/_authenticated/import'
 import { Route as AuthenticatedGenerateRouteImport } from './routes/_authenticated/generate'
 import { Route as AuthenticatedFormatRouteImport } from './routes/_authenticated/format'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAchievementsRouteImport } from './routes/_authenticated/achievements'
 import { Route as AuthenticatedDecksIndexRouteImport } from './routes/_authenticated/decks.index'
 import { Route as AuthenticatedStudyDeckIdRouteImport } from './routes/_authenticated/study.$deckId'
@@ -33,11 +33,6 @@ const AuthRoute = AuthRouteImport.update({
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedStatsRoute = AuthenticatedStatsRouteImport.update({
   id: '/stats',
@@ -74,6 +69,11 @@ const AuthenticatedFormatRoute = AuthenticatedFormatRouteImport.update({
   path: '/format',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAchievementsRoute =
   AuthenticatedAchievementsRouteImport.update({
     id: '/achievements',
@@ -105,9 +105,10 @@ const AuthenticatedArenaDeckIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthenticatedIndexRoute
+  '/': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/format': typeof AuthenticatedFormatRoute
   '/generate': typeof AuthenticatedGenerateRoute
   '/import': typeof AuthenticatedImportRoute
@@ -121,8 +122,10 @@ export interface FileRoutesByFullPath {
   '/decks/': typeof AuthenticatedDecksIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/format': typeof AuthenticatedFormatRoute
   '/generate': typeof AuthenticatedGenerateRoute
   '/import': typeof AuthenticatedImportRoute
@@ -130,7 +133,6 @@ export interface FileRoutesByTo {
   '/quiz': typeof AuthenticatedQuizRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/stats': typeof AuthenticatedStatsRoute
-  '/': typeof AuthenticatedIndexRoute
   '/arena/$deckId': typeof AuthenticatedArenaDeckIdRoute
   '/decks/$deckId': typeof AuthenticatedDecksDeckIdRoute
   '/study/$deckId': typeof AuthenticatedStudyDeckIdRoute
@@ -141,6 +143,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/achievements': typeof AuthenticatedAchievementsRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/format': typeof AuthenticatedFormatRoute
   '/_authenticated/generate': typeof AuthenticatedGenerateRoute
   '/_authenticated/import': typeof AuthenticatedImportRoute
@@ -148,7 +151,6 @@ export interface FileRoutesById {
   '/_authenticated/quiz': typeof AuthenticatedQuizRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/stats': typeof AuthenticatedStatsRoute
-  '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/arena/$deckId': typeof AuthenticatedArenaDeckIdRoute
   '/_authenticated/decks/$deckId': typeof AuthenticatedDecksDeckIdRoute
   '/_authenticated/study/$deckId': typeof AuthenticatedStudyDeckIdRoute
@@ -160,6 +162,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/achievements'
+    | '/dashboard'
     | '/format'
     | '/generate'
     | '/import'
@@ -173,8 +176,10 @@ export interface FileRouteTypes {
     | '/decks/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/auth'
     | '/achievements'
+    | '/dashboard'
     | '/format'
     | '/generate'
     | '/import'
@@ -182,7 +187,6 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/settings'
     | '/stats'
-    | '/'
     | '/arena/$deckId'
     | '/decks/$deckId'
     | '/study/$deckId'
@@ -192,6 +196,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/achievements'
+    | '/_authenticated/dashboard'
     | '/_authenticated/format'
     | '/_authenticated/generate'
     | '/_authenticated/import'
@@ -199,7 +204,6 @@ export interface FileRouteTypes {
     | '/_authenticated/quiz'
     | '/_authenticated/settings'
     | '/_authenticated/stats'
-    | '/_authenticated/'
     | '/_authenticated/arena/$deckId'
     | '/_authenticated/decks/$deckId'
     | '/_authenticated/study/$deckId'
@@ -226,13 +230,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/': {
-      id: '/_authenticated/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/stats': {
       id: '/_authenticated/stats'
@@ -283,6 +280,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFormatRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/achievements': {
       id: '/_authenticated/achievements'
       path: '/achievements'
@@ -323,6 +327,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAchievementsRoute: typeof AuthenticatedAchievementsRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFormatRoute: typeof AuthenticatedFormatRoute
   AuthenticatedGenerateRoute: typeof AuthenticatedGenerateRoute
   AuthenticatedImportRoute: typeof AuthenticatedImportRoute
@@ -330,7 +335,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedQuizRoute: typeof AuthenticatedQuizRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedStatsRoute: typeof AuthenticatedStatsRoute
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedArenaDeckIdRoute: typeof AuthenticatedArenaDeckIdRoute
   AuthenticatedDecksDeckIdRoute: typeof AuthenticatedDecksDeckIdRoute
   AuthenticatedStudyDeckIdRoute: typeof AuthenticatedStudyDeckIdRoute
@@ -339,6 +343,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAchievementsRoute: AuthenticatedAchievementsRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFormatRoute: AuthenticatedFormatRoute,
   AuthenticatedGenerateRoute: AuthenticatedGenerateRoute,
   AuthenticatedImportRoute: AuthenticatedImportRoute,
@@ -346,7 +351,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedQuizRoute: AuthenticatedQuizRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedStatsRoute: AuthenticatedStatsRoute,
-  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedArenaDeckIdRoute: AuthenticatedArenaDeckIdRoute,
   AuthenticatedDecksDeckIdRoute: AuthenticatedDecksDeckIdRoute,
   AuthenticatedStudyDeckIdRoute: AuthenticatedStudyDeckIdRoute,
