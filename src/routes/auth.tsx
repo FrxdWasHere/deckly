@@ -30,7 +30,7 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [confirmSent, setConfirmSent] = useState(false);
 
-  const afterAuth = () => navigate({ to: "/", replace: true });
+  const afterAuth = () => navigate({ to: "/dashboard", replace: true });
 
   const submitEmail = async () => {
     if (!email.trim() || !password) return;
