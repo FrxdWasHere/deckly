@@ -273,10 +273,12 @@ export function StudyForgeProvider({ children }: { children: ReactNode }) {
     userRef.current = user;
     legacyChecked.current = false;
     if (!user) {
-      setInternal(DEFAULT_STATE);
+      // Guest mode: everything lives on this device only.
+      setInternal(loadLegacyState() ?? DEFAULT_STATE);
       setHydrated(true);
       return;
     }
+
     setHydrated(false);
     loadCloudState(user.id)
       .then(async (cloud) => {
