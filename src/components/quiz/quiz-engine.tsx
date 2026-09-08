@@ -106,7 +106,7 @@ export function QuizEngine() {
           setResult(null);
           start(questions);
         }}
-        onHome={() => navigate({ to: "/" })}
+        onHome={() => navigate({ to: "/dashboard" })}
         onBackToSetup={() => {
           setResult(null);
           setPhase("setup");

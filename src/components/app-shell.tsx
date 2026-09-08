@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
 const NAV = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/decks", label: "Deck Library", icon: Library, exact: false },
   { to: "/generate", label: "Prompt Forge", icon: Wand2, exact: false },
   { to: "/import", label: "Import JSON", icon: Download, exact: false },
@@ -161,7 +161,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               to={item.to}
               className="press shrink-0 rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors"
               activeProps={{ className: "bg-secondary text-foreground" }}
-              activeOptions={{ exact: item.to === "/" }}
+              activeOptions={{ exact: item.to === "/dashboard" }}
             >
               {item.label}
             </Link>
