@@ -1,13 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
-  ArrowRight, BarChart3, BookOpen, BrainCircuit, Check, ChevronRight, Cloud,
-  FileJson, Flame, GripVertical, Layers3, ListChecks, LockKeyhole, MousePointer2,
-  Shuffle, Sparkles, Swords, Trophy, UserRound, Wand2,
+  ArrowRight, BarChart3, BookOpen, BrainCircuit, Check, ChevronRight,
+  FileJson, Flame, GripVertical, HardDrive, Layers3, ListChecks, LockKeyhole, MousePointer2,
+  Shuffle, Sparkles, Swords, Trophy, Wand2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { setGuest, isGuest } from "@/lib/guest";
+import { useDeckly } from "@/store/deckly";
 
 export const Route = createFileRoute("/")({
   ssr: false,
@@ -16,7 +15,7 @@ export const Route = createFileRoute("/")({
       { title: "Deckly — Turn Any Subject Into Active Recall" },
       { name: "description", content: "Create structured study decks with your preferred AI, then master them through flashcards, quizzes, interactive questions, analytics, and XP." },
       { property: "og:title", content: "Deckly — Turn Any Subject Into Active Recall" },
-      { property: "og:description", content: "A focused study workspace for decks, quizzes, interactive questions, progress, and cross-device sync." },
+      { property: "og:description", content: "A focused study workspace for decks, quizzes, interactive questions, and progress — stored in your browser, moved with JSON exports." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -33,24 +32,24 @@ const workflow = [
 
 function Landing() {
   const navigate = useNavigate();
-  const [checking, setChecking] = useState(true);
+  const { state, hydrated } = useDeckly();
 
   useEffect(() => {
-    let alive = true;
-    supabase.auth.getUser().then(({ data }) => {
-      if (!alive) return;
-      if (data.user || isGuest()) navigate({ to: "/dashboard", replace: true });
-      else setChecking(false);
-    });
-    return () => { alive = false; };
-  }, [navigate]);
+    if (!hydrated) return;
+    if (state.onboardingComplete) navigate({ to: "/dashboard", replace: true });
+  }, [hydrated, state.onboardingComplete, navigate]);
 
-  const continueAsGuest = () => {
-    setGuest(true);
-    navigate({ to: "/onboarding" });
+  const openApp = () => {
+    navigate({ to: state.onboardingComplete ? "/dashboard" : "/onboarding" });
   };
 
-  if (checking) return <div className="ocean-premium grid min-h-screen place-items-center bg-background"><Flame className="anim-float size-8 text-primary" /></div>;
+  if (!hydrated || state.onboardingComplete) {
+    return (
+      <div className="ocean-premium grid min-h-screen place-items-center bg-background">
+        <Flame className="anim-float size-8 text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="ocean-premium min-h-screen overflow-hidden bg-background text-foreground">
@@ -65,7 +64,7 @@ function Landing() {
             <a href="#practice" className="transition-colors hover:text-foreground">Practice</a>
             <a href="#progress" className="transition-colors hover:text-foreground">Progress</a>
           </nav>
-          <Button variant="ghost" onClick={() => navigate({ to: "/auth" })}>Sign in <ChevronRight /></Button>
+          <Button variant="ghost" onClick={openApp}>Open app <ChevronRight /></Button>
         </div>
       </header>
 
@@ -81,10 +80,10 @@ function Landing() {
               Turn material from any subject into structured decks, then study with flashcards, interactive questions, focused quizzes, and progress you can actually use.
             </p>
             <div className="anim-fade-up mt-10 flex flex-col justify-center gap-3 sm:flex-row [animation-delay:180ms]">
-              <Button size="lg" className="press h-12 px-7" onClick={() => navigate({ to: "/auth" })}>Create your account <ArrowRight /></Button>
-              <Button size="lg" variant="outline" className="press h-12 px-7" onClick={continueAsGuest}><UserRound /> Try as a guest</Button>
+              <Button size="lg" className="press h-12 px-7" onClick={openApp}>Open Deckly <ArrowRight /></Button>
+              <Button size="lg" variant="outline" className="press h-12 px-7" onClick={() => navigate({ to: "/import" })}><FileJson /> Import JSON</Button>
             </div>
-            <p className="mt-4 text-xs text-muted-foreground">Free to start. Guest mode stays on this device.</p>
+            <p className="mt-4 text-xs text-muted-foreground">Everything stays in this browser. Export a JSON backup whenever you want a copy.</p>
 
             <div className="relative mx-auto mt-20 max-w-5xl text-left">
               <div className="absolute inset-x-16 inset-y-0 translate-y-8 rounded-lg border border-border bg-surface/30" />
@@ -155,15 +154,15 @@ function Landing() {
         <section className="px-5 py-24 sm:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-3">
-              <div className="bg-background p-8"><Cloud className="size-6 text-primary" /><h3 className="mt-6 text-xl font-bold">Pick up anywhere</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Signed-in decks, settings, notes, results, XP, and progress follow you across devices.</p></div>
-              <div className="bg-background p-8"><LockKeyhole className="size-6 text-primary" /><h3 className="mt-6 text-xl font-bold">Private by design</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Guest work stays local. Account content is protected, and personal wallpapers remain private.</p></div>
+              <div className="bg-background p-8"><HardDrive className="size-6 text-primary" /><h3 className="mt-6 text-xl font-bold">Stays on this device</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Decks, settings, notes, results, XP, and progress live in your browser. Move them with a JSON export.</p></div>
+              <div className="bg-background p-8"><LockKeyhole className="size-6 text-primary" /><h3 className="mt-6 text-xl font-bold">Private by design</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Nothing is uploaded to an account. Clearing this browser’s storage is the only way the library disappears — keep a JSON backup if that matters.</p></div>
               <div className="bg-background p-8"><Wand2 className="size-6 text-primary" /><h3 className="mt-6 text-xl font-bold">No locked-in model</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Deckly never stores an AI key. You choose where prompts run and inspect every deck before importing.</p></div>
             </div>
           </div>
         </section>
 
         <section className="border-t border-border px-5 py-24 text-center sm:px-8">
-          <div className="mx-auto max-w-3xl"><Flame className="mx-auto size-8 text-primary" /><h2 className="mt-7 text-4xl font-bold sm:text-6xl">Make the next study session count.</h2><p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-muted-foreground">Start with a blank workspace, bring an existing deck, or explore on this device before creating an account.</p><div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row"><Button size="lg" className="h-12 px-7" onClick={() => navigate({to:"/auth"})}>Get started <ArrowRight /></Button><Button size="lg" variant="outline" className="h-12 px-7" onClick={continueAsGuest}>Continue as guest</Button></div></div>
+          <div className="mx-auto max-w-3xl"><Flame className="mx-auto size-8 text-primary" /><h2 className="mt-7 text-4xl font-bold sm:text-6xl">Make the next study session count.</h2><p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-muted-foreground">Start with a blank workspace or bring an existing deck as JSON. It all stays on this device until you export it.</p><div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row"><Button size="lg" className="h-12 px-7" onClick={openApp}>Get started <ArrowRight /></Button><Button size="lg" variant="outline" className="h-12 px-7" onClick={() => navigate({to:"/import"})}>Import a deck</Button></div></div>
         </section>
       </main>
 

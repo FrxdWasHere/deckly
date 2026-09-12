@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Flame,
-  Cloud,
+  HardDrive,
   Wand2,
   ClipboardCopy,
   Bot,
@@ -29,17 +29,15 @@ import { AVATAR_EMOJIS, GRADE_LEVELS, STUDY_REASONS, SUBJECT_SUGGESTIONS } from 
 import { validateDeckJson, type ValidationResult } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 import { useDeckly } from "@/store/deckly";
-import { supabase } from "@/integrations/supabase/client";
-import { isGuest } from "@/lib/guest";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
     meta: [
-      { title: "Welcome to Deckly — Set Up Your Account" },
+      { title: "Welcome to Deckly" },
       {
         name: "description",
         content:
-          "Set up your Deckly profile, learn the AI-free workflow and import your first deck. Everything syncs to your account, or stays local in guest mode.",
+          "Set up your Deckly profile, learn the AI-free workflow and import your first deck. Everything stays in this browser until you export it as JSON.",
       },
       { property: "og:title", content: "Welcome to Deckly" },
       {
@@ -68,13 +66,6 @@ function Onboarding() {
   const { state, completeOnboarding, updateSettings, addDeck } = useDeckly();
   const navigate = useNavigate();
   const settings = state.settings;
-
-  const [email, setEmail] = useState<string | null>(null);
-  const guest = typeof window !== "undefined" && isGuest() && !email;
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
-  }, []);
 
   const [raw, setRaw] = useState("");
   const [result, setResult] = useState<ValidationResult | null>(null);
@@ -159,17 +150,8 @@ function Onboarding() {
           </ol>
 
           <div className="mt-auto border-t border-border pt-5 text-[11px] leading-relaxed text-muted-foreground">
-            {guest ? (
-              <>
-                <span className="font-medium text-foreground">Guest mode.</span> Your work stays on
-                this device. Create an account any time to sync it everywhere.
-              </>
-            ) : (
-              <>
-                <span className="font-medium text-foreground">Signed in{email ? ` as ${email}` : ""}.</span>{" "}
-                Everything you build syncs to your account automatically.
-              </>
-            )}
+            <span className="font-medium text-foreground">Stored here.</span> Decks, XP and settings
+            live in this browser. Export a JSON backup when you want a portable copy.
           </div>
         </aside>
 
@@ -200,22 +182,20 @@ function Onboarding() {
             {step === 0 && (
               <div className="mt-4">
                 <span className="anim-pop inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[11px] text-primary">
-                  <Cloud className="size-3.5" /> Deckly is online now
+                  <HardDrive className="size-3.5" /> Local workspace
                 </span>
                 <h1 className="mt-4 text-3xl font-bold">
                   {settings.displayName ? `Welcome, ${settings.displayName}.` : "Welcome to the forge."}
                 </h1>
                 <p className="mt-3 text-muted-foreground">
-                  {guest
-                    ? "You're exploring as a guest, so everything you make stays on this device. Whenever you're ready, create an account and your decks, XP and streaks follow you to any device."
-                    : "Your account is live. Decks, questions, XP, streaks, notes and quiz history sync to the cloud, so you can study on your laptop and pick up on your phone."}
+                  Deckly keeps decks, questions, XP, streaks, notes and quiz history in this
+                  browser. Nothing is uploaded. Use JSON export when you want a backup or to move
+                  a library to another machine.
                 </p>
                 <ul className="stagger mt-6 space-y-2.5 text-sm">
                   {[
-                    guest
-                      ? "Guest mode — nothing leaves this device"
-                      : "One account — every device, always in sync",
-                    "Decks, stats, XP and settings kept safe",
+                    "This browser holds the library — no account required",
+                    "JSON export and import for backups and sharing decks",
                     "Built to feel like a desktop app",
                   ].map((p) => (
                     <li key={p} className="flex items-start gap-3">
@@ -224,15 +204,6 @@ function Onboarding() {
                     </li>
                   ))}
                 </ul>
-                {guest && (
-                  <Button
-                    variant="outline"
-                    className="press mt-6"
-                    onClick={() => navigate({ to: "/auth" })}
-                  >
-                    <Cloud /> Create an account instead
-                  </Button>
-                )}
               </div>
             )}
 
@@ -306,8 +277,7 @@ function Onboarding() {
                 <div>
                   <h1 className="text-3xl font-bold">Make it yours</h1>
                   <p className="mt-3 text-muted-foreground">
-                    This personalises your dashboard, goals and reports
-                    {guest ? " on this device." : " — and syncs with your account."}
+                    This personalises your dashboard, goals and reports on this device.
                   </p>
                 </div>
 
@@ -502,9 +472,7 @@ function Onboarding() {
                 <p className="mx-auto mt-3 max-w-md text-muted-foreground">
                   {imported
                     ? "Your first deck is in. Jump into your library and start a session."
-                    : guest
-                      ? "Head to the Prompt Forge to build your first deck. Create an account any time to sync it all."
-                      : "Head to the Prompt Forge to build your first deck — everything from here syncs to your account."}
+                    : "Head to the Prompt Forge to build your first deck — it stays on this device, and you can export it as JSON any time."}
                 </p>
                 <div className="anim-fade-up mt-8 flex flex-wrap justify-center gap-3">
                   <Button className="press anim-glow" onClick={() => finish(imported ? "/decks" : "/generate")}>

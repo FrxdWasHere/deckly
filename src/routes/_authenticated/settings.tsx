@@ -1,9 +1,6 @@
 import { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Download, ImagePlus, LogOut, RotateCcw, Trash2, Upload, X } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { Download, ImagePlus, RotateCcw, Trash2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { AppPage } from "@/components/app-page";
 import { PageHeader } from "@/components/app-shell";
@@ -20,7 +17,7 @@ import {
   STUDY_REASONS,
   SUBJECT_SUGGESTIONS,
 } from "@/lib/defaults";
-import { deleteWallpaper, fileToWallpaperDataUrl, uploadWallpaper } from "@/lib/wallpaper";
+import { fileToWallpaperDataUrl } from "@/lib/wallpaper";
 import { useWallpaperUrl } from "@/hooks/use-wallpaper-url";
 import { useDeckly } from "@/store/deckly";
 import { cn } from "@/lib/utils";
@@ -90,12 +87,10 @@ function Toggle({
 }
 
 function SettingsPage() {
-  const { state, user, updateSettings, resetSettings, resetAll, exportState, importState } =
+  const { state, updateSettings, resetSettings, resetAll, exportState, importState } =
     useDeckly();
   const s = state.settings;
   const wallpaperUrl = useWallpaperUrl(s.wallpaper);
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const wallpaperRef = useRef<HTMLInputElement>(null);
   const [confirmWipe, setConfirmWipe] = useState(false);
@@ -239,11 +234,7 @@ function SettingsPage() {
 
         <Section
           title="Wallpaper"
-          description={
-            user
-              ? "Upload any image — it's saved to your account and appears on every device you sign in on."
-              : "Upload any image from this device. Sign in to have it follow you across devices."
-          }
+          description="Upload any image from this device. It is stored in this browser with the rest of your settings."
         >
           <div className="flex flex-wrap items-center gap-2">
             <Button variant="outline" onClick={() => wallpaperRef.current?.click()}>
@@ -253,7 +244,6 @@ function SettingsPage() {
               <Button
                 variant="ghost"
                 onClick={() => {
-                  void deleteWallpaper(s.wallpaper);
                   set("wallpaper", null);
                 }}
               >
@@ -270,12 +260,8 @@ function SettingsPage() {
                 e.target.value = "";
                 if (!file) return;
                 try {
-                  const previous = s.wallpaper;
-                  const next = user
-                    ? await uploadWallpaper(user.id, file)
-                    : await fileToWallpaperDataUrl(file);
+                  const next = await fileToWallpaperDataUrl(file);
                   set("wallpaper", next);
-                  void deleteWallpaper(previous);
                   toast.success("Wallpaper applied");
                 } catch (err) {
                   toast.error((err as Error).message);
@@ -500,25 +486,8 @@ function SettingsPage() {
         </Section>
 
         <Section
-          title="Account"
-          description="You're signed in — decks, XP, streaks and settings sync across your devices."
-        >
-          <Button
-            variant="outline"
-            onClick={async () => {
-              await queryClient.cancelQueries();
-              queryClient.clear();
-              await supabase.auth.signOut();
-              navigate({ to: "/auth", replace: true });
-            }}
-          >
-            <LogOut /> Sign out
-          </Button>
-        </Section>
-
-        <Section
           title="Data"
-          description={`${state.decks.length} decks · ${state.history.length} sessions synced to your account.`}
+          description={`${state.decks.length} decks · ${state.history.length} sessions stored in this browser. Export JSON to back up or move your library.`}
         >
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" onClick={download}>

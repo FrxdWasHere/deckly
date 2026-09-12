@@ -5,9 +5,9 @@ export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
       { title: "Privacy Policy — Deckly" },
-      { name: "description", content: "Learn what Deckly stores, how account sync works, and the choices available to guests and account holders." },
+      { name: "description", content: "Learn what Deckly stores in your browser and how JSON backups work." },
       { property: "og:title", content: "Privacy Policy — Deckly" },
-      { property: "og:description", content: "How Deckly handles account data, study content, progress, and guest information." },
+      { property: "og:description", content: "How Deckly handles study content, progress, and browser storage." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -20,15 +20,14 @@ function PrivacyPage() {
     <LegalPage
       eyebrow="Your data, clearly explained"
       title="Privacy policy"
-      intro="Deckly is designed to keep your study materials useful across sessions and devices without obscuring what is stored."
+      intro="Deckly is a local study workspace. Your library lives in this browser. Deckly does not run an account service or sync your decks to a server."
     >
-      <section><h2>Information Deckly handles</h2><p>When you create an account, Deckly stores your account identifier, profile preferences, decks, questions, notes, bookmarks, quiz results, study history, XP, streaks, achievements, and settings. Uploaded wallpapers are stored privately for your account.</p></section>
-      <section><h2>Guest mode</h2><p>If you continue as a guest, your Deckly content remains in your browser on that device. It is not synced to an account unless you later sign in and choose to bring that work with you.</p></section>
-      <section><h2>How information is used</h2><p>Your information is used to operate Deckly, restore your study library, calculate progress, personalise your experience, and keep signed-in devices in sync. Deckly does not sell your personal information.</p></section>
+      <section><h2>What Deckly stores</h2><p>Deckly keeps profile preferences, decks, questions, notes, bookmarks, quiz results, study history, XP, streaks, achievements, settings, and optional wallpaper images in your browser’s persistent storage on this device.</p></section>
+      <section><h2>How information is used</h2><p>That information is used only to run Deckly on this device: restore your library after a refresh, calculate progress, and personalise the interface. Deckly does not sell personal information.</p></section>
       <section><h2>AI services</h2><p>Deckly creates prompts for you to copy into an AI service of your choice. Deckly does not send those prompts or your study materials to an AI provider on your behalf. Any service you choose has its own privacy practices.</p></section>
-      <section><h2>Service providers</h2><p>Deckly relies on infrastructure providers for secure hosting, account access, storage, and application delivery. They process information only as needed to provide those services and according to their own legal obligations.</p></section>
-      <section><h2>Security and retention</h2><p>Reasonable technical safeguards are used to protect account data. No online service can guarantee absolute security. Information is retained while needed to provide Deckly, meet legal obligations, resolve disputes, or protect the service.</p></section>
-      <section><h2>Your choices</h2><p>You can use guest mode, update your profile and settings, remove study content, or stop using the service. Account deletion requests will remove or de-identify information unless retention is legally required.</p></section>
+      <section><h2>Moving data</h2><p>Use JSON export to download a backup of your library. Import that file on another browser or machine when you want a copy there. Clearing this browser’s storage deletes the local library unless you have a backup.</p></section>
+      <section><h2>Hosting</h2><p>The Deckly application files may be served from a host so you can open the app in a browser. That does not include an account or a copy of your study library.</p></section>
+      <section><h2>Your choices</h2><p>You can update settings, remove study content, export a backup, or erase all locally stored data from Settings. You can also stop using Deckly and clear this site’s data in your browser.</p></section>
       <section><h2>Changes</h2><p>This policy may be updated as Deckly changes. The effective date above will be revised when material updates are made.</p></section>
     </LegalPage>
   );

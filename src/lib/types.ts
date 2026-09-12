@@ -155,7 +155,7 @@ export interface Settings {
   // appearance
   theme: "dark" | "light";
   accent: string;
-  /** data URL of a user-uploaded wallpaper image */
+  /** data URL of a user-uploaded wallpaper image, stored locally */
   wallpaper: string | null;
   wallpaperOpacity: number;
   wallpaperBlur: number;

@@ -12,7 +12,6 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { DecklyProvider } from "../store/deckly";
-import { supabase } from "@/integrations/supabase/client";
 import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
@@ -80,16 +79,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Deckly — Study Dashboard with Cloud Sync" },
-      { name: "description", content: "Track XP, streaks, weak topics and decks in Deckly — a study platform for AI-generated JSON question banks, synced across devices." },
+      { title: "Deckly — Local study dashboard" },
+      { name: "description", content: "Track XP, streaks, weak topics and decks in Deckly — a study workspace for AI-generated JSON question banks, stored in your browser." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Deckly — Study Dashboard with Cloud Sync" },
-      { property: "og:description", content: "Track XP, streaks, weak topics and decks in Deckly — a study platform for AI-generated JSON question banks, synced across devices." },
+      { property: "og:title", content: "Deckly — Local study dashboard" },
+      { property: "og:description", content: "Track XP, streaks, weak topics and decks in Deckly — a study workspace for AI-generated JSON question banks, stored in your browser." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Deckly — Study Dashboard with Cloud Sync" },
-      { name: "twitter:description", content: "Track XP, streaks, weak topics and decks in Deckly — a study platform for AI-generated JSON question banks, synced across devices." },
+      { name: "twitter:title", content: "Deckly — Local study dashboard" },
+      { name: "twitter:description", content: "Track XP, streaks, weak topics and decks in Deckly — a study workspace for AI-generated JSON question banks, stored in your browser." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/73a20bc8-a697-475c-adfb-64348f72b302/id-preview-91177294--aae57bb8-07a6-43ea-a58c-114412ffe651.lovable.app-1785229173023.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/73a20bc8-a697-475c-adfb-64348f72b302/id-preview-91177294--aae57bb8-07a6-43ea-a58c-114412ffe651.lovable.app-1785229173023.png" },
     ],
@@ -129,16 +128,6 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const router = useRouter();
-
-  useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
-      router.invalidate();
-      if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
-    });
-    return () => sub.subscription.unsubscribe();
-  }, [router, queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>
