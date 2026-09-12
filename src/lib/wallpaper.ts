@@ -42,3 +42,27 @@ export async function fileToWallpaperDataUrl(file: File): Promise<string> {
   }
   return out;
 }
+
+/**
+ * Uploads a wallpaper to the private `wallpapers` bucket and returns the
+ * storage path, so it follows the account across devices instead of living
+ * in a giant settings blob.
+ */
+export async function uploadWallpaper(userId: string, file: File): Promise<string> {
+  const { supabase } = await import("@/integrations/supabase/client");
+  const dataUrl = await fileToWallpaperDataUrl(file);
+  const blob = await (await fetch(dataUrl)).blob();
+  const path = `${userId}/wallpaper-${Date.now()}.jpg`;
+  const { error } = await supabase.storage
+    .from("wallpapers")
+    .upload(path, blob, { contentType: "image/jpeg", upsert: true });
+  if (error) throw new Error("Could not upload that wallpaper — please try again.");
+  return path;
+}
+
+/** Removes a stored wallpaper file (no-op for legacy data URLs). */
+export async function deleteWallpaper(path: string | null) {
+  if (!path || path.startsWith("data:") || path.startsWith("http")) return;
+  const { supabase } = await import("@/integrations/supabase/client");
+  await supabase.storage.from("wallpapers").remove([path]);
+}

@@ -20,7 +20,8 @@ import {
   STUDY_REASONS,
   SUBJECT_SUGGESTIONS,
 } from "@/lib/defaults";
-import { fileToWallpaperDataUrl } from "@/lib/wallpaper";
+import { deleteWallpaper, fileToWallpaperDataUrl, uploadWallpaper } from "@/lib/wallpaper";
+import { useWallpaperUrl } from "@/hooks/use-wallpaper-url";
 import { useDeckly } from "@/store/deckly";
 import { cn } from "@/lib/utils";
 import type { Settings } from "@/lib/types";
@@ -89,9 +90,10 @@ function Toggle({
 }
 
 function SettingsPage() {
-  const { state, updateSettings, resetSettings, resetAll, exportState, importState } =
+  const { state, user, updateSettings, resetSettings, resetAll, exportState, importState } =
     useDeckly();
   const s = state.settings;
+  const wallpaperUrl = useWallpaperUrl(s.wallpaper);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -237,14 +239,24 @@ function SettingsPage() {
 
         <Section
           title="Wallpaper"
-          description="Upload any image from this device. It's stored locally, never uploaded anywhere."
+          description={
+            user
+              ? "Upload any image — it's saved to your account and appears on every device you sign in on."
+              : "Upload any image from this device. Sign in to have it follow you across devices."
+          }
         >
           <div className="flex flex-wrap items-center gap-2">
             <Button variant="outline" onClick={() => wallpaperRef.current?.click()}>
               <ImagePlus /> {s.wallpaper ? "Replace image" : "Upload image"}
             </Button>
             {s.wallpaper && (
-              <Button variant="ghost" onClick={() => set("wallpaper", null)}>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  void deleteWallpaper(s.wallpaper);
+                  set("wallpaper", null);
+                }}
+              >
                 <X /> Remove
               </Button>
             )}
@@ -258,7 +270,12 @@ function SettingsPage() {
                 e.target.value = "";
                 if (!file) return;
                 try {
-                  set("wallpaper", await fileToWallpaperDataUrl(file));
+                  const previous = s.wallpaper;
+                  const next = user
+                    ? await uploadWallpaper(user.id, file)
+                    : await fileToWallpaperDataUrl(file);
+                  set("wallpaper", next);
+                  void deleteWallpaper(previous);
                   toast.success("Wallpaper applied");
                 } catch (err) {
                   toast.error((err as Error).message);
@@ -267,11 +284,11 @@ function SettingsPage() {
             />
           </div>
 
-          {s.wallpaper && (
+          {wallpaperUrl && (
             <>
               <div className="anim-pop relative h-40 overflow-hidden rounded-xl border border-border">
                 <img
-                  src={s.wallpaper}
+                  src={wallpaperUrl}
                   alt="Your current Deckly wallpaper"
                   className="size-full object-cover"
                   style={{

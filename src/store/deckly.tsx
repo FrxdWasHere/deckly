@@ -78,6 +78,14 @@ interface QuestionRow {
   concept: string | null;
   hint: string | null;
   tags: string[];
+  items: unknown;
+  pairs: unknown;
+  blanks: unknown;
+  word_bank: unknown;
+}
+
+function asStringArray(v: unknown): string[] | undefined {
+  return Array.isArray(v) && v.every((x) => typeof x === "string") ? (v as string[]) : undefined;
 }
 
 interface StateRow {
@@ -116,6 +124,10 @@ async function loadCloudState(userId: string): Promise<AppState> {
       concept: q.concept ?? undefined,
       hint: q.hint ?? undefined,
       tags: q.tags ?? [],
+      items: asStringArray(q.items),
+      pairs: Array.isArray(q.pairs) ? (q.pairs as Question["pairs"]) : undefined,
+      blanks: asStringArray(q.blanks),
+      wordBank: asStringArray(q.word_bank),
     };
     const list = questionsByDeck.get(q.deck_id) ?? [];
     list.push(question);
@@ -241,6 +253,10 @@ function questionToRow(q: Question, deckId: string, userId: string, position: nu
     concept: q.concept ?? null,
     hint: q.hint ?? null,
     tags: q.tags ?? [],
+    items: (q.items ?? null) as unknown as Json,
+    pairs: (q.pairs ?? null) as unknown as Json,
+    blanks: (q.blanks ?? null) as unknown as Json,
+    word_bank: (q.wordBank ?? null) as unknown as Json,
     position,
   };
 }

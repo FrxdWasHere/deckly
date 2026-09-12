@@ -17,6 +17,7 @@ import {
 import { useDeckly } from "@/store/deckly";
 import { levelFromXp } from "@/lib/gamification";
 import { cn } from "@/lib/utils";
+import { useWallpaperUrl } from "@/hooks/use-wallpaper-url";
 import type { ReactNode } from "react";
 
 const NAV = [
@@ -38,7 +39,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { level, pct, intoLevel, needed } = levelFromXp(state.progress.lifetimeXp);
   const density = state.settings.density;
   const pad = density === "compact" ? "p-4" : density === "spacious" ? "p-10" : "p-6 md:p-8";
-  const wallpaper = state.settings.wallpaper;
+  const wallpaper = useWallpaperUrl(state.settings.wallpaper);
 
   return (
     <div className="relative flex min-h-screen w-full bg-background">
