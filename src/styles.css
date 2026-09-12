@@ -73,7 +73,7 @@
   --font-mono: var(--font-mono-family);
 }
 
-/* StudyForge design system — "forged steel + ember" */
+/* Deckly design system — "forged steel + ember" */
 :root {
   --radius: 0.75rem;
   --font-display-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;

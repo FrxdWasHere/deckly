@@ -19,13 +19,13 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "StudyForge | Your flashcards, forged to perfection." },
+      { title: "Deckly | Your flashcards, forged to perfection." },
       {
         name: "description",
         content:
-          "Create an account to sync decks, XP, streaks and quiz history across devices — or start instantly as a guest. StudyForge turns AI-generated question banks into flashcards, quizzes and an XP arena.",
+          "Create an account to sync decks, XP, streaks and quiz history across devices — or start instantly as a guest. Deckly turns AI-generated question banks into flashcards, quizzes and an XP arena.",
       },
-      { property: "og:title", content: "StudyForge | Your flashcards, forged to perfection." },
+      { property: "og:title", content: "Deckly | Your flashcards, forged to perfection." },
       {
         property: "og:description",
         content:
@@ -42,7 +42,7 @@ const FEATURES = [
   {
     icon: Bot,
     title: "Bring your own AI",
-    body: "Prompt Forge writes a strict prompt for ChatGPT, Gemini, Claude — anything. StudyForge never calls an AI itself.",
+    body: "Prompt Forge writes a strict prompt for ChatGPT, Gemini, Claude — anything. Deckly never calls an AI itself.",
   },
   {
     icon: Cloud,
@@ -112,7 +112,7 @@ function Landing() {
             <div className="grid size-10 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-[var(--shadow-forge)]">
               <Flame className="size-5" />
             </div>
-            <span className="font-display text-lg font-bold">StudyForge</span>
+            <span className="font-display text-lg font-bold">Deckly</span>
           </div>
           <Button variant="ghost" onClick={() => navigate({ to: "/auth" })}>
             Sign in
@@ -131,7 +131,7 @@ function Landing() {
           </h1>
           <p className="anim-fade-up mx-auto mt-5 max-w-xl text-pretty text-muted-foreground [animation-delay:140ms]">
             Paste your material, run the generated prompt in whichever AI you like, bring the JSON
-            back, and StudyForge turns it into flashcards, quizzes, an XP arena and real analytics.
+            back, and Deckly turns it into flashcards, quizzes, an XP arena and real analytics.
           </p>
 
           <div className="anim-fade-up mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row [animation-delay:200ms]">
@@ -166,7 +166,7 @@ function Landing() {
         </section>
 
         <footer className="border-t border-border py-8 text-center text-xs text-muted-foreground">
-          StudyForge · your study workshop. No AI inside — you bring the model.
+          Deckly · your study workshop. No AI inside — you bring the model.
         </footer>
       </div>
     </div>

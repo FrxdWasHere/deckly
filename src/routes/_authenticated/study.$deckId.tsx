@@ -17,21 +17,24 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { checkAnswer, shuffleArray, TYPE_LABELS, formatDuration } from "@/lib/answers";
+import { displayAnswer, isInteractive } from "@/lib/interactive";
+import { InteractiveQuestion } from "@/components/questions/interactive-question";
+
 import { xpForAnswer } from "@/lib/gamification";
-import { useStudyForge } from "@/store/studyforge";
+import { useDeckly } from "@/store/deckly";
 import { cn } from "@/lib/utils";
 import type { AnswerRecord } from "@/lib/types";
 
 export const Route = createFileRoute("/_authenticated/study/$deckId")({
   head: () => ({
     meta: [
-      { title: "Study Mode — Active Recall Session | StudyForge" },
+      { title: "Study Mode — Active Recall Session | Deckly" },
       {
         name: "description",
         content:
           "Work through flashcards, multiple choice, true/false, fill-in-the-blank and short answer questions with keyboard shortcuts, notes and bookmarks.",
       },
-      { property: "og:title", content: "Study Mode — StudyForge" },
+      { property: "og:title", content: "Study Mode — Deckly" },
       {
         property: "og:description",
         content: "A focused, keyboard-driven active recall session that works offline.",
@@ -47,7 +50,7 @@ export const Route = createFileRoute("/_authenticated/study/$deckId")({
 
 function StudySession() {
   const { deckId } = Route.useParams();
-  const { state, updateDeck, recordSession } = useStudyForge();
+  const { state, updateDeck, recordSession } = useDeckly();
   const navigate = useNavigate();
   const deck = state.decks.find((d) => d.id === deckId);
   const settings = state.settings;
@@ -294,10 +297,21 @@ function StudySession() {
           </div>
         )}
 
+        {isInteractive(question.type) && (
+          <InteractiveQuestion
+            question={question}
+            value={input}
+            onChange={setInput}
+            disabled={revealed}
+            revealed={revealed}
+          />
+        )}
+
         {revealed ? (
           <div className="mt-6 rounded-xl border border-success/40 bg-success/10 p-5">
             <p className="text-xs uppercase tracking-widest text-success">Answer</p>
-            <p className="mt-2 text-lg font-medium">{question.answer}</p>
+            <p className="mt-2 text-lg font-medium">{displayAnswer(question)}</p>
+
             {question.explanation && settings.showExplanations && (
               <p className="mt-2 text-sm text-muted-foreground">{question.explanation}</p>
             )}

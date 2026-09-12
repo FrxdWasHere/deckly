@@ -14,7 +14,7 @@ import {
   PanelLeftClose,
   PanelLeft,
 } from "lucide-react";
-import { useStudyForge } from "@/store/studyforge";
+import { useDeckly } from "@/store/deckly";
 import { levelFromXp } from "@/lib/gamification";
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
@@ -32,7 +32,7 @@ const NAV = [
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { state, updateSettings } = useStudyForge();
+  const { state, updateSettings } = useDeckly();
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const collapsed = state.settings.sidebarCollapsed;
   const { level, pct, intoLevel, needed } = levelFromXp(state.progress.lifetimeXp);
@@ -71,7 +71,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           {!collapsed && (
             <div className="anim-fade-in min-w-0">
-              <p className="font-display text-base font-bold leading-none">StudyForge</p>
+              <p className="font-display text-base font-bold leading-none">Deckly</p>
               <p className="mt-1 truncate text-[11px] text-muted-foreground">
                 {state.settings.avatarEmoji} {state.settings.displayName}
               </p>
@@ -136,7 +136,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-border bg-background/85 px-4 py-3 backdrop-blur md:px-8">
           <div className="flex items-center gap-2 md:hidden">
             <Flame className="anim-float size-5 text-primary" />
-            <span className="font-display font-bold">StudyForge</span>
+            <span className="font-display font-bold">Deckly</span>
           </div>
           <div className="hidden items-center gap-2 text-xs text-muted-foreground md:flex">
             <span className="inline-flex size-1.5 animate-pulse rounded-full bg-success" />

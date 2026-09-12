@@ -17,16 +17,16 @@ import type { ValidationResult } from "@/lib/schema";
 export const Route = createFileRoute("/_authenticated/format")({
   head: () => ({
     meta: [
-      { title: "Deck JSON Format & Sample — StudyForge" },
+      { title: "Deck JSON Format & Sample — Deckly" },
       {
         name: "description",
         content:
-          "Full reference for the StudyForge deck JSON schema: every field explained, a complete sample deck to copy or download, and a live validator.",
+          "Full reference for the Deckly deck JSON schema: every field explained, a complete sample deck to copy or download, and a live validator.",
       },
-      { property: "og:title", content: "Deck JSON Format & Sample — StudyForge" },
+      { property: "og:title", content: "Deck JSON Format & Sample — Deckly" },
       {
         property: "og:description",
-        content: "Every field of the StudyForge deck schema, with a downloadable sample deck.",
+        content: "Every field of the Deckly deck schema, with a downloadable sample deck.",
       },
     ],
   }),
@@ -46,7 +46,7 @@ function FormatPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "studyforge-sample-deck.json";
+    a.download = "deckly-sample-deck.json";
     a.click();
     URL.revokeObjectURL(url);
   };

@@ -16,9 +16,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { checkAnswer, formatDuration, shuffleArray, TYPE_LABELS } from "@/lib/answers";
-import { useStudyForge } from "@/store/studyforge";
+import { displayAnswer, isInteractive } from "@/lib/interactive";
+import {
+  InteractiveQuestion,
+  isInteractiveComplete,
+} from "@/components/questions/interactive-question";
+import { useDeckly } from "@/store/deckly";
 import { cn } from "@/lib/utils";
 import type { Question } from "@/lib/types";
+
 
 const BASE_XP: Record<string, number> = { easy: 8, medium: 12, hard: 18 };
 const PENALTY: Record<string, number> = { easy: 6, medium: 8, hard: 10 };
@@ -34,7 +40,7 @@ interface Floater {
 }
 
 export function DeckArena({ deckId }: { deckId: string }) {
-  const { state, recordSession } = useStudyForge();
+  const { state, recordSession } = useDeckly();
   const navigate = useNavigate();
   const deck = state.decks.find((d) => d.id === deckId);
 
@@ -384,6 +390,23 @@ export function DeckArena({ deckId }: { deckId: string }) {
               </div>
             )}
           </div>
+        ) : isInteractive(question.type) ? (
+          <div className="space-y-3">
+            <InteractiveQuestion
+              question={question}
+              value={input}
+              onChange={setInput}
+              disabled={revealed}
+              revealed={revealed}
+            />
+            <Button
+              className="press"
+              disabled={revealed || !isInteractiveComplete(question, input)}
+              onClick={() => resolve(checkAnswer(question, input))}
+            >
+              Lock in
+            </Button>
+          </div>
         ) : (
           <form
             className="mt-6 flex flex-wrap gap-2"
@@ -406,6 +429,7 @@ export function DeckArena({ deckId }: { deckId: string }) {
           </form>
         )}
 
+
         {revealed && (
           <div className="anim-fade-up mt-6 border-t border-border pt-5">
             <p
@@ -414,7 +438,7 @@ export function DeckArena({ deckId }: { deckId: string }) {
                 wasCorrect ? "text-success" : "text-destructive",
               )}
             >
-              {wasCorrect ? "Correct" : `Answer: ${question.answer}`}
+              {wasCorrect ? "Correct" : `Answer: ${displayAnswer(question)}`}
             </p>
             {question.explanation && (
               <p className="mt-2 text-sm text-muted-foreground">{question.explanation}</p>

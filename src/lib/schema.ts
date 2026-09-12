@@ -1,5 +1,13 @@
 import { z } from "zod";
 import { DECK_COLORS } from "./defaults";
+import {
+  BLANK_TOKEN,
+  canonicalAnswer,
+  countBlanks,
+  serializeMatching,
+  serializeOrdering,
+  serializeWordBank,
+} from "./interactive";
 import type { Deck, Question } from "./types";
 
 export const questionTypes = [
@@ -8,20 +16,119 @@ export const questionTypes = [
   "true-false",
   "fill-blank",
   "short-answer",
+  "ordering",
+  "matching",
+  "word-bank",
 ] as const;
 
 export const questionSchema = z.object({
   id: z.string().optional(),
   type: z.enum(questionTypes),
   question: z.string().min(1, "Question text is required"),
-  answer: z.union([z.string(), z.boolean(), z.number()]).transform((v) => String(v)),
+  answer: z
+    .union([z.string(), z.boolean(), z.number()])
+    .optional()
+    .transform((v) => (v === undefined ? undefined : String(v))),
   options: z.array(z.string()).optional(),
   explanation: z.string().optional(),
   difficulty: z.enum(["easy", "medium", "hard"]).default("medium"),
   concept: z.string().optional(),
   hint: z.string().optional(),
   tags: z.array(z.string()).optional(),
+  items: z.array(z.string()).optional(),
+  pairs: z.array(z.object({ left: z.string(), right: z.string() })).optional(),
+  blanks: z.array(z.string()).optional(),
+  wordBank: z.array(z.string()).optional(),
 });
+
+type RawQuestion = z.infer<typeof questionSchema>;
+
+/** Turns a validated raw payload into a Question, collecting per-type problems. */
+function buildQuestion(
+  q: RawQuestion,
+  i: number,
+  errors: string[],
+  warnings: string[],
+  id: string,
+): Question {
+  let answer = q.answer ?? "";
+
+  switch (q.type) {
+    case "multiple-choice": {
+      if (!q.options || q.options.length < 2) {
+        errors.push(`questions[${i}]: multiple-choice questions need at least 2 options.`);
+      } else if (!q.options.includes(answer)) {
+        errors.push(`questions[${i}]: answer "${answer}" is not one of the provided options.`);
+      }
+      break;
+    }
+    case "true-false": {
+      if (!["true", "false"].includes(answer.toLowerCase())) {
+        errors.push(`questions[${i}]: true-false answers must be "true" or "false".`);
+      }
+      break;
+    }
+    case "ordering": {
+      if (!q.items || q.items.length < 2) {
+        errors.push(`questions[${i}]: ordering questions need an "items" array with 2+ entries in the correct order.`);
+      } else {
+        answer = serializeOrdering(q.items);
+      }
+      break;
+    }
+    case "matching": {
+      if (!q.pairs || q.pairs.length < 2) {
+        errors.push(`questions[${i}]: matching questions need a "pairs" array with 2+ {left, right} entries.`);
+      } else if (q.pairs.some((p) => !p.left.trim() || !p.right.trim())) {
+        errors.push(`questions[${i}]: every matching pair needs a non-empty "left" and "right".`);
+      } else {
+        answer = serializeMatching(q.pairs);
+      }
+      break;
+    }
+    case "word-bank": {
+      const slots = countBlanks(q.question);
+      if (!q.blanks || !q.blanks.length) {
+        errors.push(`questions[${i}]: word-bank questions need a "blanks" array with the correct word for each ${BLANK_TOKEN}.`);
+      } else if (slots === 0) {
+        errors.push(`questions[${i}]: word-bank questions must contain at least one ${BLANK_TOKEN} placeholder in the question text.`);
+      } else if (slots !== q.blanks.length) {
+        errors.push(`questions[${i}]: found ${slots} ${BLANK_TOKEN} placeholder(s) but ${q.blanks.length} blank answer(s).`);
+      } else {
+        answer = serializeWordBank(q.blanks);
+        if (!q.wordBank || q.wordBank.length <= q.blanks.length) {
+          warnings.push(`questions[${i}]: no distractor words in "wordBank" — the blanks will be easy to guess.`);
+        }
+      }
+      break;
+    }
+    default:
+      break;
+  }
+
+  if (!answer && q.type !== "ordering" && q.type !== "matching" && q.type !== "word-bank") {
+    errors.push(`questions[${i}]: an "answer" is required for ${q.type} questions.`);
+  }
+
+  const built: Question = {
+    id,
+    type: q.type,
+    question: q.question,
+    answer,
+    options: q.options,
+    explanation: q.explanation,
+    difficulty: q.difficulty,
+    concept: q.concept,
+    hint: q.hint,
+    tags: q.tags,
+    items: q.items,
+    pairs: q.pairs,
+    blanks: q.blanks,
+    wordBank: q.wordBank,
+  };
+  built.answer = canonicalAnswer(built);
+  return built;
+}
 
 export const deckSchema = z.object({
   title: z.string().min(1, "Deck title is required"),
@@ -71,30 +178,9 @@ export function validateDeckJson(raw: string): ValidationResult {
   }
 
   const questions: Question[] = parsed.data.questions.map((q, i) => {
-    if (q.type === "multiple-choice") {
-      if (!q.options || q.options.length < 2) {
-        errors.push(`questions[${i}]: multiple-choice questions need at least 2 options.`);
-      } else if (!q.options.includes(q.answer)) {
-        errors.push(`questions[${i}]: answer "${q.answer}" is not one of the provided options.`);
-      }
-    }
-    if (q.type === "true-false" && !["true", "false"].includes(q.answer.toLowerCase())) {
-      errors.push(`questions[${i}]: true-false answers must be "true" or "false".`);
-    }
     if (!q.explanation) warnings.push(`questions[${i}]: no explanation provided.`);
     if (!q.concept) warnings.push(`questions[${i}]: no concept tag — topic analytics will be thin.`);
-    return {
-      id: q.id || uid(),
-      type: q.type,
-      question: q.question,
-      answer: q.answer,
-      options: q.options,
-      explanation: q.explanation,
-      difficulty: q.difficulty,
-      concept: q.concept,
-      hint: q.hint,
-      tags: q.tags,
-    };
+    return buildQuestion(q, i, errors, warnings, q.id || uid());
   });
 
   if (errors.length) return { ok: false, errors, warnings };
@@ -167,6 +253,41 @@ export const SAMPLE_DECK_JSON = `{
       "answer": "A solution with higher solute concentration than the cell, causing water to leave the cell.",
       "difficulty": "easy",
       "concept": "Tonicity"
+    },
+    {
+      "type": "ordering",
+      "question": "Arrange the steps of the sodium-potassium pump cycle.",
+      "items": [
+        "3 Na+ bind to the pump inside the cell",
+        "ATP is hydrolysed and the pump is phosphorylated",
+        "The pump changes shape and releases Na+ outside",
+        "2 K+ bind and the phosphate is released",
+        "The pump returns to its original shape, releasing K+ inside"
+      ],
+      "explanation": "Each conformational change is driven by phosphorylation then dephosphorylation.",
+      "difficulty": "hard",
+      "concept": "Active transport"
+    },
+    {
+      "type": "matching",
+      "question": "Match each transport process with its description.",
+      "pairs": [
+        { "left": "Osmosis", "right": "Water moves down its own gradient" },
+        { "left": "Facilitated diffusion", "right": "Solutes cross via proteins, no ATP" },
+        { "left": "Active transport", "right": "Solutes move against a gradient using ATP" },
+        { "left": "Endocytosis", "right": "Material enters the cell in a vesicle" }
+      ],
+      "difficulty": "medium",
+      "concept": "Transport mechanisms"
+    },
+    {
+      "type": "word-bank",
+      "question": "In a ___ solution the cell swells, while in a ___ solution it shrinks.",
+      "blanks": ["hypotonic", "hypertonic"],
+      "wordBank": ["hypotonic", "hypertonic", "isotonic", "amphipathic"],
+      "explanation": "Water always moves toward the higher solute concentration.",
+      "difficulty": "medium",
+      "concept": "Tonicity"
     }
   ]
 }`;
@@ -179,7 +300,7 @@ export const FIELD_DOCS: { field: string; type: string; required: boolean; note:
   { field: "questions", type: "Question[]", required: true, note: "At least one question." },
   {
     field: "questions[].type",
-    type: '"flashcard" | "multiple-choice" | "true-false" | "fill-blank" | "short-answer"',
+    type: '"flashcard" | "multiple-choice" | "true-false" | "fill-blank" | "short-answer" | "ordering" | "matching" | "word-bank"',
     required: true,
     note: "Determines how the question is presented.",
   },
@@ -188,13 +309,37 @@ export const FIELD_DOCS: { field: string; type: string; required: boolean; note:
     field: "questions[].answer",
     type: "string",
     required: true,
-    note: 'Correct answer. Must match an option for multiple-choice; "true"/"false" for true-false.',
+    note: 'Correct answer. Must match an option for multiple-choice; "true"/"false" for true-false. Not needed for ordering, matching or word-bank.',
   },
   {
     field: "questions[].options",
     type: "string[]",
     required: false,
     note: "Required for multiple-choice — 2 to 6 entries.",
+  },
+  {
+    field: "questions[].items",
+    type: "string[]",
+    required: false,
+    note: "Required for ordering — the items listed in their correct sequence (they are shuffled for the learner).",
+  },
+  {
+    field: "questions[].pairs",
+    type: "{ left: string; right: string }[]",
+    required: false,
+    note: "Required for matching — 2+ couples; the right-hand answers are shuffled.",
+  },
+  {
+    field: "questions[].blanks",
+    type: "string[]",
+    required: false,
+    note: "Required for word-bank — the correct word for each ___ placeholder, in order.",
+  },
+  {
+    field: "questions[].wordBank",
+    type: "string[]",
+    required: false,
+    note: "Word-bank pool: the blank answers plus distractor words.",
   },
   {
     field: "questions[].explanation",
@@ -265,32 +410,11 @@ export function validateQuestionsJson(
   const existingText = new Set(existing.map((q) => q.question.trim().toLowerCase()));
 
   const questions: Question[] = parsed.data.questions.map((q, i) => {
-    if (q.type === "multiple-choice") {
-      if (!q.options || q.options.length < 2) {
-        errors.push(`questions[${i}]: multiple-choice questions need at least 2 options.`);
-      } else if (!q.options.includes(q.answer)) {
-        errors.push(`questions[${i}]: answer "${q.answer}" is not one of the provided options.`);
-      }
-    }
-    if (q.type === "true-false" && !["true", "false"].includes(q.answer.toLowerCase())) {
-      errors.push(`questions[${i}]: true-false answers must be "true" or "false".`);
-    }
     if (existingText.has(q.question.trim().toLowerCase())) {
       warnings.push(`questions[${i}]: looks like a duplicate of a question already in this deck.`);
     }
     if (!q.explanation) warnings.push(`questions[${i}]: no explanation provided.`);
-    return {
-      id: uid(),
-      type: q.type,
-      question: q.question,
-      answer: q.answer,
-      options: q.options,
-      explanation: q.explanation,
-      difficulty: q.difficulty,
-      concept: q.concept,
-      hint: q.hint,
-      tags: q.tags,
-    };
+    return buildQuestion(q, i, errors, warnings, uid());
   });
 
   if (errors.length) return { ok: false, errors, warnings };

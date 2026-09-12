@@ -6,19 +6,19 @@ import { PageHeader } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TYPE_LABELS } from "@/lib/answers";
-import { useStudyForge } from "@/store/studyforge";
+import { useDeckly } from "@/store/deckly";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/decks/$deckId")({
   head: () => ({
     meta: [
-      { title: "Deck Details — StudyForge" },
+      { title: "Deck Details — Deckly" },
       {
         name: "description",
         content:
-          "Inspect every question in a StudyForge deck, review bookmarks and notes, export the deck as JSON, or jump straight into study mode.",
+          "Inspect every question in a Deckly deck, review bookmarks and notes, export the deck as JSON, or jump straight into study mode.",
       },
-      { property: "og:title", content: "Deck Details — StudyForge" },
+      { property: "og:title", content: "Deck Details — Deckly" },
       {
         property: "og:description",
         content: "Review a deck's questions, mastery progress and notes offline.",
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/_authenticated/decks/$deckId")({
 
 function DeckDetail() {
   const { deckId } = Route.useParams();
-  const { state, updateDeck, deleteDeck } = useStudyForge();
+  const { state, updateDeck, deleteDeck } = useDeckly();
   const navigate = useNavigate();
   const deck = state.decks.find((d) => d.id === deckId);
 

@@ -4,7 +4,7 @@ import { AppPage } from "@/components/app-page";
 import { PageHeader } from "@/components/app-shell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useStudyForge } from "@/store/studyforge";
+import { useDeckly } from "@/store/deckly";
 import { dayKey, formatDuration } from "@/lib/answers";
 import { levelFromXp } from "@/lib/gamification";
 import { cn } from "@/lib/utils";
@@ -12,13 +12,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/stats")({
   head: () => ({
     meta: [
-      { title: "Statistics — Study Analytics & Heatmap | StudyForge" },
+      { title: "Statistics — Study Analytics & Heatmap | Deckly" },
       {
         name: "description",
         content:
           "Track accuracy, study time, streaks, XP growth, weak concepts and a 12-week activity heatmap from every study and quiz session on this device.",
       },
-      { property: "og:title", content: "Statistics — StudyForge" },
+      { property: "og:title", content: "Statistics — Deckly" },
       {
         property: "og:description",
         content: "Deep analytics on accuracy, streaks, concepts and session history.",
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/_authenticated/stats")({
 });
 
 function StatsPage() {
-  const { state } = useStudyForge();
+  const { state } = useDeckly();
   const p = state.progress;
   const { level, pct, intoLevel, needed } = levelFromXp(p.lifetimeXp);
   const accuracy = p.totalAnswered ? Math.round((p.totalCorrect / p.totalAnswered) * 100) : 0;

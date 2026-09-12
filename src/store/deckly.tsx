@@ -225,7 +225,7 @@ export interface RecordSessionInput {
   result?: QuizResult;
 }
 
-const StudyForgeContext = createContext<Ctx | null>(null);
+const DecklyContext = createContext<Ctx | null>(null);
 
 function questionToRow(q: Question, deckId: string, userId: string, position: number) {
   return {
@@ -245,7 +245,7 @@ function questionToRow(q: Question, deckId: string, userId: string, position: nu
   };
 }
 
-export function StudyForgeProvider({ children }: { children: ReactNode }) {
+export function DecklyProvider({ children }: { children: ReactNode }) {
   const [state, setInternal] = useState<AppState>(DEFAULT_STATE);
   const [hydrated, setHydrated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -289,7 +289,7 @@ export function StudyForgeProvider({ children }: { children: ReactNode }) {
           legacy.decks.length > 0 &&
           cloud.decks.length === 0
         ) {
-          toast("Found existing StudyForge data on this device", {
+          toast("Found existing Deckly data on this device", {
             description: `${legacy.decks.length} deck${legacy.decks.length === 1 ? "" : "s"} and your progress can be moved into your account.`,
             duration: 30000,
             action: {
@@ -723,7 +723,7 @@ export function StudyForgeProvider({ children }: { children: ReactNode }) {
     [state, hydrated, user, setState, addDeck, addQuestions, updateDeck, deleteDeck, recordSession],
   );
 
-  return <StudyForgeContext.Provider value={value}>{children}</StudyForgeContext.Provider>;
+  return <DecklyContext.Provider value={value}>{children}</DecklyContext.Provider>;
 }
 
 /** Push an entire AppState into the cloud (used for first-login + file imports). */
@@ -807,8 +807,8 @@ async function pushFullState(userId: string, s: AppState) {
   });
 }
 
-export function useStudyForge() {
-  const ctx = useContext(StudyForgeContext);
-  if (!ctx) throw new Error("useStudyForge must be used inside StudyForgeProvider");
+export function useDeckly() {
+  const ctx = useContext(DecklyContext);
+  if (!ctx) throw new Error("useDeckly must be used inside DecklyProvider");
   return ctx;
 }

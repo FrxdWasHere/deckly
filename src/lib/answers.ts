@@ -1,3 +1,4 @@
+import { checkInteractive, isInteractive } from "./interactive";
 import type { Question } from "./types";
 
 const normalize = (v: string) =>
@@ -20,6 +21,7 @@ export function similarity(a: string, b: string) {
 }
 
 export function checkAnswer(question: Question, given: string): boolean {
+  if (isInteractive(question.type)) return checkInteractive(question, given);
   const g = normalize(given);
   const a = normalize(question.answer);
   if (!g) return false;
@@ -53,6 +55,9 @@ export const TYPE_LABELS: Record<string, string> = {
   "true-false": "True / False",
   "fill-blank": "Fill in the Blank",
   "short-answer": "Short Answer",
+  ordering: "Ordering",
+  matching: "Matching",
+  "word-bank": "Word Bank",
 };
 
 export function formatDuration(ms: number) {

@@ -15,7 +15,7 @@ export function buildPrompt(o: PromptOptions) {
   const pct = (n: number) => Math.round((n / total) * 100);
   const typeList = o.types.join(", ");
 
-  return `You are an expert exam writer. Convert the study material below into a StudyForge deck.
+  return `You are an expert exam writer. Convert the study material below into a Deckly deck.
 
 OUTPUT RULES
 - Respond with ONE valid JSON object and nothing else. No markdown fences, no commentary.
@@ -30,16 +30,25 @@ SCHEMA
   "tags": string[],
   "questions": [
     {
-      "type": "flashcard" | "multiple-choice" | "true-false" | "fill-blank" | "short-answer",
+      "type": "flashcard" | "multiple-choice" | "true-false" | "fill-blank" | "short-answer" | "ordering" | "matching" | "word-bank",
       "question": string,
       "options": string[],          // multiple-choice only, 4 entries
-      "answer": string,             // must exactly match one option for multiple-choice; "true"/"false" for true-false
+      "answer": string,             // must exactly match one option for multiple-choice; "true"/"false" for true-false; omit for ordering/matching/word-bank
+      "items": string[],            // ordering only: 3-6 steps written in the CORRECT order
+      "pairs": [{ "left": string, "right": string }], // matching only: 3-5 couples
+      "blanks": string[],           // word-bank only: the correct word for each ___ in "question", in order
+      "wordBank": string[],         // word-bank only: the blank answers plus 2-3 plausible distractors
       "explanation": string,        // why the answer is correct
       "difficulty": "easy" | "medium" | "hard",
       "concept": string             // the specific topic being tested
     }
   ]
 }
+
+INTERACTIVE TYPE RULES
+- ordering: list "items" in the correct sequence; the app shuffles them for the learner. No "answer" field.
+- matching: give 3-5 "pairs"; every "right" value must be unique and plausible for more than one "left". No "answer" field.
+- word-bank: the "question" text must contain one ___ placeholder per blank, and "blanks" must have exactly that many entries in the same order.
 
 DECK SETTINGS
 - title: "${o.title || "Untitled Deck"}"
@@ -82,7 +91,7 @@ export function buildAppendPrompt(o: AppendPromptOptions) {
   const typeList = o.types.join(", ");
   const sample = o.existingQuestions.slice(0, 60);
 
-  return `You are an expert exam writer. Expand an EXISTING StudyForge deck with additional questions.
+  return `You are an expert exam writer. Expand an EXISTING Deckly deck with additional questions.
 
 OUTPUT RULES
 - Respond with ONE valid JSON object and nothing else. No markdown fences, no commentary.
@@ -94,16 +103,25 @@ SCHEMA
   "deckTitle": "${o.deckTitle || "Existing Deck"}",
   "questions": [
     {
-      "type": "flashcard" | "multiple-choice" | "true-false" | "fill-blank" | "short-answer",
+      "type": "flashcard" | "multiple-choice" | "true-false" | "fill-blank" | "short-answer" | "ordering" | "matching" | "word-bank",
       "question": string,
       "options": string[],          // multiple-choice only, 4 entries
-      "answer": string,             // must exactly match one option for multiple-choice; "true"/"false" for true-false
+      "answer": string,             // must exactly match one option for multiple-choice; "true"/"false" for true-false; omit for ordering/matching/word-bank
+      "items": string[],            // ordering only: 3-6 steps written in the CORRECT order
+      "pairs": [{ "left": string, "right": string }], // matching only: 3-5 couples
+      "blanks": string[],           // word-bank only: the correct word for each ___ in "question", in order
+      "wordBank": string[],         // word-bank only: the blank answers plus 2-3 plausible distractors
       "explanation": string,
       "difficulty": "easy" | "medium" | "hard",
       "concept": string             // reuse an existing concept label when the topic matches
     }
   ]
 }
+
+INTERACTIVE TYPE RULES
+- ordering: list "items" in the correct sequence; the app shuffles them. No "answer" field.
+- matching: give 3-5 "pairs" with unique, plausible "right" values. No "answer" field.
+- word-bank: one ___ placeholder in "question" per entry in "blanks", in the same order.
 
 DECK CONTEXT
 - deck: "${o.deckTitle || "Existing Deck"}" (${o.subject || "General"})

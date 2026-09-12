@@ -47,7 +47,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: "first-deck",
     name: "First Deck",
-    description: "Import your first deck into StudyForge.",
+    description: "Import your first deck into Deckly.",
     icon: "Layers",
     check: (_p, decks) => decks.length >= 1,
   },

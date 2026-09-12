@@ -21,20 +21,20 @@ import {
   SUBJECT_SUGGESTIONS,
 } from "@/lib/defaults";
 import { fileToWallpaperDataUrl } from "@/lib/wallpaper";
-import { useStudyForge } from "@/store/studyforge";
+import { useDeckly } from "@/store/deckly";
 import { cn } from "@/lib/utils";
 import type { Settings } from "@/lib/types";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — Appearance, Study & Data Controls | StudyForge" },
+      { title: "Settings — Appearance, Study & Data Controls | Deckly" },
       {
         name: "description",
         content:
-          "Tune accent colors, density, accessibility, study behaviour and gamification, then export, import or wipe all locally stored StudyForge data.",
+          "Tune accent colors, density, accessibility, study behaviour and gamification, then export, import or wipe all locally stored Deckly data.",
       },
-      { property: "og:title", content: "Settings — StudyForge" },
+      { property: "og:title", content: "Settings — Deckly" },
       {
         property: "og:description",
         content: "Full control over appearance, accessibility, study rules and your local data.",
@@ -90,7 +90,7 @@ function Toggle({
 
 function SettingsPage() {
   const { state, updateSettings, resetSettings, resetAll, exportState, importState } =
-    useStudyForge();
+    useDeckly();
   const s = state.settings;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -106,7 +106,7 @@ function SettingsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `studyforge-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `deckly-backup-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
     toast.success("Backup downloaded");
@@ -272,7 +272,7 @@ function SettingsPage() {
               <div className="anim-pop relative h-40 overflow-hidden rounded-xl border border-border">
                 <img
                   src={s.wallpaper}
-                  alt="Your current StudyForge wallpaper"
+                  alt="Your current Deckly wallpaper"
                   className="size-full object-cover"
                   style={{
                     opacity: s.wallpaperOpacity,
@@ -520,7 +520,7 @@ function SettingsPage() {
                 if (!file) return;
                 const ok = importState(await file.text());
                 toast[ok ? "success" : "error"](
-                  ok ? "Backup restored" : "That file isn't a valid StudyForge backup",
+                  ok ? "Backup restored" : "That file isn't a valid Deckly backup",
                 );
                 e.target.value = "";
               }}

@@ -18,11 +18,17 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { PageHeader } from "@/components/app-shell";
 import { QuizReport } from "@/components/quiz/quiz-report";
-import { useStudyForge } from "@/store/studyforge";
+import {
+  InteractiveQuestion,
+  isInteractiveComplete,
+} from "@/components/questions/interactive-question";
+import { useDeckly } from "@/store/deckly";
 import { checkAnswer, shuffleArray, TYPE_LABELS } from "@/lib/answers";
+import { displayAnswer, isInteractive } from "@/lib/interactive";
 import { xpForAnswer, comboMultiplier } from "@/lib/gamification";
 import { questionTypes } from "@/lib/schema";
 import { cn } from "@/lib/utils";
+
 import type {
   AnswerRecord,
   Difficulty,
@@ -36,7 +42,7 @@ import type {
 type Phase = "setup" | "running" | "report";
 
 export function QuizEngine() {
-  const { state, updateSettings, recordSession } = useStudyForge();
+  const { state, updateSettings, recordSession } = useDeckly();
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>("setup");
   const [config, setConfig] = useState<QuizConfig>(state.settings.defaultQuizConfig);
@@ -636,6 +642,24 @@ function QuizRun({
           </div>
         )}
 
+        {isInteractive(question.type) && (
+          <div className="space-y-3">
+            <InteractiveQuestion
+              question={question}
+              value={input}
+              onChange={setInput}
+              disabled={!!feedback}
+              revealed={!!feedback}
+            />
+            <Button
+              disabled={!!feedback || !isInteractiveComplete(question, input)}
+              onClick={() => commit(input, false)}
+            >
+              Submit answer
+            </Button>
+          </div>
+        )}
+
         {feedback && (
           <div
             className={cn(
@@ -646,13 +670,14 @@ function QuizRun({
             )}
           >
             <p className={cn("text-sm font-semibold", feedback.correct ? "text-success" : "text-destructive")}>
-              {feedback.correct ? "Correct" : `Answer: ${question.answer}`}
+              {feedback.correct ? "Correct" : `Answer: ${displayAnswer(question)}`}
             </p>
             {question.explanation && (
               <p className="mt-1 text-xs text-muted-foreground">{question.explanation}</p>
             )}
           </div>
         )}
+
 
         <div className="mt-8 flex gap-2">
           <Button variant="outline" disabled={!!feedback} onClick={() => commit(null, true)}>

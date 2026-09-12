@@ -3,9 +3,17 @@ export type QuestionType =
   | "multiple-choice"
   | "true-false"
   | "fill-blank"
-  | "short-answer";
+  | "short-answer"
+  | "ordering"
+  | "matching"
+  | "word-bank";
 
 export type Difficulty = "easy" | "medium" | "hard";
+
+export interface MatchPair {
+  left: string;
+  right: string;
+}
 
 export interface Question {
   id: string;
@@ -18,6 +26,14 @@ export interface Question {
   concept?: string;
   hint?: string;
   tags?: string[];
+  /** ordering: the items in their correct sequence */
+  items?: string[];
+  /** matching: prompt/answer couples the learner must pair up */
+  pairs?: MatchPair[];
+  /** word-bank: the correct word for each ___ blank, in order */
+  blanks?: string[];
+  /** word-bank: the full pool of selectable words (answers + distractors) */
+  wordBank?: string[];
 }
 
 export interface Deck {

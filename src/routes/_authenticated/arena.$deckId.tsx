@@ -5,13 +5,13 @@ import { DeckArena } from "@/components/arena/deck-arena";
 export const Route = createFileRoute("/_authenticated/arena/$deckId")({
   head: () => ({
     meta: [
-      { title: "Deck Arena — Interactive XP Duel | StudyForge" },
+      { title: "Deck Arena — Interactive XP Duel | Deckly" },
       {
         name: "description",
         content:
           "Play your deck as a fast interactive round: gain XP for correct answers, lose XP and lives for misses, and bank whatever survives into your profile.",
       },
-      { property: "og:title", content: "Deck Arena — StudyForge" },
+      { property: "og:title", content: "Deck Arena — Deckly" },
       {
         property: "og:description",
         content: "Combo multipliers, lives and timed rounds — an offline XP duel against your deck.",

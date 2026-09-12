@@ -5,19 +5,19 @@ import { AppPage } from "@/components/app-page";
 import { PageHeader } from "@/components/app-shell";
 import { Badge } from "@/components/ui/badge";
 import { ACHIEVEMENTS } from "@/lib/gamification";
-import { useStudyForge } from "@/store/studyforge";
+import { useDeckly } from "@/store/deckly";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/achievements")({
   head: () => ({
     meta: [
-      { title: "Achievements — Unlock Study Milestones | StudyForge" },
+      { title: "Achievements — Unlock Study Milestones | Deckly" },
       {
         name: "description",
         content:
-          "See every StudyForge achievement, what unlocks it, and how close you are to earning the next milestone badge.",
+          "See every Deckly achievement, what unlocks it, and how close you are to earning the next milestone badge.",
       },
-      { property: "og:title", content: "Achievements — StudyForge" },
+      { property: "og:title", content: "Achievements — Deckly" },
       {
         property: "og:description",
         content: "Track unlocked and locked study milestones earned entirely offline.",
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/_authenticated/achievements")({
 });
 
 function AchievementsPage() {
-  const { state } = useStudyForge();
+  const { state } = useDeckly();
   const unlocked = state.progress.unlockedAchievements;
   const iconFor = (name: string): LucideIcon =>
     ((LucideIcons as unknown as Record<string, LucideIcon>)[name] ?? Award);

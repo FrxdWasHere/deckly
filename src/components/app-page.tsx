@@ -1,10 +1,10 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
-import { useStudyForge } from "@/store/studyforge";
+import { useDeckly } from "@/store/deckly";
 import { AppShell } from "./app-shell";
 
 export function AppPage({ children }: { children: ReactNode }) {
-  const { state, hydrated } = useStudyForge();
+  const { state, hydrated } = useDeckly();
   const navigate = useNavigate();
 
   useEffect(() => {

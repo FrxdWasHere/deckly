@@ -17,7 +17,7 @@ import {
 import { AppPage, } from "@/components/app-page";
 import { PageHeader } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
-import { useStudyForge } from "@/store/studyforge";
+import { useDeckly } from "@/store/deckly";
 import { levelFromXp, ACHIEVEMENTS } from "@/lib/gamification";
 import { dayKey, formatDuration } from "@/lib/answers";
 import { DEFAULT_SETTINGS } from "@/lib/defaults";
@@ -27,16 +27,16 @@ import type { ReactNode } from "react";
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "StudyForge — Local-First Study Dashboard" },
+      { title: "Deckly — Local-First Study Dashboard" },
       {
         name: "description",
         content:
-          "Track XP, streaks, weak topics and decks in StudyForge — an offline study platform for AI-generated JSON question banks.",
+          "Track XP, streaks, weak topics and decks in Deckly — an offline study platform for AI-generated JSON question banks.",
       },
-      { property: "og:title", content: "StudyForge — Local-First Study Dashboard" },
+      { property: "og:title", content: "Deckly — Local-First Study Dashboard" },
       {
         property: "og:description",
-        content: "Track XP, streaks, weak topics and decks in StudyForge — an offline study platform for AI-generated JSON question banks.",
+        content: "Track XP, streaks, weak topics and decks in Deckly — an offline study platform for AI-generated JSON question banks.",
       },
     ],
   }),
@@ -83,7 +83,7 @@ function Widget({
 }
 
 function Dashboard() {
-  const { state, updateSettings } = useStudyForge();
+  const { state, updateSettings } = useDeckly();
   const { decks, progress, history, settings } = state;
   const { level, pct, intoLevel, needed } = levelFromXp(progress.lifetimeXp);
   const hidden = settings.hiddenWidgets;

@@ -14,7 +14,7 @@ import {
   type QuestionsValidationResult,
 } from "@/lib/schema";
 import { TYPE_LABELS } from "@/lib/answers";
-import { useStudyForge } from "@/store/studyforge";
+import { useDeckly } from "@/store/deckly";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/import")({
@@ -23,13 +23,13 @@ export const Route = createFileRoute("/_authenticated/import")({
   }),
   head: () => ({
     meta: [
-      { title: "Import a Deck — Validate AI JSON | StudyForge" },
+      { title: "Import a Deck — Validate AI JSON | Deckly" },
       {
         name: "description",
         content:
-          "Paste, upload or drag-and-drop AI-generated JSON. StudyForge validates the schema, previews the deck and imports it — as a new deck or as extra questions for an existing one.",
+          "Paste, upload or drag-and-drop AI-generated JSON. Deckly validates the schema, previews the deck and imports it — as a new deck or as extra questions for an existing one.",
       },
-      { property: "og:title", content: "Import a Deck — StudyForge" },
+      { property: "og:title", content: "Import a Deck — Deckly" },
       {
         property: "og:description",
         content: "Validate and import AI-generated question banks into your offline library.",
@@ -44,7 +44,7 @@ export const Route = createFileRoute("/_authenticated/import")({
 });
 
 function ImportPage() {
-  const { state, addDeck, addQuestions } = useStudyForge();
+  const { state, addDeck, addQuestions } = useDeckly();
   const navigate = useNavigate();
   const { deck: deckParam } = Route.useSearch();
   const [mode, setMode] = useState<"deck" | "append">(deckParam ? "append" : "deck");

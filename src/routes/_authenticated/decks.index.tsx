@@ -13,19 +13,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useStudyForge } from "@/store/studyforge";
+import { useDeckly } from "@/store/deckly";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/decks/")({
   head: () => ({
     meta: [
-      { title: "Deck Library — Search, Tag & Track Decks | StudyForge" },
+      { title: "Deck Library — Search, Tag & Track Decks | Deckly" },
       {
         name: "description",
         content:
           "Browse your offline deck library: search, sort, favorite and filter decks by tag while tracking completion for each one.",
       },
-      { property: "og:title", content: "Deck Library — StudyForge" },
+      { property: "og:title", content: "Deck Library — Deckly" },
       {
         property: "og:description",
         content: "All your locally stored study decks, searchable and sortable.",
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/_authenticated/decks/")({
 });
 
 function DeckLibrary() {
-  const { state, updateDeck } = useStudyForge();
+  const { state, updateDeck } = useDeckly();
   const [q, setQ] = useState("");
   const [sort, setSort] = useState("recent");
   const [tag, setTag] = useState("all");

@@ -11,10 +11,10 @@ import { lovable } from "@/integrations/lovable";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — StudyForge" },
-      { name: "description", content: "Sign in to StudyForge to sync your decks, XP, streaks and quiz history across devices." },
-      { property: "og:title", content: "Sign in — StudyForge" },
-      { property: "og:description", content: "Sign in to StudyForge to sync your decks, XP, streaks and quiz history across devices." },
+      { title: "Sign in — Deckly" },
+      { name: "description", content: "Sign in to Deckly to sync your decks, XP, streaks and quiz history across devices." },
+      { property: "og:title", content: "Sign in — Deckly" },
+      { property: "og:description", content: "Sign in to Deckly to sync your decks, XP, streaks and quiz history across devices." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -86,7 +86,7 @@ function AuthPage() {
             <div className="grid size-10 place-items-center rounded-xl bg-primary text-primary-foreground shadow-lg">
               <Flame className="size-5" />
             </div>
-            <span className="font-display text-2xl font-bold tracking-tight">StudyForge</span>
+            <span className="font-display text-2xl font-bold tracking-tight">Deckly</span>
           </div>
 
           <div className="anim-fade-up" style={{ animationDelay: "0.12s" }}>
@@ -111,7 +111,7 @@ function AuthPage() {
             <div className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground">
               <Flame className="size-4" />
             </div>
-            <span className="font-display text-xl font-bold tracking-tight">StudyForge</span>
+            <span className="font-display text-xl font-bold tracking-tight">Deckly</span>
           </div>
 
           {confirmSent ? (
@@ -207,7 +207,7 @@ function AuthPage() {
                   onClick={submitEmail}
                 >
                   {mode === "signin" ? <LogIn /> : <UserPlus />}
-                  {mode === "signin" ? "Sign in to StudyForge" : "Create account"}
+                  {mode === "signin" ? "Sign in to Deckly" : "Create account"}
                 </Button>
               </div>
 

@@ -20,7 +20,16 @@ export const DECK_COLORS = [
 export const DEFAULT_QUIZ_CONFIG: QuizConfig = {
   deckIds: [],
   questionCount: 10,
-  types: ["multiple-choice", "true-false", "fill-blank", "short-answer", "flashcard"],
+  types: [
+    "multiple-choice",
+    "true-false",
+    "fill-blank",
+    "short-answer",
+    "flashcard",
+    "ordering",
+    "matching",
+    "word-bank",
+  ],
   difficulties: ["easy", "medium", "hard"],
   shuffle: true,
   perQuestionSeconds: null,

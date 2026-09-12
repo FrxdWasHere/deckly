@@ -28,20 +28,20 @@ import { toast } from "sonner";
 import { AVATAR_EMOJIS, GRADE_LEVELS, STUDY_REASONS, SUBJECT_SUGGESTIONS } from "@/lib/defaults";
 import { validateDeckJson, type ValidationResult } from "@/lib/schema";
 import { cn } from "@/lib/utils";
-import { useStudyForge } from "@/store/studyforge";
+import { useDeckly } from "@/store/deckly";
 import { supabase } from "@/integrations/supabase/client";
 import { isGuest } from "@/lib/guest";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
     meta: [
-      { title: "Welcome to StudyForge — Set Up Your Account" },
+      { title: "Welcome to Deckly — Set Up Your Account" },
       {
         name: "description",
         content:
-          "Set up your StudyForge profile, learn the AI-free workflow and import your first deck. Everything syncs to your account, or stays local in guest mode.",
+          "Set up your Deckly profile, learn the AI-free workflow and import your first deck. Everything syncs to your account, or stays local in guest mode.",
       },
-      { property: "og:title", content: "Welcome to StudyForge" },
+      { property: "og:title", content: "Welcome to Deckly" },
       {
         property: "og:description",
         content: "Build your profile, generate a prompt with your own AI, import the JSON and start studying.",
@@ -63,7 +63,7 @@ const STEP_META = [
 function Onboarding() {
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
-  const { state, completeOnboarding, updateSettings, addDeck } = useStudyForge();
+  const { state, completeOnboarding, updateSettings, addDeck } = useDeckly();
   const navigate = useNavigate();
   const settings = state.settings;
 
@@ -121,7 +121,7 @@ function Onboarding() {
               <Flame className="size-6" />
             </div>
             <div>
-              <p className="font-display text-lg font-bold">StudyForge</p>
+              <p className="font-display text-lg font-bold">Deckly</p>
               <p className="text-[11px] text-muted-foreground">Setup</p>
             </div>
           </div>
@@ -178,7 +178,7 @@ function Onboarding() {
             <div className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground">
               <Flame className="size-5" />
             </div>
-            <p className="font-display font-bold">StudyForge</p>
+            <p className="font-display font-bold">Deckly</p>
           </div>
 
           <div className="mb-4 h-1 overflow-hidden rounded-full bg-border">
@@ -199,7 +199,7 @@ function Onboarding() {
             {step === 0 && (
               <div className="mt-4">
                 <span className="anim-pop inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[11px] text-primary">
-                  <Cloud className="size-3.5" /> StudyForge is online now
+                  <Cloud className="size-3.5" /> Deckly is online now
                 </span>
                 <h1 className="mt-4 text-3xl font-bold">
                   {settings.displayName ? `Welcome, ${settings.displayName}.` : "Welcome to the forge."}
@@ -237,7 +237,7 @@ function Onboarding() {
 
             {step === 1 && (
               <div className="mt-4">
-                <h1 className="text-3xl font-bold">There's no AI inside StudyForge</h1>
+                <h1 className="text-3xl font-bold">There's no AI inside Deckly</h1>
                 <p className="mt-3 text-muted-foreground">
                   It never calls an AI service. Instead it writes a precise prompt for you to run in
                   whichever model you already use — so you control cost, privacy and quality.
@@ -429,7 +429,7 @@ function Onboarding() {
               <div className="mt-4 space-y-4">
                 <h1 className="text-3xl font-bold">Import your first deck</h1>
                 <p className="text-muted-foreground">
-                  Already have StudyForge JSON from your AI? Drop it in now. Otherwise skip — you can
+                  Already have Deckly JSON from your AI? Drop it in now. Otherwise skip — you can
                   import at any time.
                 </p>
 

@@ -88,7 +88,7 @@ export function QuizReport({
 
   const copyReport = async () => {
     const lines: string[] = [
-      "STUDYFORGE QUIZ REPORT",
+      "DECKLY QUIZ REPORT",
       "======================",
       `Decks: ${result.deckTitles.join(" · ") || "Mixed decks"}`,
       `Date: ${new Date(result.createdAt).toLocaleString()}`,
