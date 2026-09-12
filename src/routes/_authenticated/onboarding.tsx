@@ -19,15 +19,27 @@ import {
   BarChart3,
   Rocket,
   Check,
+  Palette,
+  Plus,
+  Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { AVATAR_EMOJIS, GRADE_LEVELS, STUDY_REASONS, SUBJECT_SUGGESTIONS } from "@/lib/defaults";
+import {
+  ACCENTS,
+  AVATAR_EMOJIS,
+  GRADE_LEVELS,
+  SESSION_LENGTHS,
+  STUDY_REASONS,
+  STUDY_TIMES,
+  SUBJECT_SUGGESTIONS,
+} from "@/lib/defaults";
 import { validateDeckJson, type ValidationResult } from "@/lib/schema";
 import { cn } from "@/lib/utils";
+
 import { useDeckly } from "@/store/deckly";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
@@ -55,10 +67,35 @@ const STEP_META = [
   { label: "Welcome", icon: Flame },
   { label: "How it works", icon: Bot },
   { label: "What you get", icon: Swords },
-  { label: "Your profile", icon: UserRound },
+  { label: "About you", icon: UserRound },
+  { label: "Study plan", icon: BarChart3 },
+  { label: "Look & feel", icon: Palette },
   { label: "First deck", icon: FileJson },
   { label: "Ready", icon: Rocket },
 ] as const;
+
+function Chip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "press rounded-full border border-border px-3 py-1.5 text-xs transition-all duration-200 hover:border-primary/60",
+        active && "border-primary bg-primary/15 text-primary",
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
 
 function Onboarding() {
   const [step, setStep] = useState(0);
@@ -70,7 +107,10 @@ function Onboarding() {
   const [raw, setRaw] = useState("");
   const [result, setResult] = useState<ValidationResult | null>(null);
   const [imported, setImported] = useState(false);
+  const [customSubject, setCustomSubject] = useState("");
+  const [studyTime, setStudyTime] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+
 
   const evaluate = (text: string) => {
     setRaw(text);
@@ -80,6 +120,16 @@ function Onboarding() {
 
   const toggle = (list: string[], v: string) =>
     list.includes(v) ? list.filter((x) => x !== v) : [...list, v];
+
+  const addCustomSubject = () => {
+    const value = customSubject.trim();
+    if (!value) return;
+    if (!settings.focusSubjects.includes(value)) {
+      updateSettings({ focusSubjects: [...settings.focusSubjects, value] });
+    }
+    setCustomSubject("");
+  };
+
 
   const go = (next: number) => {
     setDir(next > step ? 1 : -1);
@@ -273,23 +323,42 @@ function Onboarding() {
             )}
 
             {step === 3 && (
-              <div className="mt-4 space-y-6">
+              <div className="mt-4 space-y-8">
                 <div>
-                  <h1 className="text-3xl font-bold">Make it yours</h1>
+                  <h1 className="text-3xl font-bold">Who's studying?</h1>
                   <p className="mt-3 text-muted-foreground">
-                    This personalises your dashboard, goals and reports on this device.
+                    Just a name and a face — everything here is optional and stays on this device.
                   </p>
+                </div>
+
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+                  <div className="anim-pop grid size-20 shrink-0 place-items-center rounded-3xl border border-primary/40 bg-primary/10 text-4xl">
+                    {settings.avatarEmoji || "🌊"}
+                  </div>
+                  <div className="min-w-0 flex-1 space-y-1.5">
+                    <Label className="text-xs">What should we call you?</Label>
+                    <Input
+                      value={settings.displayName}
+                      onChange={(e) => updateSettings({ displayName: e.target.value })}
+                      placeholder="Your name"
+                      maxLength={40}
+                      className="text-base"
+                    />
+                    <p className="text-[11px] text-muted-foreground">
+                      Used on your dashboard, reports and arena results.
+                    </p>
+                  </div>
                 </div>
 
                 <div>
                   <Label className="text-xs">Pick an avatar</Label>
-                  <div className="stagger mt-2 flex flex-wrap gap-2">
+                  <div className="stagger mt-2 grid grid-cols-8 gap-2 sm:grid-cols-12">
                     {AVATAR_EMOJIS.map((e) => (
                       <button
                         key={e}
                         onClick={() => updateSettings({ avatarEmoji: e })}
                         className={cn(
-                          "press grid size-10 place-items-center rounded-xl border border-border text-lg transition-all hover:scale-110",
+                          "press grid aspect-square place-items-center rounded-xl border border-border text-lg transition-all hover:scale-110",
                           settings.avatarEmoji === e && "scale-110 border-primary bg-primary/15",
                         )}
                       >
@@ -301,15 +370,6 @@ function Onboarding() {
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <Label className="text-xs">What should we call you?</Label>
-                    <Input
-                      value={settings.displayName}
-                      onChange={(e) => updateSettings({ displayName: e.target.value })}
-                      placeholder="Your name"
-                      maxLength={40}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
                     <Label className="text-xs">School / institution</Label>
                     <Input
                       value={settings.school}
@@ -318,46 +378,75 @@ function Onboarding() {
                       maxLength={80}
                     />
                   </div>
-                </div>
-
-                <div>
-                  <Label className="text-xs">Grade level</Label>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {GRADE_LEVELS.map((g) => (
-                      <button
-                        key={g}
-                        onClick={() =>
-                          updateSettings({ gradeLevel: settings.gradeLevel === g ? "" : g })
-                        }
-                        className={cn(
-                          "press rounded-full border border-border px-3 py-1.5 text-xs transition-colors",
-                          settings.gradeLevel === g && "border-primary bg-primary/15 text-primary",
-                        )}
-                      >
-                        {g}
-                      </button>
-                    ))}
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Level</Label>
+                    <select
+                      value={settings.gradeLevel}
+                      onChange={(e) => updateSettings({ gradeLevel: e.target.value })}
+                      className="h-9 w-full rounded-md border border-border bg-surface-2/60 px-3 text-sm outline-none focus-visible:border-primary"
+                    >
+                      <option value="">Prefer not to say</option>
+                      {GRADE_LEVELS.map((g) => (
+                        <option key={g} value={g}>
+                          {g}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {step === 4 && (
+              <div className="mt-4 space-y-8">
+                <div>
+                  <h1 className="text-3xl font-bold">Shape your study plan</h1>
+                  <p className="mt-3 text-muted-foreground">
+                    Pick as many or as few as you like — it tunes your goals, reports and weak-topic
+                    hints.
+                  </p>
+                </div>
 
                 <div>
-                  <Label className="text-xs">Subjects you're focusing on</Label>
+                  <Label className="text-xs">
+                    Subjects you're focusing on
+                    {settings.focusSubjects.length > 0 && (
+                      <span className="ml-2 text-primary">{settings.focusSubjects.length} selected</span>
+                    )}
+                  </Label>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    {SUBJECT_SUGGESTIONS.map((sub) => (
-                      <button
+                    {[
+                      ...SUBJECT_SUGGESTIONS,
+                      ...settings.focusSubjects.filter((s) => !SUBJECT_SUGGESTIONS.includes(s)),
+                    ].map((sub) => (
+                      <Chip
                         key={sub}
+                        active={settings.focusSubjects.includes(sub)}
                         onClick={() =>
                           updateSettings({ focusSubjects: toggle(settings.focusSubjects, sub) })
                         }
-                        className={cn(
-                          "press rounded-full border border-border px-3 py-1.5 text-xs transition-colors",
-                          settings.focusSubjects.includes(sub) &&
-                            "border-primary bg-primary/15 text-primary",
-                        )}
                       >
                         {sub}
-                      </button>
+                      </Chip>
                     ))}
+                  </div>
+                  <div className="mt-3 flex gap-2">
+                    <Input
+                      value={customSubject}
+                      onChange={(e) => setCustomSubject(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          addCustomSubject();
+                        }
+                      }}
+                      placeholder="Add your own subject"
+                      maxLength={40}
+                      className="max-w-xs"
+                    />
+                    <Button variant="outline" className="press" onClick={addCustomSubject}>
+                      <Plus /> Add
+                    </Button>
                   </div>
                 </div>
 
@@ -365,17 +454,50 @@ function Onboarding() {
                   <Label className="text-xs">Why are you studying?</Label>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {STUDY_REASONS.map((r) => (
-                      <button
+                      <Chip
                         key={r}
+                        active={settings.studyReason === r}
                         onClick={() =>
                           updateSettings({ studyReason: settings.studyReason === r ? "" : r })
                         }
-                        className={cn(
-                          "press rounded-full border border-border px-3 py-1.5 text-xs transition-colors",
-                          settings.studyReason === r && "border-primary bg-primary/15 text-primary",
-                        )}
                       >
                         {r}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="flex items-center gap-2 text-xs">
+                    <Clock className="size-3.5 text-primary" /> When do you usually study?
+                  </Label>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {STUDY_TIMES.map((t) => (
+                      <Chip
+                        key={t}
+                        active={studyTime === t}
+                        onClick={() => setStudyTime(studyTime === t ? "" : t)}
+                      >
+                        {t}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-xs">Session style</Label>
+                  <div className="stagger mt-2 grid gap-3 sm:grid-cols-4">
+                    {SESSION_LENGTHS.map((s) => (
+                      <button
+                        key={s.label}
+                        onClick={() => updateSettings({ dailyGoal: s.goal })}
+                        className={cn(
+                          "press hover-lift rounded-xl border border-border bg-surface-2/60 p-3 text-left transition-all",
+                          settings.dailyGoal === s.goal && "border-primary bg-primary/12",
+                        )}
+                      >
+                        <p className="text-sm font-semibold">{s.label}</p>
+                        <p className="mt-1 text-[11px] text-muted-foreground">{s.detail}</p>
                       </button>
                     ))}
                   </div>
@@ -396,7 +518,107 @@ function Onboarding() {
               </div>
             )}
 
-            {step === 4 && (
+            {step === 5 && (
+              <div className="mt-4 space-y-8">
+                <div>
+                  <h1 className="text-3xl font-bold">Make it look right</h1>
+                  <p className="mt-3 text-muted-foreground">
+                    Choose an accent and comfort settings. You can change all of this later.
+                  </p>
+                </div>
+
+                <div>
+                  <Label className="text-xs">Accent colour</Label>
+                  <div className="stagger mt-2 grid gap-3 sm:grid-cols-3">
+                    {ACCENTS.map((a) => (
+                      <button
+                        key={a.id}
+                        onClick={() => updateSettings({ accent: a.id })}
+                        className={cn(
+                          "press hover-lift flex items-center gap-3 rounded-xl border border-border bg-surface-2/60 p-3 text-left",
+                          settings.accent === a.id && "border-primary bg-primary/12",
+                        )}
+                      >
+                        <span
+                          className="size-7 shrink-0 rounded-lg"
+                          style={{ background: `linear-gradient(135deg, ${a.value}, ${a.glow})` }}
+                        />
+                        <span className="text-sm font-medium">{a.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-xs">Layout density</Label>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {(["compact", "cozy", "spacious"] as const).map((d) => (
+                      <Chip
+                        key={d}
+                        active={settings.density === d}
+                        onClick={() => updateSettings({ density: d })}
+                      >
+                        {d[0].toUpperCase() + d.slice(1)}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {[
+                    {
+                      label: "Reduced motion",
+                      desc: "Calmer transitions",
+                      on: settings.reducedMotion,
+                      set: () => updateSettings({ reducedMotion: !settings.reducedMotion }),
+                    },
+                    {
+                      label: "High contrast",
+                      desc: "Stronger borders and text",
+                      on: settings.highContrast,
+                      set: () => updateSettings({ highContrast: !settings.highContrast }),
+                    },
+                    {
+                      label: "XP and levels",
+                      desc: "Gamified progress",
+                      on: settings.xpEnabled,
+                      set: () => updateSettings({ xpEnabled: !settings.xpEnabled }),
+                    },
+                    {
+                      label: "Sound effects",
+                      desc: "Clicks and streak chimes",
+                      on: settings.soundEnabled,
+                      set: () => updateSettings({ soundEnabled: !settings.soundEnabled }),
+                    },
+                  ].map((o) => (
+                    <button
+                      key={o.label}
+                      onClick={o.set}
+                      className={cn(
+                        "press flex items-center justify-between gap-3 rounded-xl border border-border bg-surface-2/60 p-3 text-left",
+                        o.on && "border-primary/60 bg-primary/10",
+                      )}
+                    >
+                      <span>
+                        <span className="block text-sm font-medium">{o.label}</span>
+                        <span className="block text-[11px] text-muted-foreground">{o.desc}</span>
+                      </span>
+                      <span
+                        className={cn(
+                          "grid size-5 shrink-0 place-items-center rounded border border-border",
+                          o.on && "border-primary bg-primary text-primary-foreground",
+                        )}
+                      >
+                        {o.on && <Check className="size-3" />}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {step === 6 && (
+
               <div className="mt-4 space-y-4">
                 <h1 className="text-3xl font-bold">Import your first deck</h1>
                 <p className="text-muted-foreground">
@@ -461,7 +683,7 @@ function Onboarding() {
               </div>
             )}
 
-            {step === 5 && (
+            {step === 7 && (
               <div className="mt-4 text-center">
                 <div className="anim-pop mx-auto grid size-16 place-items-center rounded-3xl bg-primary text-primary-foreground shadow-[var(--shadow-forge)]">
                   <Rocket className="size-8" />
@@ -520,7 +742,7 @@ function Onboarding() {
             <button className="underline-offset-4 hover:underline" onClick={() => finish("/format")}>
               Show me the JSON format first
             </button>
-            <button className="underline-offset-4 hover:underline" onClick={() => go(4)}>
+            <button className="underline-offset-4 hover:underline" onClick={() => go(6)}>
               I already have JSON — import it now
             </button>
           </div>

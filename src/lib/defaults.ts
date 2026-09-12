@@ -142,37 +142,96 @@ export const DEFAULT_STATE: AppState = {
 };
 
 export const GRADE_LEVELS = [
+  "Primary school",
   "Middle school",
   "Grade 9",
   "Grade 10",
   "Grade 11",
   "Grade 12",
+  "College / TAFE",
   "Undergraduate",
-  "Postgraduate",
+  "Honours",
+  "Masters",
+  "PhD / research",
   "Professional / certification",
+  "Bootcamp",
   "Self-directed learner",
+  "Teacher / tutor",
 ];
 
 export const SUBJECT_SUGGESTIONS = [
   "Mathematics",
+  "Further Maths",
+  "Statistics",
   "Biology",
   "Chemistry",
   "Physics",
+  "Psychology",
+  "Health & Medicine",
+  "Nursing",
   "History",
   "Geography",
+  "Politics",
+  "Philosophy",
   "Literature",
+  "Writing",
   "Languages",
   "Computer Science",
+  "Data Science",
+  "Engineering",
   "Economics",
+  "Accounting",
+  "Business",
+  "Marketing",
   "Law",
-  "Medicine",
+  "Art & Design",
+  "Music",
+  "Sport Science",
 ];
 
-export const AVATAR_EMOJIS = ["🌊", "💧", "🐋", "🐬", "🧠", "📘", "🌀", "🫐", "🩵", "💙"];
+export const AVATAR_EMOJIS = [
+  "🌊",
+  "💧",
+  "🐋",
+  "🐬",
+  "🐙",
+  "🦈",
+  "🐚",
+  "⚓",
+  "🧠",
+  "📘",
+  "📐",
+  "🔬",
+  "🧪",
+  "🌀",
+  "🫐",
+  "🩵",
+  "💙",
+  "⚡",
+  "🔥",
+  "🏆",
+  "🎯",
+  "🚀",
+  "🦉",
+  "🐺",
+];
 
 export const STUDY_REASONS = [
   "Exam prep",
   "Daily revision",
   "Certification",
+  "Assignments",
+  "Interview prep",
+  "Language fluency",
+  "Teaching others",
   "Curiosity",
+];
+
+export const STUDY_TIMES = ["Early morning", "Daytime", "Evening", "Late night", "Whenever I can"];
+
+export const SESSION_LENGTHS = [
+  { label: "Quick", detail: "5–10 min bursts", goal: 10 },
+  { label: "Balanced", detail: "20 min a day", goal: 25 },
+  { label: "Deep", detail: "45 min sessions", goal: 60 },
+  { label: "Marathon", detail: "Cramming season", goal: 120 },
 ];

@@ -140,7 +140,7 @@ export function QuizReport({
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       {/* Hero: score ring + headline stats */}
-      <section className="panel anim-rise p-8 sm:p-10">
+      <section className="panel anim-fade-up p-8 sm:p-10">
         <div className="grid items-center gap-8 sm:grid-cols-[auto_1fr]">
           <div className="relative mx-auto size-48">
             <svg viewBox="0 0 180 180" className="size-full -rotate-90">

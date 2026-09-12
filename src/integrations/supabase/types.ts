@@ -133,60 +133,48 @@ export type Database = {
       questions: {
         Row: {
           answer: string
-          blanks: Json | null
           concept: string | null
           deck_id: string
           difficulty: string
           explanation: string | null
           hint: string | null
           id: string
-          items: Json | null
           options: Json | null
-          pairs: Json | null
           position: number
           question: string
           tags: string[]
           type: string
           user_id: string
-          word_bank: Json | null
         }
         Insert: {
           answer: string
-          blanks?: Json | null
           concept?: string | null
           deck_id: string
           difficulty?: string
           explanation?: string | null
           hint?: string | null
           id: string
-          items?: Json | null
           options?: Json | null
-          pairs?: Json | null
           position?: number
           question: string
           tags?: string[]
           type: string
           user_id: string
-          word_bank?: Json | null
         }
         Update: {
           answer?: string
-          blanks?: Json | null
           concept?: string | null
           deck_id?: string
           difficulty?: string
           explanation?: string | null
           hint?: string | null
           id?: string
-          items?: Json | null
           options?: Json | null
-          pairs?: Json | null
           position?: number
           question?: string
           tags?: string[]
           type?: string
           user_id?: string
-          word_bank?: Json | null
         }
         Relationships: [
           {
