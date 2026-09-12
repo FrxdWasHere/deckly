@@ -46,6 +46,8 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
         property: "og:description",
         content: "Build your profile, generate a prompt with your own AI, import the JSON and start studying.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Onboarding,
@@ -109,15 +111,14 @@ function Onboarding() {
   const progress = ((step + 1) / STEP_META.length) * 100;
 
   return (
-    <div className="grid-forge relative min-h-screen overflow-hidden bg-background">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,color-mix(in_oklab,var(--primary)_20%,transparent),transparent_60%)]" />
-      <div className="anim-float pointer-events-none absolute -right-32 top-24 size-80 rounded-full bg-primary/15 blur-3xl" />
+    <div className="ocean-premium grid-forge relative min-h-screen overflow-hidden bg-background">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,var(--primary),transparent)] opacity-70" />
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-5xl gap-10 px-6 py-12">
+      <div className="relative mx-auto flex min-h-screen w-full max-w-6xl gap-14 px-6 py-10 lg:py-14">
         {/* Rail */}
-        <aside className="anim-fade-up hidden w-56 shrink-0 flex-col lg:flex">
+        <aside className="anim-fade-up hidden w-64 shrink-0 flex-col border-r border-border pr-10 lg:flex">
           <div className="flex items-center gap-3">
-            <div className="anim-float grid size-11 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-[var(--shadow-forge)]">
+            <div className="grid size-11 place-items-center rounded-lg bg-primary text-primary-foreground shadow-[var(--shadow-forge)]">
               <Flame className="size-6" />
             </div>
             <div>
@@ -135,14 +136,14 @@ function Onboarding() {
                   <button
                     onClick={() => go(i)}
                     className={cn(
-                      "press flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-all duration-300",
+                      "press flex w-full items-center gap-3 rounded-md px-3 py-3 text-left text-sm transition-all duration-300",
                       active && "bg-primary/12 text-foreground",
                       !active && "text-muted-foreground hover:bg-surface-2/60",
                     )}
                   >
                     <span
                       className={cn(
-                        "grid size-7 shrink-0 place-items-center rounded-lg border transition-all duration-300",
+                        "grid size-7 shrink-0 place-items-center rounded border transition-all duration-300",
                         done && "border-success/60 bg-success/15 text-success",
                         active && "scale-110 border-primary bg-primary text-primary-foreground",
                         !done && !active && "border-border",
@@ -157,7 +158,7 @@ function Onboarding() {
             })}
           </ol>
 
-          <div className="mt-auto rounded-xl border border-border bg-surface-2/60 p-3 text-[11px] leading-relaxed text-muted-foreground">
+          <div className="mt-auto border-t border-border pt-5 text-[11px] leading-relaxed text-muted-foreground">
             {guest ? (
               <>
                 <span className="font-medium text-foreground">Guest mode.</span> Your work stays on
@@ -181,7 +182,7 @@ function Onboarding() {
             <p className="font-display font-bold">Deckly</p>
           </div>
 
-          <div className="mb-4 h-1 overflow-hidden rounded-full bg-border">
+          <div className="mb-5 h-1 overflow-hidden rounded-full bg-border">
             <div
               className="h-full rounded-full bg-[linear-gradient(90deg,var(--primary),var(--primary-glow))] transition-all duration-500 ease-out"
               style={{ width: `${progress}%` }}
@@ -190,9 +191,9 @@ function Onboarding() {
 
           <div
             key={step}
-            className={cn("panel p-8", dir > 0 ? "anim-fade-up" : "anim-fade-in")}
+            className={cn("panel min-h-[600px] p-7 sm:p-10 lg:p-12", dir > 0 ? "anim-fade-up" : "anim-fade-in")}
           >
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            <p className="text-xs font-semibold uppercase text-primary">
               Step {step + 1} of {STEP_META.length} · {STEP_META[step].label}
             </p>
 

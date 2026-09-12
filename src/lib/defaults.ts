@@ -1,6 +1,7 @@
 import type { AppState, Progress, QuizConfig, Settings } from "./types";
 
 export const ACCENTS: { id: string; label: string; value: string; glow: string }[] = [
+  { id: "ocean", label: "Ocean", value: "oklch(0.72 0.1 190)", glow: "oklch(0.79 0.09 185)" },
   { id: "ember", label: "Ember", value: "oklch(0.72 0.18 48)", glow: "oklch(0.82 0.16 72)" },
   { id: "cyan", label: "Arc Cyan", value: "oklch(0.72 0.14 205)", glow: "oklch(0.82 0.12 195)" },
   { id: "lime", label: "Acid Lime", value: "oklch(0.78 0.18 130)", glow: "oklch(0.86 0.16 140)" },
@@ -9,7 +10,7 @@ export const ACCENTS: { id: string; label: string; value: string; glow: string }
 ];
 
 export const DECK_COLORS = [
-  "oklch(0.72 0.18 48)",
+  "oklch(0.72 0.1 190)",
   "oklch(0.72 0.14 205)",
   "oklch(0.7 0.15 155)",
   "oklch(0.68 0.18 300)",
@@ -51,13 +52,13 @@ export const DEFAULT_SETTINGS: Settings = {
   dailyGoal: 20,
   confirmBeforeExit: true,
   theme: "dark",
-  accent: "ember",
+  accent: "ocean",
   wallpaper: null,
   wallpaperOpacity: 0.35,
   wallpaperBlur: 4,
   fontScale: 1,
   density: "cozy",
-  radius: 0.75,
+  radius: 0.5,
   buttonSize: "default",
   animationSpeed: 1,
   showProgressBars: true,

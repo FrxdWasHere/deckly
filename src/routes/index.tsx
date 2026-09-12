@@ -1,15 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-  Flame,
-  ArrowRight,
-  Cloud,
-  Bot,
-  Swords,
-  BarChart3,
-  Trophy,
-  UserRound,
-  Sparkles,
+  ArrowRight, BarChart3, BookOpen, BrainCircuit, Check, ChevronRight, Cloud,
+  FileJson, Flame, GripVertical, Layers3, ListChecks, LockKeyhole, MousePointer2,
+  Shuffle, Sparkles, Swords, Trophy, UserRound, Wand2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,18 +13,10 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Deckly | Your flashcards, forged to perfection." },
-      {
-        name: "description",
-        content:
-          "Create an account to sync decks, XP, streaks and quiz history across devices — or start instantly as a guest. Deckly turns AI-generated question banks into flashcards, quizzes and an XP arena.",
-      },
-      { property: "og:title", content: "Deckly | Your flashcards, forged to perfection." },
-      {
-        property: "og:description",
-        content:
-          "Sign up to sync your decks and progress to the cloud, or continue as a guest on this device.",
-      },
+      { title: "Deckly — Turn Any Subject Into Active Recall" },
+      { name: "description", content: "Create structured study decks with your preferred AI, then master them through flashcards, quizzes, interactive questions, analytics, and XP." },
+      { property: "og:title", content: "Deckly — Turn Any Subject Into Active Recall" },
+      { property: "og:description", content: "A focused study workspace for decks, quizzes, interactive questions, progress, and cross-device sync." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -38,37 +24,11 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-const FEATURES = [
-  {
-    icon: Bot,
-    title: "Bring your own AI",
-    body: "Prompt Forge writes a strict prompt for ChatGPT, Gemini, Claude — anything. Deckly never calls an AI itself.",
-  },
-  {
-    icon: Cloud,
-    title: "Your account, everywhere",
-    body: "Decks, XP, streaks, notes and quiz history sync to your account and follow you to any device.",
-  },
-  {
-    icon: Swords,
-    title: "Deck Arena",
-    body: "Timed rounds, lives, combo multipliers and XP you actually keep when the round ends.",
-  },
-  {
-    icon: BarChart3,
-    title: "Real analytics",
-    body: "Concept heatmaps, weak-topic detection, accuracy trends and shareable quiz reports.",
-  },
-  {
-    icon: Trophy,
-    title: "Levels & achievements",
-    body: "Earn XP for every correct answer, climb levels and unlock achievements as your streak grows.",
-  },
-  {
-    icon: Sparkles,
-    title: "Yours to shape",
-    body: "Accent colours, wallpapers, dashboard widgets, high-contrast and reduced-motion modes.",
-  },
+const workflow = [
+  { icon: Wand2, n: "01", title: "Forge the prompt", body: "Choose your subject, level, focus, and question mix. Deckly turns those choices into a precise generation brief." },
+  { icon: Sparkles, n: "02", title: "Use your preferred AI", body: "Run the prompt in ChatGPT, Gemini, Claude, a local model, or whichever tool you already trust." },
+  { icon: FileJson, n: "03", title: "Bring the deck back", body: "Paste or upload the result. Deckly checks every field and explains anything that needs attention." },
+  { icon: BrainCircuit, n: "04", title: "Practise with intent", body: "Move between flashcards, focused quizzes, interactive questions, and time-pressured arena rounds." },
 ];
 
 function Landing() {
@@ -82,9 +42,7 @@ function Landing() {
       if (data.user || isGuest()) navigate({ to: "/dashboard", replace: true });
       else setChecking(false);
     });
-    return () => {
-      alive = false;
-    };
+    return () => { alive = false; };
   }, [navigate]);
 
   const continueAsGuest = () => {
@@ -92,83 +50,126 @@ function Landing() {
     navigate({ to: "/onboarding" });
   };
 
-  if (checking) {
-    return (
-      <div className="grid min-h-screen place-items-center bg-background">
-        <Flame className="anim-float size-8 text-primary" />
-      </div>
-    );
-  }
+  if (checking) return <div className="ocean-premium grid min-h-screen place-items-center bg-background"><Flame className="anim-float size-8 text-primary" /></div>;
 
   return (
-    <div className="grid-forge relative min-h-screen overflow-hidden bg-background">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,color-mix(in_oklab,var(--primary)_22%,transparent),transparent_62%)]" />
-      <div className="anim-float pointer-events-none absolute -right-24 top-32 size-72 rounded-full bg-primary/20 blur-3xl" />
-      <div className="anim-float pointer-events-none absolute -left-24 bottom-0 size-72 rounded-full bg-primary/10 blur-3xl [animation-delay:1.2s]" />
+    <div className="ocean-premium min-h-screen overflow-hidden bg-background text-foreground">
+      <header className="relative z-20 border-b border-border bg-background/85 backdrop-blur-xl">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8">
+          <Link to="/" className="flex items-center gap-3">
+            <span className="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground"><Flame className="size-5" /></span>
+            <span className="font-display text-xl font-bold">Deckly</span>
+          </Link>
+          <nav aria-label="Primary navigation" className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
+            <a href="#workflow" className="transition-colors hover:text-foreground">How it works</a>
+            <a href="#practice" className="transition-colors hover:text-foreground">Practice</a>
+            <a href="#progress" className="transition-colors hover:text-foreground">Progress</a>
+          </nav>
+          <Button variant="ghost" onClick={() => navigate({ to: "/auth" })}>Sign in <ChevronRight /></Button>
+        </div>
+      </header>
 
-      <div className="relative mx-auto w-full max-w-5xl px-6 py-10">
-        <header className="anim-fade-up flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="grid size-10 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-[var(--shadow-forge)]">
-              <Flame className="size-5" />
+      <main>
+        <section className="relative px-5 pb-28 pt-20 text-center sm:px-8 sm:pt-28">
+          <div className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,var(--primary),transparent)] opacity-60" />
+          <div className="relative mx-auto max-w-6xl">
+            <p className="anim-fade-up text-xs font-semibold uppercase text-primary">The focused study workspace</p>
+            <h1 className="anim-fade-up mx-auto mt-7 max-w-5xl text-balance font-display text-5xl font-bold leading-[1.02] sm:text-7xl lg:text-8xl [animation-delay:60ms]">
+              Build better questions.<br /><span className="font-medium text-muted-foreground">Remember what matters.</span>
+            </h1>
+            <p className="anim-fade-up mx-auto mt-7 max-w-2xl text-pretty text-lg leading-8 text-muted-foreground [animation-delay:120ms]">
+              Turn material from any subject into structured decks, then study with flashcards, interactive questions, focused quizzes, and progress you can actually use.
+            </p>
+            <div className="anim-fade-up mt-10 flex flex-col justify-center gap-3 sm:flex-row [animation-delay:180ms]">
+              <Button size="lg" className="press h-12 px-7" onClick={() => navigate({ to: "/auth" })}>Create your account <ArrowRight /></Button>
+              <Button size="lg" variant="outline" className="press h-12 px-7" onClick={continueAsGuest}><UserRound /> Try as a guest</Button>
             </div>
-            <span className="font-display text-lg font-bold">Deckly</span>
-          </div>
-          <Button variant="ghost" onClick={() => navigate({ to: "/auth" })}>
-            Sign in
-          </Button>
-        </header>
+            <p className="mt-4 text-xs text-muted-foreground">Free to start. Guest mode stays on this device.</p>
 
-        <section className="py-16 text-center sm:py-24">
-          <p className="anim-fade-up inline-flex items-center gap-2 rounded-full border border-border bg-surface-2/70 px-3 py-1.5 text-xs text-muted-foreground">
-            <Cloud className="size-3.5 text-primary" /> Now online: Bring your decks with you, across all of your devices.
-          </p>
-          <h1 className="anim-fade-up mt-6 text-balance font-display text-4xl font-bold leading-tight sm:text-6xl [animation-delay:80ms]">
-            It's like Gizmo, 
-            <span className="block bg-[linear-gradient(100deg,var(--primary),var(--primary-glow))] bg-clip-text text-transparent">
-              but it's free.
-            </span>
-          </h1>
-          <p className="anim-fade-up mx-auto mt-5 max-w-xl text-pretty text-muted-foreground [animation-delay:140ms]">
-            Paste your material, run the generated prompt in whichever AI you like, bring the JSON
-            back, and Deckly turns it into flashcards, quizzes, an XP arena and real analytics.
-          </p>
-
-          <div className="anim-fade-up mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row [animation-delay:200ms]">
-            <Button size="lg" className="press hover-lift w-full sm:w-auto" onClick={() => navigate({ to: "/auth" })}>
-              Create your free account <ArrowRight />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="press w-full sm:w-auto"
-              onClick={continueAsGuest}
-            >
-              <UserRound /> Continue as guest
-            </Button>
+            <div className="relative mx-auto mt-20 max-w-5xl text-left">
+              <div className="absolute inset-x-16 inset-y-0 translate-y-8 rounded-lg border border-border bg-surface/30" />
+              <div className="absolute inset-x-8 inset-y-0 translate-y-4 rounded-lg border border-border bg-surface/60" />
+              <div className="relative overflow-hidden rounded-lg border border-border bg-surface shadow-[var(--shadow-forge)]">
+                <div className="flex items-center justify-between border-b border-border px-5 py-3">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground"><span className="size-2 rounded-full bg-success" /> Study session in progress</div>
+                  <span className="font-mono text-xs text-primary">12 / 20</span>
+                </div>
+                <div className="grid min-h-[380px] md:grid-cols-[220px_1fr]">
+                  <div className="hidden border-r border-border p-5 md:block">
+                    <p className="text-xs font-semibold uppercase text-muted-foreground">Cell biology</p>
+                    <div className="mt-6 space-y-2">
+                      {["Active recall", "Concept links", "Weak topics", "Session report"].map((item, i) => <div key={item} className={`rounded-md px-3 py-2 text-sm ${i === 0 ? "bg-secondary text-foreground" : "text-muted-foreground"}`}>{item}</div>)}
+                    </div>
+                  </div>
+                  <div className="flex flex-col justify-between p-7 sm:p-10">
+                    <div className="flex items-center justify-between"><span className="text-xs font-semibold uppercase text-primary">Ordering</span><span className="text-xs text-muted-foreground">Drag into the correct sequence</span></div>
+                    <div className="mx-auto my-8 w-full max-w-xl">
+                      <h2 className="text-xl font-semibold sm:text-2xl">Arrange the stages of mitosis in order.</h2>
+                      <div className="mt-7 space-y-2">
+                        {["Prophase", "Metaphase", "Anaphase", "Telophase"].map((item, i) => <div key={item} className="flex items-center gap-4 rounded-md border border-border bg-background/50 p-4"><GripVertical className="size-4 text-muted-foreground" /><span className="grid size-6 place-items-center rounded bg-secondary text-xs text-primary">{i + 1}</span><span className="font-medium">{item}</span></div>)}
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between border-t border-border pt-5 text-xs text-muted-foreground"><span>Biology · Cell division</span><span className="flex items-center gap-2"><Trophy className="size-4 text-primary" /> +20 XP</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="anim-fade-up mt-3 text-xs text-muted-foreground [animation-delay:240ms]">
-            Guest mode keeps everything on this device only — you can create an account later and
-            bring your decks and all your progress with you.
-          </p>
         </section>
 
-        <section className="stagger grid gap-4 pb-20 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f) => (
-            <div key={f.title} className="hover-lift panel p-5">
-              <span className="grid size-10 place-items-center rounded-xl bg-secondary text-primary">
-                <f.icon className="size-5" />
-              </span>
-              <h2 className="mt-4 font-semibold">{f.title}</h2>
-              <p className="mt-1.5 text-sm text-muted-foreground">{f.body}</p>
+        <section id="workflow" className="border-y border-border bg-surface/40 px-5 py-24 sm:px-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
+              <div><p className="text-xs font-semibold uppercase text-primary">A controlled workflow</p><h2 className="mt-4 text-4xl font-bold sm:text-5xl">Your material.<br />Your model. Your deck.</h2></div>
+              <p className="max-w-2xl text-lg leading-8 text-muted-foreground">Deckly does not hide an AI model behind the interface. It gives you a rigorous format, while you keep control over the tool, source material, privacy, and output.</p>
             </div>
-          ))}
+            <div className="mt-14 grid gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-2 lg:grid-cols-4">
+              {workflow.map((item) => <article key={item.n} className="group bg-background p-6 sm:p-8"><div className="flex items-center justify-between"><item.icon className="size-5 text-primary" /><span className="font-mono text-xs text-muted-foreground">{item.n}</span></div><h3 className="mt-12 text-xl font-semibold">{item.title}</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">{item.body}</p></article>)}
+            </div>
+          </div>
         </section>
 
-        <footer className="border-t border-border py-8 text-center text-xs text-muted-foreground">
-          Deckly · your study workshop. No AI inside — you bring the model.
-        </footer>
-      </div>
+        <section id="practice" className="px-5 py-24 sm:px-8">
+          <div className="mx-auto max-w-7xl">
+            <p className="text-xs font-semibold uppercase text-primary">More than flip cards</p>
+            <h2 className="mt-4 max-w-3xl text-4xl font-bold sm:text-5xl">Practice changes shape to match the knowledge.</h2>
+            <div className="mt-14 grid gap-4 lg:grid-cols-12">
+              <article className="panel flex min-h-[420px] flex-col justify-between p-7 lg:col-span-7 sm:p-10">
+                <div><span className="inline-flex size-11 items-center justify-center rounded-md bg-secondary text-primary"><Layers3 /></span><h3 className="mt-6 text-3xl font-bold">One deck, several ways to learn.</h3><p className="mt-4 max-w-xl leading-7 text-muted-foreground">Review at your own pace, test a filtered topic set, or enter the Arena when you want time pressure, lives, combos, and earned XP.</p></div>
+                <div className="mt-10 grid grid-cols-3 gap-2 text-center text-xs"><div className="rounded-md border border-border bg-background/40 p-4"><BookOpen className="mx-auto mb-2 size-5 text-primary" />Study</div><div className="rounded-md border border-border bg-background/40 p-4"><ListChecks className="mx-auto mb-2 size-5 text-primary" />Quiz</div><div className="rounded-md border border-border bg-background/40 p-4"><Swords className="mx-auto mb-2 size-5 text-primary" />Arena</div></div>
+              </article>
+              <article className="panel p-7 lg:col-span-5 sm:p-10"><Shuffle className="size-7 text-primary" /><h3 className="mt-6 text-2xl font-bold">Ordering</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Rebuild timelines, processes, arguments, and sequences from a shuffled set.</p><div className="mt-8 space-y-2">{["Define the question", "Recall the sequence", "Check the logic"].map((x,i)=><div key={x} className="flex items-center gap-3 rounded-md border border-border bg-background/35 p-3 text-sm"><GripVertical className="size-4 text-muted-foreground" /><span className="text-primary">0{i+1}</span>{x}</div>)}</div></article>
+              <article className="panel p-7 lg:col-span-5 sm:p-10"><MousePointer2 className="size-7 text-primary" /><h3 className="mt-6 text-2xl font-bold">Matching</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Connect terms, definitions, people, dates, causes, and effects without relying on recognition alone.</p><div className="mt-8 grid grid-cols-2 gap-2 text-xs"><span className="rounded-md border border-primary/40 bg-primary/10 p-3">Mitochondria</span><span className="rounded-md border border-border p-3 text-muted-foreground">Energy production</span><span className="rounded-md border border-border p-3">Ribosome</span><span className="rounded-md border border-border p-3 text-muted-foreground">Protein synthesis</span></div></article>
+              <article className="panel p-7 lg:col-span-7 sm:p-10"><div className="grid gap-8 sm:grid-cols-2 sm:items-center"><div><BrainCircuit className="size-7 text-primary" /><h3 className="mt-6 text-2xl font-bold">Word bank</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Complete multiple blanks from a shared answer set, with distractors that demand careful recall.</p></div><div className="rounded-md border border-border bg-background/40 p-5 text-sm leading-8">The <span className="border-b border-primary px-2 text-primary">cell membrane</span> controls movement into and out of the <span className="border-b border-primary px-2 text-primary">cell</span>.</div></div></article>
+            </div>
+          </div>
+        </section>
+
+        <section id="progress" className="border-y border-border bg-surface/40 px-5 py-24 sm:px-8">
+          <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2 lg:items-center">
+            <div><p className="text-xs font-semibold uppercase text-primary">Useful feedback loops</p><h2 className="mt-4 text-4xl font-bold sm:text-5xl">See the gaps before the exam does.</h2><p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground">Accuracy trends, concept heatmaps, weak-topic detection, session history, and streaks turn practice into a plan—not just another score.</p><ul className="mt-8 space-y-3 text-sm">{["Concept-level accuracy and weak-topic signals", "Quiz reports you can review and share", "Mastery, bookmarks, notes, levels, and achievements"].map(x=><li key={x} className="flex gap-3"><Check className="mt-0.5 size-4 text-primary" />{x}</li>)}</ul></div>
+            <div className="panel p-6 sm:p-8"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Weekly accuracy</p><p className="mt-1 text-3xl font-bold">84%</p></div><BarChart3 className="size-7 text-primary" /></div><div className="mt-10 flex h-44 items-end gap-3">{[42,58,51,72,64,82,88].map((h,i)=><div key={i} className="flex flex-1 flex-col justify-end gap-2"><div className="rounded-t bg-primary/70 transition-all" style={{height:`${h}%`}}/><span className="text-center text-[10px] text-muted-foreground">{"MTWTFSS"[i]}</span></div>)}</div><div className="mt-8 grid grid-cols-2 gap-3"><div className="rounded-md border border-border bg-background/35 p-4"><p className="text-xs text-muted-foreground">Current streak</p><p className="mt-1 text-xl font-bold">12 days</p></div><div className="rounded-md border border-border bg-background/35 p-4"><p className="text-xs text-muted-foreground">Mastered</p><p className="mt-1 text-xl font-bold">148 cards</p></div></div></div>
+          </div>
+        </section>
+
+        <section className="px-5 py-24 sm:px-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-3">
+              <div className="bg-background p-8"><Cloud className="size-6 text-primary" /><h3 className="mt-6 text-xl font-bold">Pick up anywhere</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Signed-in decks, settings, notes, results, XP, and progress follow you across devices.</p></div>
+              <div className="bg-background p-8"><LockKeyhole className="size-6 text-primary" /><h3 className="mt-6 text-xl font-bold">Private by design</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Guest work stays local. Account content is protected, and personal wallpapers remain private.</p></div>
+              <div className="bg-background p-8"><Wand2 className="size-6 text-primary" /><h3 className="mt-6 text-xl font-bold">No locked-in model</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Deckly never stores an AI key. You choose where prompts run and inspect every deck before importing.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-border px-5 py-24 text-center sm:px-8">
+          <div className="mx-auto max-w-3xl"><Flame className="mx-auto size-8 text-primary" /><h2 className="mt-7 text-4xl font-bold sm:text-6xl">Make the next study session count.</h2><p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-muted-foreground">Start with a blank workspace, bring an existing deck, or explore on this device before creating an account.</p><div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row"><Button size="lg" className="h-12 px-7" onClick={() => navigate({to:"/auth"})}>Get started <ArrowRight /></Button><Button size="lg" variant="outline" className="h-12 px-7" onClick={continueAsGuest}>Continue as guest</Button></div></div>
+        </section>
+      </main>
+
+      <footer className="border-t border-border bg-surface/30">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8"><div className="flex items-center gap-3"><Flame className="size-4 text-primary" /><span className="font-display font-bold">Deckly</span><span className="text-xs text-muted-foreground">Study with intent.</span></div><div className="flex gap-6 text-sm text-muted-foreground"><Link to="/privacy" className="hover:text-foreground">Privacy policy</Link><Link to="/terms" className="hover:text-foreground">Terms of service</Link></div></div>
+      </footer>
     </div>
   );
 }

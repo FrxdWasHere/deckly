@@ -72,18 +72,14 @@ function AuthPage() {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-background text-foreground">
+    <div className="auth-premium flex min-h-screen w-full bg-background text-foreground">
       {/* Left panel — forge showcase */}
       <div className="relative hidden w-1/2 overflow-hidden border-r border-border lg:flex">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-[10%] -top-[10%] h-[70%] w-[70%] rounded-full bg-primary/20 blur-[120px]" />
-          <div className="absolute -bottom-[20%] -right-[10%] h-[60%] w-[60%] rounded-full bg-primary/10 blur-[120px]" />
-          <div className="grid-forge absolute inset-0 opacity-60" />
-        </div>
+        <div className="pointer-events-none absolute inset-0 bg-surface/40" />
 
         <div className="relative z-10 flex w-full flex-col justify-between p-12 xl:p-16">
           <div className="anim-fade-up flex items-center gap-3">
-            <div className="grid size-10 place-items-center rounded-xl bg-primary text-primary-foreground shadow-lg">
+            <div className="grid size-10 place-items-center rounded-lg bg-primary text-primary-foreground shadow-lg">
               <Flame className="size-5" />
             </div>
             <span className="font-display text-2xl font-bold tracking-tight">Deckly</span>
@@ -101,14 +97,14 @@ function AuthPage() {
         <div className="anim-fade-up flex gap-8 text-sm font-medium text-muted-foreground" style={{ animationDelay: "0.2s" }}>
           </div>
         </div>
-      </div> .
+      </div>
 
       {/* Right panel — auth form */}
-      <div className="flex w-full items-center justify-center bg-[radial-gradient(circle_at_top_right,color-mix(in_oklab,var(--primary)_7%,transparent),transparent)] p-6 sm:p-10 lg:w-1/2 lg:p-16">
+      <div className="flex w-full items-center justify-center bg-background p-6 sm:p-10 lg:w-1/2 lg:p-16">
         <div className="anim-fade-up w-full max-w-md space-y-8">
           {/* Mobile logo */}
           <div className="flex items-center gap-3 lg:hidden">
-            <div className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground">
+            <div className="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground">
               <Flame className="size-4" />
             </div>
             <span className="font-display text-xl font-bold tracking-tight">Deckly</span>
@@ -117,7 +113,7 @@ function AuthPage() {
           {confirmSent ? (
             <div className="space-y-6">
               <div className="space-y-2">
-                <div className="grid size-12 place-items-center rounded-2xl bg-primary/15 text-primary">
+                <div className="grid size-12 place-items-center rounded-lg bg-primary/15 text-primary">
                   <Mail className="size-6" />
                 </div>
                 <h1 className="pt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">
@@ -130,7 +126,7 @@ function AuthPage() {
               </div>
               <Button
                 variant="outline"
-                className="w-full rounded-xl py-6"
+                className="w-full rounded-lg py-6"
                 onClick={() => {
                   setConfirmSent(false);
                   setMode("signin");
@@ -152,11 +148,12 @@ function AuthPage() {
                 </p>
               </div>
 
-              <button
+              <Button
                 type="button"
                 disabled={busy}
                 onClick={signInGoogle}
-                className="group flex w-full items-center justify-center gap-3 rounded-xl border border-border bg-secondary/50 px-4 py-3 font-medium transition-all duration-300 hover:bg-secondary disabled:opacity-50"
+                variant="outline"
+                className="group h-12 flex w-full items-center justify-center gap-3 rounded-lg border border-border bg-secondary/50 px-4 py-3 font-medium transition-all duration-300 hover:bg-secondary disabled:opacity-50"
               >
                 <svg viewBox="0 0 24 24" className="size-5 transition-transform group-hover:scale-110" aria-hidden>
                   <path fill="#4285F4" d="M23.5 12.3c0-.9-.1-1.5-.3-2.2H12v4.1h6.5c-.1 1.1-.8 2.7-2.4 3.8l-.02.15 3.5 2.7.24.02c2.2-2.05 3.5-5.05 3.5-8.58z"/>
@@ -165,7 +162,7 @@ function AuthPage() {
                   <path fill="#EA4335" d="M12 4.6c2.25 0 3.77.97 4.64 1.78l3.39-3.3C17.86 1.19 15.2 0 12 0 7.4 0 3.4 2.7 1.29 6.63l3.98 3c.94-2.92 3.6-5.03 6.73-5.03z"/>
                 </svg>
                 Continue with Google
-              </button>
+              </Button>
 
               <div className="relative flex items-center gap-4 py-1">
                 <div className="h-px flex-1 bg-border" />
@@ -183,7 +180,7 @@ function AuthPage() {
                     placeholder="you@school.edu"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="rounded-xl border-border bg-secondary/50 px-4 py-6 placeholder:text-muted-foreground/60 focus-visible:ring-primary/50"
+                    className="rounded-lg border-border bg-secondary/50 px-4 py-6 placeholder:text-muted-foreground/60 focus-visible:ring-primary/50"
                   />
                 </div>
 
@@ -197,12 +194,12 @@ function AuthPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && submitEmail()}
-                    className="rounded-xl border-border bg-secondary/50 px-4 py-6 placeholder:text-muted-foreground/60 focus-visible:ring-primary/50"
+                    className="rounded-lg border-border bg-secondary/50 px-4 py-6 placeholder:text-muted-foreground/60 focus-visible:ring-primary/50"
                   />
                 </div>
 
                 <Button
-                  className="press mt-2 w-full rounded-xl py-6 font-bold shadow-[0_0_24px_-6px_color-mix(in_oklab,var(--primary)_55%,transparent)]"
+                  className="press mt-2 w-full rounded-lg py-6 font-bold shadow-[0_0_24px_-6px_color-mix(in_oklab,var(--primary)_55%,transparent)]"
                   disabled={busy || !email.trim() || !password}
                   onClick={submitEmail}
                 >
@@ -213,13 +210,14 @@ function AuthPage() {
 
               <p className="text-center text-sm text-muted-foreground">
                 {mode === "signin" ? "New here? " : "Already have an account? "}
-                <button
+                <Button
                   type="button"
-                  className="font-semibold text-foreground transition-colors hover:text-primary"
+                  variant="link"
+                  className="h-auto p-0 font-semibold"
                   onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
                 >
                   {mode === "signin" ? "Create account" : "Sign in"}
-                </button>
+                </Button>
               </p>
             </>
           )}

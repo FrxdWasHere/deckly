@@ -17,6 +17,7 @@ import {
 import { useDeckly } from "@/store/deckly";
 import { levelFromXp } from "@/lib/gamification";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { useWallpaperUrl } from "@/hooks/use-wallpaper-url";
 import type { ReactNode } from "react";
 
@@ -38,11 +39,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   const collapsed = state.settings.sidebarCollapsed;
   const { level, pct, intoLevel, needed } = levelFromXp(state.progress.lifetimeXp);
   const density = state.settings.density;
-  const pad = density === "compact" ? "p-4" : density === "spacious" ? "p-10" : "p-6 md:p-8";
+  const pad = density === "compact" ? "p-4" : density === "spacious" ? "p-5 md:p-10 lg:p-12" : "p-6 md:p-8";
   const wallpaper = useWallpaperUrl(state.settings.wallpaper);
 
   return (
-    <div className="relative flex min-h-screen w-full bg-background">
+    <div className="workspace relative flex min-h-screen w-full bg-background">
       {wallpaper && (
         <>
           <div
@@ -67,7 +68,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         )}
       >
         <div className="flex items-center gap-3 px-5 py-6">
-          <div className="anim-pop grid size-9 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground transition-transform duration-300 hover:scale-110 hover:rotate-6">
+          <div className="anim-pop grid size-9 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground transition-transform duration-300 hover:scale-110 hover:rotate-6">
             <Flame className="size-5" />
           </div>
           {!collapsed && (
@@ -123,13 +124,16 @@ export function AppShell({ children }: { children: ReactNode }) {
               />
             </div>
           </div>
-          <button
+          <Button
+            variant="ghost"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             onClick={() => updateSettings({ sidebarCollapsed: !collapsed })}
             className="press flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
           >
             {collapsed ? <PanelLeft className="size-4" /> : <PanelLeftClose className="size-4" />}
             {!collapsed && "Collapse"}
-          </button>
+          </Button>
         </div>
       </aside>
 
@@ -187,10 +191,10 @@ export function PageHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="anim-fade-up mb-8 flex flex-wrap items-end justify-between gap-4">
+    <div className="anim-fade-up mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-7">
       <div>
-        <h1 className="font-display text-3xl font-bold tracking-tight">{title}</h1>
-        {description && <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{description}</p>}
+        <h1 className="font-display text-3xl font-semibold sm:text-4xl">{title}</h1>
+        {description && <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">{description}</p>}
       </div>
       {action}
     </div>
