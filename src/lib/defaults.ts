@@ -1,22 +1,28 @@
 import type { AppState, Progress, QuizConfig, Settings } from "./types";
 
 export const ACCENTS: { id: string; label: string; value: string; glow: string }[] = [
-  { id: "ocean", label: "Ocean", value: "oklch(0.72 0.1 190)", glow: "oklch(0.79 0.09 185)" },
-  { id: "ember", label: "Ember", value: "oklch(0.72 0.18 48)", glow: "oklch(0.82 0.16 72)" },
-  { id: "cyan", label: "Arc Cyan", value: "oklch(0.72 0.14 205)", glow: "oklch(0.82 0.12 195)" },
-  { id: "lime", label: "Acid Lime", value: "oklch(0.78 0.18 130)", glow: "oklch(0.86 0.16 140)" },
-  { id: "violet", label: "Ion Violet", value: "oklch(0.68 0.18 300)", glow: "oklch(0.78 0.16 315)" },
-  { id: "rose", label: "Signal Rose", value: "oklch(0.68 0.19 15)", glow: "oklch(0.78 0.16 30)" },
+  { id: "ocean", label: "Ocean", value: "oklch(0.7 0.15 240)", glow: "oklch(0.79 0.12 225)" },
+  { id: "deep-blue", label: "Deep Blue", value: "oklch(0.62 0.18 255)", glow: "oklch(0.74 0.15 245)" },
+  { id: "cyan", label: "Arc Blue", value: "oklch(0.75 0.12 220)", glow: "oklch(0.84 0.09 215)" },
+  { id: "azure", label: "Azure", value: "oklch(0.68 0.17 235)", glow: "oklch(0.79 0.13 225)" },
+  { id: "midnight", label: "Midnight", value: "oklch(0.55 0.2 270)", glow: "oklch(0.68 0.17 260)" },
+  { id: "tidal", label: "Tidal", value: "oklch(0.66 0.15 205)", glow: "oklch(0.78 0.12 210)" },
 ];
 
 export const DECK_COLORS = [
-  "oklch(0.72 0.1 190)",
-  "oklch(0.72 0.14 205)",
-  "oklch(0.7 0.15 155)",
-  "oklch(0.68 0.18 300)",
-  "oklch(0.68 0.19 15)",
-  "oklch(0.8 0.15 85)",
+  "oklch(0.7 0.15 240)",
+  "oklch(0.75 0.12 220)",
+  "oklch(0.65 0.17 250)",
+  "oklch(0.58 0.19 265)",
+  "oklch(0.68 0.15 205)",
+  "oklch(0.78 0.1 230)",
 ];
+
+export function oceanDeckColor(color: string) {
+  if (DECK_COLORS.includes(color)) return color;
+  const index = Array.from(color).reduce((sum, char) => sum + char.charCodeAt(0), 0) % DECK_COLORS.length;
+  return DECK_COLORS[index];
+}
 
 export const DEFAULT_QUIZ_CONFIG: QuizConfig = {
   deckIds: [],
@@ -46,7 +52,7 @@ export const DEFAULT_SETTINGS: Settings = {
   displayName: "Scholar",
   gradeLevel: "",
   school: "",
-  avatarEmoji: "🔥",
+  avatarEmoji: "🌊",
   focusSubjects: [],
   studyReason: "",
   dailyGoal: 20,
@@ -162,7 +168,7 @@ export const SUBJECT_SUGGESTIONS = [
   "Medicine",
 ];
 
-export const AVATAR_EMOJIS = ["🔥", "🧠", "📚", "⚡", "🦉", "🚀", "🧪", "🎯", "🐝", "🌙"];
+export const AVATAR_EMOJIS = ["🌊", "💧", "🐋", "🐬", "🧠", "📘", "🌀", "🫐", "🩵", "💙"];
 
 export const STUDY_REASONS = [
   "Exam prep",

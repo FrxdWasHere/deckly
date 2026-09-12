@@ -436,7 +436,7 @@ function SettingsPage() {
           />
           <Toggle
             label="Colorblind-safe palette"
-            hint="Swap correct/incorrect colors for blue and orange"
+            hint="Use a higher-contrast light and deep blue pair"
             checked={s.colorblindPalette}
             onChange={(v) => set("colorblindPalette", v)}
           />

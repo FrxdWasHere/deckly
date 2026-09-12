@@ -73,7 +73,7 @@ function AuthPage() {
 
   return (
     <div className="auth-premium flex min-h-screen w-full bg-background text-foreground">
-      {/* Left panel — forge showcase */}
+      {/* Left panel — product showcase */}
       <div className="relative hidden w-1/2 overflow-hidden border-r border-border lg:flex">
         <div className="pointer-events-none absolute inset-0 bg-surface/40" />
 
@@ -88,7 +88,7 @@ function AuthPage() {
           <div className="anim-fade-up" style={{ animationDelay: "0.12s" }}>
             <h2 className="mb-6 font-display text-4xl font-light leading-tight xl:text-5xl">
               Master your craft, <br />
-              <span className="ember-text font-bold">one deck at a time.</span>
+              <span className="ocean-text font-bold">one deck at a time.</span>
             </h2>
             <p className="max-w-md text-lg text-muted-foreground">
               Decks, quizzes and streaks — forged into a study habit that actually sticks.

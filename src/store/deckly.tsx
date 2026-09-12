@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import type { User } from "@supabase/supabase-js";
 import type { Json } from "@/integrations/supabase/types";
 import { supabase } from "@/integrations/supabase/client";
-import { ACCENTS, DEFAULT_PROGRESS, DEFAULT_SETTINGS, DEFAULT_STATE } from "@/lib/defaults";
+import { ACCENTS, AVATAR_EMOJIS, DEFAULT_PROGRESS, DEFAULT_SETTINGS, DEFAULT_STATE, oceanDeckColor } from "@/lib/defaults";
 import { evaluateAchievements, ACHIEVEMENTS } from "@/lib/gamification";
 import { dayKey } from "@/lib/answers";
 import type {
@@ -38,7 +38,18 @@ function loadLegacyState(): AppState | null {
     const raw = window.localStorage.getItem(LEGACY_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<AppState>;
-    return { ...DEFAULT_STATE, ...parsed } as AppState;
+    const state = { ...DEFAULT_STATE, ...parsed } as AppState;
+    const accent = ACCENTS.some((item) => item.id === state.settings.accent)
+      ? state.settings.accent
+      : DEFAULT_SETTINGS.accent;
+    const avatarEmoji = AVATAR_EMOJIS.includes(state.settings.avatarEmoji)
+      ? state.settings.avatarEmoji
+      : DEFAULT_SETTINGS.avatarEmoji;
+    return {
+      ...state,
+      settings: { ...state.settings, accent, avatarEmoji },
+      decks: state.decks.map((deck) => ({ ...deck, color: oceanDeckColor(deck.color) })),
+    };
   } catch {
     return null;
   }
@@ -151,7 +162,7 @@ async function loadCloudState(userId: string): Promise<AppState> {
       title: d.title,
       subject: d.subject,
       description: d.description ?? undefined,
-      color: d.color,
+      color: oceanDeckColor(d.color),
       tags: d.tags ?? [],
       favorite: d.favorite,
       createdAt: d.created_at_ms,
@@ -167,6 +178,12 @@ async function loadCloudState(userId: string): Promise<AppState> {
   const settings: Settings = {
     ...DEFAULT_SETTINGS,
     ...settingsPayload,
+    accent: ACCENTS.some((item) => item.id === settingsPayload.accent)
+      ? settingsPayload.accent ?? DEFAULT_SETTINGS.accent
+      : DEFAULT_SETTINGS.accent,
+    avatarEmoji: AVATAR_EMOJIS.includes(settingsPayload.avatarEmoji ?? "")
+      ? settingsPayload.avatarEmoji ?? DEFAULT_SETTINGS.avatarEmoji
+      : DEFAULT_SETTINGS.avatarEmoji,
     defaultQuizConfig: {
       ...DEFAULT_SETTINGS.defaultQuizConfig,
       ...(settingsPayload.defaultQuizConfig ?? {}),
@@ -726,7 +743,24 @@ export function DecklyProvider({ children }: { children: ReactNode }) {
         try {
           const parsed = JSON.parse(json) as AppState;
           if (!parsed || typeof parsed !== "object") return false;
-          const next = { ...DEFAULT_STATE, ...parsed };
+          const next = {
+            ...DEFAULT_STATE,
+            ...parsed,
+            settings: {
+              ...DEFAULT_SETTINGS,
+              ...parsed.settings,
+              accent: ACCENTS.some((item) => item.id === parsed.settings?.accent)
+                ? parsed.settings.accent
+                : DEFAULT_SETTINGS.accent,
+              avatarEmoji: AVATAR_EMOJIS.includes(parsed.settings?.avatarEmoji ?? "")
+                ? parsed.settings.avatarEmoji
+                : DEFAULT_SETTINGS.avatarEmoji,
+            },
+            decks: (parsed.decks ?? []).map((deck) => ({
+              ...deck,
+              color: oceanDeckColor(deck.color),
+            })),
+          };
           setState(() => next);
           const u = userRef.current;
           if (u) void pushFullState(u.id, next);

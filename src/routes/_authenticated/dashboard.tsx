@@ -203,7 +203,7 @@ function Dashboard() {
         {show("level") && (
           <Widget id="level" title="Level & XP" icon={Zap} onHide={hide}>
             <div className="flex items-baseline gap-2">
-              <span className="font-display text-3xl font-bold ember-text">Lv {level}</span>
+              <span className="ocean-text font-display text-3xl font-bold">Lv {level}</span>
               <span className="text-xs text-muted-foreground">
                 {intoLevel}/{needed} XP
               </span>
