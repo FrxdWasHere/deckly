@@ -19,7 +19,7 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "StudyForge — Turn AI-Generated JSON Into Real Study Sessions" },
+      { title: "StudyForge" },
       {
         name: "description",
         content:
