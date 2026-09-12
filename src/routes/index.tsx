@@ -19,13 +19,13 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "StudyForge" },
+      { title: "StudyForge | Your flashcards, forged to perfection." },
       {
         name: "description",
         content:
           "Create an account to sync decks, XP, streaks and quiz history across devices — or start instantly as a guest. StudyForge turns AI-generated question banks into flashcards, quizzes and an XP arena.",
       },
-      { property: "og:title", content: "StudyForge — Study Harder, Forged Smarter" },
+      { property: "og:title", content: "StudyForge | Your flashcards, forged to perfection." },
       {
         property: "og:description",
         content:
@@ -121,12 +121,12 @@ function Landing() {
 
         <section className="py-16 text-center sm:py-24">
           <p className="anim-fade-up inline-flex items-center gap-2 rounded-full border border-border bg-surface-2/70 px-3 py-1.5 text-xs text-muted-foreground">
-            <Cloud className="size-3.5 text-primary" /> Now online — accounts, cloud sync, every device
+            <Cloud className="size-3.5 text-primary" /> Now online: Bring your decks with you, across all of your devices.
           </p>
           <h1 className="anim-fade-up mt-6 text-balance font-display text-4xl font-bold leading-tight sm:text-6xl [animation-delay:80ms]">
-            Turn any AI answer into
+            It's like Gizmo, 
             <span className="block bg-[linear-gradient(100deg,var(--primary),var(--primary-glow))] bg-clip-text text-transparent">
-              a study session that sticks.
+              but it's free.
             </span>
           </h1>
           <p className="anim-fade-up mx-auto mt-5 max-w-xl text-pretty text-muted-foreground [animation-delay:140ms]">
@@ -149,7 +149,7 @@ function Landing() {
           </div>
           <p className="anim-fade-up mt-3 text-xs text-muted-foreground [animation-delay:240ms]">
             Guest mode keeps everything on this device only — you can create an account later and
-            bring your decks with you.
+            bring your decks and all your progress with you.
           </p>
         </section>
 
