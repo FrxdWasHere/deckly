@@ -12,10 +12,10 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Deckly — Turn Any Subject Into Active Recall" },
-      { name: "description", content: "Create structured study decks with your preferred AI, then master them through flashcards, quizzes, interactive questions, analytics, and XP." },
-      { property: "og:title", content: "Deckly — Turn Any Subject Into Active Recall" },
-      { property: "og:description", content: "A focused study workspace for decks, quizzes, interactive questions, and progress — stored in your browser, moved with JSON exports." },
+      { title: "Deckly — AI Flashcards done right." },
+      { name: "description", content: "A focused study workspace for decks, quizzes, interactive questions, and progress — all in your browser." },
+      { property: "og:title", content: "Deckly — AI Flashcards done right." },
+      { property: "og:description", content: "A focused study workspace for decks, quizzes, interactive questions, and progress — all in your browser." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -72,10 +72,13 @@ function Landing() {
         <section className="relative px-5 pb-28 pt-20 text-center sm:px-8 sm:pt-28">
           <div className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,var(--primary),transparent)] opacity-60" />
           <div className="relative mx-auto max-w-6xl">
-            <p className="anim-fade-up text-xs font-semibold uppercase text-primary">The focused study workspace</p>
-            <h1 className="anim-fade-up mx-auto mt-7 max-w-5xl text-balance font-display text-5xl font-bold leading-[1.02] sm:text-7xl lg:text-8xl [animation-delay:60ms]">
-              Build better questions.<br /><span className="font-medium text-muted-foreground">Remember what matters.</span>
-            </h1>
+            <p className="anim-fade-up text-s font-semibold uppercase text-primary">The focused study workspace, built with local in mind.</p>
+           <h1 className="anim-fade-up mx-auto mt-7 max-w-5xl text-balance font-display text-5xl font-bold leading-[1.02] sm:text-7xl lg:text-8xl [animation-delay:60ms]">
+            Just like Gizmo,<br />
+            <span className="font-medium text-muted-foreground text-5xl sm:text-6xl lg:text-7xl">
+            but better in every way.
+            </span>
+          </h1>
             <p className="anim-fade-up mx-auto mt-7 max-w-2xl text-pretty text-lg leading-8 text-muted-foreground [animation-delay:120ms]">
               Turn material from any subject into structured decks, then study with flashcards, interactive questions, focused quizzes, and progress you can actually use.
             </p>
@@ -167,7 +170,7 @@ function Landing() {
       </main>
 
       <footer className="border-t border-border bg-surface/30">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8"><div className="flex items-center gap-3"><Flame className="size-4 text-primary" /><span className="font-display font-bold">Deckly</span><span className="text-xs text-muted-foreground">Study with intent.</span></div><div className="flex gap-6 text-sm text-muted-foreground"><Link to="/privacy" className="hover:text-foreground">Privacy policy</Link><Link to="/terms" className="hover:text-foreground">Terms of service</Link></div></div>
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8"><div className="flex items-center gap-3"><Flame className="size-4 text-primary" /><span className="font-display font-bold">Deckly</span><span className="text-xs text-muted-foreground">Built by students, for students.</span></div><div className="flex gap-6 text-sm text-muted-foreground"><Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link><Link to="/terms" className="hover:text-foreground">Terms of Service</Link></div></div>
       </footer>
     </div>
   );
