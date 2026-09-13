@@ -2,10 +2,6 @@
 
 > Turn any AI-generated JSON question bank into a polished study session — flashcards, quizzes, an XP arena, and real analytics.
 
-[![Live Preview](https://img.shields.io/badge/Live%20Preview-Knowly-blue)](https://id-preview--da147d52-248d-48c1-b85c-ad3de32156b9.lovable.app)
-
-![Knowly preview](https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/73a20bc8-a697-475c-adfb-64348f72b302/id-preview-91177294--aae57bb8-07a6-43ea-a58c-114412ffe651.lovable.app-1785229173023.png)
-
 Knowly is a study platform that works with AI-generated question banks. It does **not** call any AI service itself. Instead, it provides a **Prompt Forge** that writes a strict prompt for the user's preferred LLM (ChatGPT, Gemini, Claude, OpenRouter, Ollama, etc.). The user brings the resulting JSON back, Knowly validates it, and keeps the library in this browser. JSON export is how you back it up or move it.
 
 ---
