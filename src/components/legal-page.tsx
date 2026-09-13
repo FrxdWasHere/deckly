@@ -22,7 +22,7 @@ export function LegalPage({
             <span className="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground">
               <Flame className="size-4" />
             </span>
-            Deckly
+            Knowly
           </Link>
           <Button asChild variant="ghost" size="sm">
             <Link to="/"><ArrowLeft /> Back home</Link>
@@ -38,7 +38,7 @@ export function LegalPage({
       </main>
       <footer className="border-t border-border py-8">
         <div className="mx-auto flex max-w-3xl flex-wrap gap-x-6 gap-y-2 px-6 text-sm text-muted-foreground">
-          <span>© 2026 Deckly</span>
+          <span>© 2026 Knowly</span>
           <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
           <Link to="/terms" className="hover:text-foreground">Terms</Link>
         </div>

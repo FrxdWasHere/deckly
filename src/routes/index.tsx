@@ -6,15 +6,15 @@ import {
   Shuffle, Sparkles, Swords, Trophy, Wand2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useDeckly } from "@/store/deckly";
+import { useKnowly } from "@/store/knowly";
 
 export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Deckly — AI Flashcards done right." },
+      { title: "Knowly — AI Flashcards done right." },
       { name: "description", content: "A focused study workspace for decks, quizzes, interactive questions, and progress — all in your browser." },
-      { property: "og:title", content: "Deckly — AI Flashcards done right." },
+      { property: "og:title", content: "Knowly — AI Flashcards done right." },
       { property: "og:description", content: "A focused study workspace for decks, quizzes, interactive questions, and progress — all in your browser." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -24,15 +24,15 @@ export const Route = createFileRoute("/")({
 });
 
 const workflow = [
-  { icon: Wand2, n: "01", title: "Forge the prompt", body: "Choose your subject, level, focus, and question mix. Deckly turns those choices into a precise generation brief." },
+  { icon: Wand2, n: "01", title: "Forge the prompt", body: "Choose your subject, level, focus, and question mix. Knowly turns those choices into a precise generation brief." },
   { icon: Sparkles, n: "02", title: "Use your preferred AI", body: "Run the prompt in ChatGPT, Gemini, Claude, a local model, or whichever tool you already trust." },
-  { icon: FileJson, n: "03", title: "Bring the deck back", body: "Paste or upload the result. Deckly checks every field and explains anything that needs attention." },
+  { icon: FileJson, n: "03", title: "Bring the deck back", body: "Paste or upload the result. Knowly checks every field and explains anything that needs attention." },
   { icon: BrainCircuit, n: "04", title: "Practise with intent", body: "Move between flashcards, focused quizzes, interactive questions, and time-pressured arena rounds." },
 ];
 
 function Landing() {
   const navigate = useNavigate();
-  const { state, hydrated } = useDeckly();
+  const { state, hydrated } = useKnowly();
 
   useEffect(() => {
     if (!hydrated) return;
@@ -57,7 +57,7 @@ function Landing() {
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8">
           <Link to="/" className="flex items-center gap-3">
             <span className="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground"><Flame className="size-5" /></span>
-            <span className="font-display text-xl font-bold">Deckly</span>
+            <span className="font-display text-xl font-bold">Knowly</span>
           </Link>
           <nav aria-label="Primary navigation" className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
             <a href="#workflow" className="transition-colors hover:text-foreground">How it works</a>
@@ -83,7 +83,7 @@ function Landing() {
               Turn material from any subject into structured decks, then study with flashcards, interactive questions, focused quizzes, and progress you can actually use.
             </p>
             <div className="anim-fade-up mt-10 flex flex-col justify-center gap-3 sm:flex-row [animation-delay:180ms]">
-              <Button size="lg" className="press h-12 px-7" onClick={openApp}>Open Deckly <ArrowRight /></Button>
+              <Button size="lg" className="press h-12 px-7" onClick={openApp}>Open Knowly <ArrowRight /></Button>
               <Button size="lg" variant="outline" className="press h-12 px-7" onClick={() => navigate({ to: "/import" })}><FileJson /> Import JSON</Button>
             </div>
             <p className="mt-4 text-xs text-muted-foreground">Everything stays in this browser. Export a JSON backup whenever you want a copy.</p>
@@ -123,7 +123,7 @@ function Landing() {
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
               <div><p className="text-xs font-semibold uppercase text-primary">A controlled workflow</p><h2 className="mt-4 text-4xl font-bold sm:text-5xl">Your material.<br />Your model. Your deck.</h2></div>
-              <p className="max-w-2xl text-lg leading-8 text-muted-foreground">Deckly does not hide an AI model behind the interface. It gives you a rigorous format, while you keep control over the tool, source material, privacy, and output.</p>
+              <p className="max-w-2xl text-lg leading-8 text-muted-foreground">Knowly does not hide an AI model behind the interface. It gives you a rigorous format, while you keep control over the tool, source material, privacy, and output.</p>
             </div>
             <div className="mt-14 grid gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-2 lg:grid-cols-4">
               {workflow.map((item) => <article key={item.n} className="group bg-background p-6 sm:p-8"><div className="flex items-center justify-between"><item.icon className="size-5 text-primary" /><span className="font-mono text-xs text-muted-foreground">{item.n}</span></div><h3 className="mt-12 text-xl font-semibold">{item.title}</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">{item.body}</p></article>)}
@@ -159,7 +159,7 @@ function Landing() {
             <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-3">
               <div className="bg-background p-8"><HardDrive className="size-6 text-primary" /><h3 className="mt-6 text-xl font-bold">Stays on this device</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Decks, settings, notes, results, XP, and progress live in your browser. Move them with a JSON export.</p></div>
               <div className="bg-background p-8"><LockKeyhole className="size-6 text-primary" /><h3 className="mt-6 text-xl font-bold">Private by design</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Nothing is uploaded to an account. Clearing this browser’s storage is the only way the library disappears — keep a JSON backup if that matters.</p></div>
-              <div className="bg-background p-8"><Wand2 className="size-6 text-primary" /><h3 className="mt-6 text-xl font-bold">No locked-in model</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Deckly never stores an AI key. You choose where prompts run and inspect every deck before importing.</p></div>
+              <div className="bg-background p-8"><Wand2 className="size-6 text-primary" /><h3 className="mt-6 text-xl font-bold">No locked-in model</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Knowly never stores an AI key. You choose where prompts run and inspect every deck before importing.</p></div>
             </div>
           </div>
         </section>
@@ -170,7 +170,7 @@ function Landing() {
       </main>
 
       <footer className="border-t border-border bg-surface/30">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8"><div className="flex items-center gap-3"><Flame className="size-4 text-primary" /><span className="font-display font-bold">Deckly</span><span className="text-xs text-muted-foreground">Built by students, for students.</span></div><div className="flex gap-6 text-sm text-muted-foreground"><Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link><Link to="/terms" className="hover:text-foreground">Terms of Service</Link></div></div>
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8"><div className="flex items-center gap-3"><Flame className="size-4 text-primary" /><span className="font-display font-bold">Knowly</span><span className="text-xs text-muted-foreground">Built by students, for students.</span></div><div className="flex gap-6 text-sm text-muted-foreground"><Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link><Link to="/terms" className="hover:text-foreground">Terms of Service</Link></div></div>
       </footer>
     </div>
   );

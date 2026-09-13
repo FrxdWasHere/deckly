@@ -21,20 +21,20 @@ import { displayAnswer, isInteractive } from "@/lib/interactive";
 import { InteractiveQuestion } from "@/components/questions/interactive-question";
 
 import { xpForAnswer } from "@/lib/gamification";
-import { useDeckly } from "@/store/deckly";
+import { useKnowly } from "@/store/knowly";
 import { cn } from "@/lib/utils";
 import type { AnswerRecord } from "@/lib/types";
 
 export const Route = createFileRoute("/_authenticated/study/$deckId")({
   head: () => ({
     meta: [
-      { title: "Study Mode — Active Recall Session | Deckly" },
+      { title: "Study Mode — Active Recall Session | Knowly" },
       {
         name: "description",
         content:
           "Work through flashcards, multiple choice, true/false, fill-in-the-blank and short answer questions with keyboard shortcuts, notes and bookmarks.",
       },
-      { property: "og:title", content: "Study Mode — Deckly" },
+      { property: "og:title", content: "Study Mode — Knowly" },
       {
         property: "og:description",
         content: "A focused, keyboard-driven active recall session that works offline.",
@@ -50,7 +50,7 @@ export const Route = createFileRoute("/_authenticated/study/$deckId")({
 
 function StudySession() {
   const { deckId } = Route.useParams();
-  const { state, updateDeck, recordSession } = useDeckly();
+  const { state, updateDeck, recordSession } = useKnowly();
   const navigate = useNavigate();
   const deck = state.decks.find((d) => d.id === deckId);
   const settings = state.settings;

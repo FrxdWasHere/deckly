@@ -19,20 +19,20 @@ import {
 } from "@/lib/defaults";
 import { fileToWallpaperDataUrl } from "@/lib/wallpaper";
 import { useWallpaperUrl } from "@/hooks/use-wallpaper-url";
-import { useDeckly } from "@/store/deckly";
+import { useKnowly } from "@/store/knowly";
 import { cn } from "@/lib/utils";
 import type { Settings } from "@/lib/types";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — Appearance, Study & Data Controls | Deckly" },
+      { title: "Settings — Appearance, Study & Data Controls | Knowly" },
       {
         name: "description",
         content:
-          "Tune accent colors, density, accessibility, study behaviour and gamification, then export, import or wipe all locally stored Deckly data.",
+          "Tune accent colors, density, accessibility, study behaviour and gamification, then export, import or wipe all locally stored Knowly data.",
       },
-      { property: "og:title", content: "Settings — Deckly" },
+      { property: "og:title", content: "Settings — Knowly" },
       {
         property: "og:description",
         content: "Full control over appearance, accessibility, study rules and your local data.",
@@ -88,7 +88,7 @@ function Toggle({
 
 function SettingsPage() {
   const { state, updateSettings, resetSettings, resetAll, exportState, importState } =
-    useDeckly();
+    useKnowly();
   const s = state.settings;
   const wallpaperUrl = useWallpaperUrl(s.wallpaper);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -103,7 +103,7 @@ function SettingsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `deckly-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `knowly-backup-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
     toast.success("Backup downloaded");
@@ -275,7 +275,7 @@ function SettingsPage() {
               <div className="anim-pop relative h-40 overflow-hidden rounded-xl border border-border">
                 <img
                   src={wallpaperUrl}
-                  alt="Your current Deckly wallpaper"
+                  alt="Your current Knowly wallpaper"
                   className="size-full object-cover"
                   style={{
                     opacity: s.wallpaperOpacity,
@@ -506,7 +506,7 @@ function SettingsPage() {
                 if (!file) return;
                 const ok = importState(await file.text());
                 toast[ok ? "success" : "error"](
-                  ok ? "Backup restored" : "That file isn't a valid Deckly backup",
+                  ok ? "Backup restored" : "That file isn't a valid Knowly backup",
                 );
                 e.target.value = "";
               }}

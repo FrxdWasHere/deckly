@@ -13,19 +13,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useDeckly } from "@/store/deckly";
+import { useKnowly } from "@/store/knowly";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/decks/")({
   head: () => ({
     meta: [
-      { title: "Deck Library — Search, Tag & Track Decks | Deckly" },
+      { title: "Deck Library — Search, Tag & Track Decks | Knowly" },
       {
         name: "description",
         content:
           "Browse your offline deck library: search, sort, favorite and filter decks by tag while tracking completion for each one.",
       },
-      { property: "og:title", content: "Deck Library — Deckly" },
+      { property: "og:title", content: "Deck Library — Knowly" },
       {
         property: "og:description",
         content: "All your locally stored study decks, searchable and sortable.",
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/_authenticated/decks/")({
 });
 
 function DeckLibrary() {
-  const { state, updateDeck } = useDeckly();
+  const { state, updateDeck } = useKnowly();
   const [q, setQ] = useState("");
   const [sort, setSort] = useState("recent");
   const [tag, setTag] = useState("all");

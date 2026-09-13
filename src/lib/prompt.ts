@@ -15,7 +15,7 @@ export function buildPrompt(o: PromptOptions) {
   const pct = (n: number) => Math.round((n / total) * 100);
   const typeList = o.types.join(", ");
 
-  return `You are an expert exam writer. Convert the study material below into a Deckly deck.
+  return `You are an expert exam writer. Convert the study material below into a Knowly deck.
 
 OUTPUT RULES
 - Respond with ONE valid JSON object and nothing else. No markdown fences, no commentary.
@@ -91,7 +91,7 @@ export function buildAppendPrompt(o: AppendPromptOptions) {
   const typeList = o.types.join(", ");
   const sample = o.existingQuestions.slice(0, 60);
 
-  return `You are an expert exam writer. Expand an EXISTING Deckly deck with additional questions.
+  return `You are an expert exam writer. Expand an EXISTING Knowly deck with additional questions.
 
 OUTPUT RULES
 - Respond with ONE valid JSON object and nothing else. No markdown fences, no commentary.

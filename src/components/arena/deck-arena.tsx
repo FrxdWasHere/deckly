@@ -21,7 +21,7 @@ import {
   InteractiveQuestion,
   isInteractiveComplete,
 } from "@/components/questions/interactive-question";
-import { useDeckly } from "@/store/deckly";
+import { useKnowly } from "@/store/knowly";
 import { cn } from "@/lib/utils";
 import type { Question } from "@/lib/types";
 
@@ -40,7 +40,7 @@ interface Floater {
 }
 
 export function DeckArena({ deckId }: { deckId: string }) {
-  const { state, recordSession } = useDeckly();
+  const { state, recordSession } = useKnowly();
   const navigate = useNavigate();
   const deck = state.decks.find((d) => d.id === deckId);
 

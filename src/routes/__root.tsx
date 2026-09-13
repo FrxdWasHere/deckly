@@ -11,7 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { DecklyProvider } from "../store/deckly";
+import { KnowlyProvider } from "../store/knowly";
 import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
@@ -79,16 +79,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Deckly — Local study dashboard" },
-      { name: "description", content: "Track XP, streaks, weak topics and decks in Deckly — a study workspace for AI-generated JSON question banks, stored in your browser." },
+      { title: "Knowly — Local study dashboard" },
+      { name: "description", content: "Track XP, streaks, weak topics and decks in Knowly — a study workspace for AI-generated JSON question banks, stored in your browser." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Deckly — Local study dashboard" },
-      { property: "og:description", content: "Track XP, streaks, weak topics and decks in Deckly — a study workspace for AI-generated JSON question banks, stored in your browser." },
+      { property: "og:title", content: "Knowly — Local study dashboard" },
+      { property: "og:description", content: "Track XP, streaks, weak topics and decks in Knowly — a study workspace for AI-generated JSON question banks, stored in your browser." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Deckly — Local study dashboard" },
-      { name: "twitter:description", content: "Track XP, streaks, weak topics and decks in Deckly — a study workspace for AI-generated JSON question banks, stored in your browser." },
+      { name: "twitter:title", content: "Knowly — Local study dashboard" },
+      { name: "twitter:description", content: "Track XP, streaks, weak topics and decks in Knowly — a study workspace for AI-generated JSON question banks, stored in your browser." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/73a20bc8-a697-475c-adfb-64348f72b302/id-preview-91177294--aae57bb8-07a6-43ea-a58c-114412ffe651.lovable.app-1785229173023.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/73a20bc8-a697-475c-adfb-64348f72b302/id-preview-91177294--aae57bb8-07a6-43ea-a58c-114412ffe651.lovable.app-1785229173023.png" },
     ],
@@ -131,11 +131,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <DecklyProvider>
+      <KnowlyProvider>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
         <Toaster position="top-right" />
-      </DecklyProvider>
+      </KnowlyProvider>
     </QueryClientProvider>
   );
 }

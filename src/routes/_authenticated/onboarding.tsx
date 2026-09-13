@@ -40,18 +40,18 @@ import {
 import { validateDeckJson, type ValidationResult } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 
-import { useDeckly } from "@/store/deckly";
+import { useKnowly } from "@/store/knowly";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
     meta: [
-      { title: "Welcome to Deckly" },
+      { title: "Welcome to Knowly" },
       {
         name: "description",
         content:
-          "Set up your Deckly profile, learn the AI-free workflow and import your first deck. Everything stays in this browser until you export it as JSON.",
+          "Set up your Knowly profile, learn the AI-free workflow and import your first deck. Everything stays in this browser until you export it as JSON.",
       },
-      { property: "og:title", content: "Welcome to Deckly" },
+      { property: "og:title", content: "Welcome to Knowly" },
       {
         property: "og:description",
         content: "Build your profile, generate a prompt with your own AI, import the JSON and start studying.",
@@ -100,7 +100,7 @@ function Chip({
 function Onboarding() {
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
-  const { state, completeOnboarding, updateSettings, addDeck } = useDeckly();
+  const { state, completeOnboarding, updateSettings, addDeck } = useKnowly();
   const navigate = useNavigate();
   const settings = state.settings;
 
@@ -163,7 +163,7 @@ function Onboarding() {
               <Flame className="size-6" />
             </div>
             <div>
-              <p className="font-display text-lg font-bold">Deckly</p>
+              <p className="font-display text-lg font-bold">Knowly</p>
               <p className="text-[11px] text-muted-foreground">Setup</p>
             </div>
           </div>
@@ -211,7 +211,7 @@ function Onboarding() {
             <div className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground">
               <Flame className="size-5" />
             </div>
-            <p className="font-display font-bold">Deckly</p>
+            <p className="font-display font-bold">Knowly</p>
           </div>
 
           <div className="mb-5 h-1 overflow-hidden rounded-full bg-border">
@@ -238,7 +238,7 @@ function Onboarding() {
                   {settings.displayName ? `Welcome, ${settings.displayName}.` : "Welcome to the forge."}
                 </h1>
                 <p className="mt-3 text-muted-foreground">
-                  Deckly keeps decks, questions, XP, streaks, notes and quiz history in this
+                  Knowly keeps decks, questions, XP, streaks, notes and quiz history in this
                   browser. Nothing is uploaded. Use JSON export when you want a backup or to move
                   a library to another machine.
                 </p>
@@ -259,7 +259,7 @@ function Onboarding() {
 
             {step === 1 && (
               <div className="mt-4">
-                <h1 className="text-3xl font-bold">There's no AI inside Deckly</h1>
+                <h1 className="text-3xl font-bold">There's no AI inside Knowly</h1>
                 <p className="mt-3 text-muted-foreground">
                   It never calls an AI service. Instead it writes a precise prompt for you to run in
                   whichever model you already use — so you control cost, privacy and quality.
@@ -622,7 +622,7 @@ function Onboarding() {
               <div className="mt-4 space-y-4">
                 <h1 className="text-3xl font-bold">Import your first deck</h1>
                 <p className="text-muted-foreground">
-                  Already have Deckly JSON from your AI? Drop it in now. Otherwise skip — you can
+                  Already have Knowly JSON from your AI? Drop it in now. Otherwise skip — you can
                   import at any time.
                 </p>
 

@@ -73,7 +73,7 @@
   --font-mono: var(--font-mono-family);
 }
 
-/* Deckly design system — Ocean Deep, shared across every screen. */
+/* Knowly design system — Ocean Deep, shared across every screen. */
 :root {
   --radius: 0.5rem;
   --font-display-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;

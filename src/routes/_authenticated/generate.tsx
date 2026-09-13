@@ -13,20 +13,20 @@ import { Badge } from "@/components/ui/badge";
 import { buildAppendPrompt, buildPrompt, estimateQuestions } from "@/lib/prompt";
 import { TYPE_LABELS } from "@/lib/answers";
 import { questionTypes } from "@/lib/schema";
-import { useDeckly } from "@/store/deckly";
+import { useKnowly } from "@/store/knowly";
 import type { Difficulty, QuestionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/generate")({
   head: () => ({
     meta: [
-      { title: "Prompt Forge — Build AI Question-Bank Prompts | Deckly" },
+      { title: "Prompt Forge — Build AI Question-Bank Prompts | Knowly" },
       {
         name: "description",
         content:
           "Turn study material into a strict JSON prompt for any LLM. Configure question count, types and difficulty, then copy the prompt into ChatGPT, Claude, Gemini or Ollama.",
       },
-      { property: "og:title", content: "Prompt Forge — Deckly" },
+      { property: "og:title", content: "Prompt Forge — Knowly" },
       {
         property: "og:description",
         content: "Generate a precise question-bank prompt for the AI model of your choice.",
@@ -41,7 +41,7 @@ export const Route = createFileRoute("/_authenticated/generate")({
 });
 
 function GeneratePage() {
-  const { state, saveTemplate, deleteTemplate } = useDeckly();
+  const { state, saveTemplate, deleteTemplate } = useKnowly();
   const [mode, setMode] = useState<"new" | "append">("new");
   const [targetId, setTargetId] = useState(state.decks[0]?.id ?? "");
   const [material, setMaterial] = useState("");
@@ -98,7 +98,7 @@ function GeneratePage() {
     <div>
       <PageHeader
         title="Prompt Forge"
-        description="Deckly never contacts an AI. It builds the prompt — you run it wherever you like, then bring the JSON back."
+        description="Knowly never contacts an AI. It builds the prompt — you run it wherever you like, then bring the JSON back."
         action={
           <div className="flex gap-2">
             <Button variant="outline" onClick={clear}>

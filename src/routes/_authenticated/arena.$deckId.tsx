@@ -5,13 +5,13 @@ import { DeckArena } from "@/components/arena/deck-arena";
 export const Route = createFileRoute("/_authenticated/arena/$deckId")({
   head: () => ({
     meta: [
-      { title: "Deck Arena — Interactive XP Duel | Deckly" },
+      { title: "Deck Arena — Interactive XP Duel | Knowly" },
       {
         name: "description",
         content:
           "Play your deck as a fast interactive round: gain XP for correct answers, lose XP and lives for misses, and bank whatever survives into your profile.",
       },
-      { property: "og:title", content: "Deck Arena — Deckly" },
+      { property: "og:title", content: "Deck Arena — Knowly" },
       {
         property: "og:description",
         content: "Combo multipliers, lives and timed rounds — an offline XP duel against your deck.",

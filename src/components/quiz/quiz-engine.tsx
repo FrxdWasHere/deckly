@@ -22,7 +22,7 @@ import {
   InteractiveQuestion,
   isInteractiveComplete,
 } from "@/components/questions/interactive-question";
-import { useDeckly } from "@/store/deckly";
+import { useKnowly } from "@/store/knowly";
 import { checkAnswer, shuffleArray, TYPE_LABELS } from "@/lib/answers";
 import { displayAnswer, isInteractive } from "@/lib/interactive";
 import { xpForAnswer, comboMultiplier } from "@/lib/gamification";
@@ -42,7 +42,7 @@ import type {
 type Phase = "setup" | "running" | "report";
 
 export function QuizEngine() {
-  const { state, updateSettings, recordSession } = useDeckly();
+  const { state, updateSettings, recordSession } = useKnowly();
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>("setup");
   const [config, setConfig] = useState<QuizConfig>(state.settings.defaultQuizConfig);

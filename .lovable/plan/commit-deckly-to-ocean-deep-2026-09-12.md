@@ -1,4 +1,4 @@
-# Commit Deckly to Ocean Deep
+# Commit Knowly to Ocean Deep
 
 ## Scope
 - Replace every warm accent, label, gradient, chart, deck swatch, status color, and accessibility reference with a coordinated blue or cyan-blue equivalent.

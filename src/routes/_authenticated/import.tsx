@@ -14,7 +14,7 @@ import {
   type QuestionsValidationResult,
 } from "@/lib/schema";
 import { TYPE_LABELS } from "@/lib/answers";
-import { useDeckly } from "@/store/deckly";
+import { useKnowly } from "@/store/knowly";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/import")({
@@ -23,13 +23,13 @@ export const Route = createFileRoute("/_authenticated/import")({
   }),
   head: () => ({
     meta: [
-      { title: "Import a Deck — Validate AI JSON | Deckly" },
+      { title: "Import a Deck — Validate AI JSON | Knowly" },
       {
         name: "description",
         content:
-          "Paste, upload or drag-and-drop AI-generated JSON. Deckly validates the schema, previews the deck and imports it — as a new deck or as extra questions for an existing one.",
+          "Paste, upload or drag-and-drop AI-generated JSON. Knowly validates the schema, previews the deck and imports it — as a new deck or as extra questions for an existing one.",
       },
-      { property: "og:title", content: "Import a Deck — Deckly" },
+      { property: "og:title", content: "Import a Deck — Knowly" },
       {
         property: "og:description",
         content: "Validate and import AI-generated question banks into your offline library.",
@@ -44,7 +44,7 @@ export const Route = createFileRoute("/_authenticated/import")({
 });
 
 function ImportPage() {
-  const { state, addDeck, addQuestions } = useDeckly();
+  const { state, addDeck, addQuestions } = useKnowly();
   const navigate = useNavigate();
   const { deck: deckParam } = Route.useSearch();
   const [mode, setMode] = useState<"deck" | "append">(deckParam ? "append" : "deck");
